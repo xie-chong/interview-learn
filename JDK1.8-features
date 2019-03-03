@@ -5,6 +5,10 @@
 5. Optional
 6.Stream API
 7.Date/Time API(JSR 310)
-8.
-9.
-10.
+8.Nashorn JavaScript引擎
+9.Base64（对Base64编码的支持已经被加入到Java 8官方库中）
+10.并行数组
+11.并发性
+12.新的Java工具(Nashorn引擎：jjs)
+13.参考地址：https://blog.csdn.net/Michael_HM/article/details/79141981
+14.Spring 4 支持的 Java 8 新特性一览(https://www.infoq.cn/article/spring-4-java-8)
