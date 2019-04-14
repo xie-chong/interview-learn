@@ -1,0 +1,753 @@
+alt + 7 ||  ctrl + F12 	IntelliJ IDEA中 查看某个类中的所有方法
+pvsm	自动生成main方法
+sout    System.out.println()快捷输入 
+ctrl + shift 上下键		上下移动 
+ctrl + shift + G 定位到具体的行
+ctrl + alt + T 	surround with
+ctrl + Q 查看方法注释
+ctrl + ALT + T	代码优化
+ctrl + alt +B  || ctrl + H 查看一个类也就是当前类的所有继承关系
+
+
+
+--linux
+查看服务状态
+
+$ service ssh status
+查看所有服务状态
+
+$ service --status-all
+重启服务
+
+$ service ssh restart
+
+
+查看服务状态
+
+$ service ssh status
+查看所有服务状态
+
+$ service --status-all
+重启服务
+
+$ service ssh restart
+
+ ps
+ps命令用于显示正在运行中的进程的信息，ps命令有很多选项，这里只列出了几个
+
+查看当前正在运行的所有进程
+
+$ ps -ef | more
+以树状结构显示当前正在运行的进程，H选项表示显示进程的层次结构
+
+$ ps -efH | more
+ free
+这个命令用于显示系统当前内存的使用情况，包括已用内存、可用内存和交换内存的情况
+
+默认情况下free会以字节为单位输出内存的使用量
+
+---------- 下面是几个常用的maven长仓库的镜像地址： 
+http://repo1.maven.org/maven2 （这个仓库最全，推荐使用，但有一点慢） 
+http://maven.apache.org/download.cgi 
+http://mvnrepository.com/ (这个仓库速度最快，国内有镜像服务器)
+
+
+--------------------- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+PLSQL登录oracle无监听时处理流程---打开命令窗口输入lsnrctl status，查看监听状态
+
+
+
+
+error:
+Error detected parsing the header
+今天在用commons-compress-1.9.jar  做tar解压时在while((entry = tar.getNextEntry())!=null){  出发生异常。异常内容：java.io.IOException: Error detected parsing the header
+
+和cause by:java.lang.IllegalArgumentException: Invalid byte 46 at offset 2 in '01.pdf{NUL}�' len=8
+检查原因是由于tar文件并不是真正的在linux环境中生成的，而是在windows生成的，所以要处理这个问题，只需要在linux重新tar一次即可。
+
+
+error:
+今天，在写文件流时，碰到读取文件夹“拒接访问”的问题。权限不够：上网搜资料说是权限级别不够，照着做，之后再试，依然出错，头大了。换workspance：换workspace目录盘，换到D
+
+盘，依然“拒接访问“，死的心都有啦。跟它耗上了。最后，百度一段不起眼的问答，找到原因了：FileOutputStream读取流的时候如果是文件夹，就会出次错。恍然大悟！
+
+病根：FileOutputStream读取流的时候如果是文件夹，就会出此错误。恍然大悟！出错原因，读取文件夹，无论你怎么读，当然无法读了，读取的目录后面忘加了文件名！（如下图1）做好技
+
+术总结
+
+
+error:
+ORA-00955: 名称已由现有对象使用
+由于我的操作出现表名和主键名重复（少了PK）。
+create table PAGB_REPAYMENT_DETAIL			
+(			
+  PKID         VARCHAR2(40) not null			
+    constraint PK_PAGB_REPAYMENT_DETAIL		
+	
+error:
+ maven java.lang.OutOfMemoryError: Java heap space
+ 找到eclispe 中window->preferences->Java->Installed JRE ，点击右侧的Edit 按钮，在编辑界面中的 “Default VM Arguments ”选项中，填入-Xms128m -Xmx512m 即可
+
+ 
+ 
+error:
+SQL 错误: ORA-00972: 标识符过长
+不能超过30
+ 
+
+error:
+ORA-38104: 无法更新 ON 子句中引用的列: "AMP"."BILL_NO"
+MERGE INTO不能对on条件进行更新
+
+error:
+ORA-00947: 没有足够的值
+
+
+error:
+ORA-01461: 仅能绑定要插入 LONG 列的 LONG 值
+
+原因：
+某一个字段本为varchar2(1024)，但是实际要插入的值超过varchar2允许的最大长度4000时，oracle自动将该字段值转化为Long类型，然后提示插入操作失败。
+解决：
+1、是不是真的要插入超过定义长度的值？否则对长度做判断，截取等。
+2、若是，则将字段采用clob、blob，或者使用文件代替，字段保存文件地址即可。
+ 
+error:
+ORA-00933: SQL 命令未正确结束
+update set语句缺失","
+
+
+ERROR:
+ORA-01722: 无效数字
+主要原因是:
+1、对于两个类型不匹配（一个数字类型，一个非数字类型，同下）的值进行赋值操作;
+2、两个类型不匹配的值进行比较操作（例如，“=”）;
+3、to_number函数中的值，非数字的，比如,to_number('a')肯定是不行的，to_number('12306')则是正常的。
+ 
+ 
+error:
+UTF-8带BOM格式与UTF-8无BOM格式转换
+ 
+ 
+error:
+java sftp下载的文件删除问题
+
+由于流未关闭，所以导致删除操作无效
+避免使用这样的形式传参数
+this.sftp.put(new FileInputStream(file), file.getName());
+this.sftp.get(downloadFile, new FileOutputStream(file));
+ 
+learn:
+Oracle函数之LISTAGG
+select listagg(s.column_name,',') within GROUP (order by s.column_name) columns   from user_tab_columns s  where s.table_name='LST_IQP_INFO'
+ 
+error:
+JRE System Library(unbound)
+解决方案：右击项目———》Properties——》弹出如下对话框，进行如下操作：
+edit-->选择相关配置
+ 
+ 
+error:
+spring-boot启动报错
+Unable to find a single main class from the following candidates
+解决方案：去掉对应java类中的main方法
+ 
+ 
+error:
+Mybatis:java.lang.UnsupportedOperationException
+
+参考：https://blog.csdn.net/sinat_28597179/article/details/78730340
+执行的sql语句配置信息如下：
+
+<select id="getColumnsByTableName" parameterType="String" resultType="java.util.List">
+      select t.column_name from user_tab_columns t where t.tableName=#{tableName,jdbcType=VARCHAR}
+</select>
+
+对应的dao接口代码为：
+public List<String> getColumnsByTableName(String tableName);
+
+应该改为：
+<select id="getColumnsByTableName" parameterType="String" resultType="String">      select t.column_name from user_tab_columns t where t.tableName=#
+
+{tableName,jdbcType=VARCHAR}</select>
+
+原因就在于resultType代表的是List中的元素类型，而不应该是List本身，究其原因就在于被dao中的方法声明（标红出）
+public List<String> getColumnsByTableName(String tableName);
+ 
+ 
+learn:
+json转为对象时，对象的属性必须和json中的key一一对应。
+
+ERROR:
+oracle“ORA-00904”错误：标识符无效几种可能情况
+1、字段名或者表名写错了，仔细检查核对一下，如果实在是没有发现错的地方就有可能是第二种情况了
+
+2、第二种情况就是：你的字段包含了Oracle的关键字，把报错的字段用双引号括起来试试
+ 
+ 
+learn:
+ORACLE in
+IN 子句中的LIST个数最长为1000，超过该数目将报错，这里可转用一个临时表来解决;
+ 
+learn：
+使用to_number('字符串')函数将字符串‘123’转成数字123
+select to_number('123') from dual;
+ 
+learn:ORACLE锁表查询及解锁（需要管理员权限杀进程）
+select a.object_name,b.session_id,c.serial#,'alter system kill session '''||b.session_id||','||c.serial#||'''; ' as 
+
+a,c.program,c.username,c.command,c.machine,c.lockwait
+from all_objects a,v$locked_object b,v$session c where a.object_id=b.object_id and c.sid=b.session_id;
+
+
+learn:
+查看执行计划
+1.EXPLAIN PLAN： 
+显示执行相应语句时可以使用的理论计划 
+读取执行计划：按缩进量读取，缩进越多，越先执行；缩进量相同，先上后下。 
+dbms_xplan 程序包里三种表函数 
+display （理论并未真正执行） 
+display_awr（真正执行） 
+display_cursor（查询内存中执行过的执行计划）
+
+语法：
+
+EXPLAIN PLAN
+SET STATEMENT_ID = ' ' FOR
+要查看的SQL语句
+1
+2
+3
+输出：
+
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+1
+display函数中的参数：
+
+table_name:指定计划表的名字，缺省值为‘PLAN_TABLE’。
+statement_id:SQL语句的ID号，是在生成执行计划时使用set statement_id 
+命令设置的值，默认值为NULL，当使用默认值时，将显示最近插入计划表中的执行计划。
+format：用于控制display函数输出内容，其常用值有： 
+basic： 仅仅显示最少的信息。基本上包括操作和操作的对象 
+typical：显示大部分信息。基本上包括除了别名，提纲和字段投 影外的所有信息，此为缺省值。 
+serial： 类似于typical，但不显示并行操作 
+all： 显示除提纲之外的所有信息 
+advanced：显示所有信息
+
+相匹配的额外修饰符有：（需要某个修饰符使用“+”，不需要使用“-”，连接之间要有空格）
+
+alias：控制包含查询块与别名的显示部分
+bytes：控制执行计划表中字段bytes的显示
+cost：控制执行计划表中字段cost的显示
+note：控制包含注释信息的显示部分
+outline：控制包含提纲信息的显示部分
+parallel：控制包含并行处理信息的提示
+paration：控制并行处理信息的显示，尤其是执行计划表中字段TQ、IN-OUT、PQ Distrib的显示
+predicate：控制包含谓词filter和access显示部分
+peeked_binds：控制包含绑定变量窥探部分的显示。仅当生成执行计划时使用了绑定变量是可见
+projection：控制包含投影信息的显示部分
+remote：控制远程执行的SQL语句的显示
+rows： 控制执行计划表中字段rows的显示
+例如：
+
+EXPLAIN PLAN
+SET STATEMENT_ID = '192' FOR
+SELECT * FROM SCOTT.EMP;
+
+SELECT PLAN_TABLE_OUTPUT FROM TABLE(DBMS_XPLAN.DISPLAY());
+
+Plan hash value: 3956160932
+
+--------------------------------------------------------------------------
+| Id  | Operation         | Name | Rows  | Bytes | Cost (%CPU)| Time     |
+--------------------------------------------------------------------------
+|   0 | SELECT STATEMENT  |      |    14 |  1218 |     3   (0)| 00:00:01 |
+|   1 |  TABLE ACCESS FULL| EMP  |    14 |  1218 |     3   (0)| 00:00:01 |
+--------------------------------------------------------------------------
+
+Note
+-----
+   - dynamic sampling used for this statement (level=2)
+
+
+
+learn：
+oracle varchar2改成大字段类型clob
+
+--增加大字段项
+alter table med_generic add hehe clob;
+--将需要改成大字段的项内容copy到大字段中
+update med_generic set hehe=option07;
+--删除原有字段
+alter table med_generic drop column option07;
+--将大字段名改成原字段名
+alter table med_generic rename column hehe to option07;
+
+
+
+error：
+ORA-01861: 文字与格式字符串不匹配
+这个错误一般出现在时间字段上，即你插入的时间格式和数据库现有的时间格式不一致，解决的方法是格式化你
+插入的时间： to_date('#','yyyy-mm-dd hh24:mi:ss')
+
+error:
+Error detected parsing the header
+压缩和解压文件环境不一致
+
+error:
+Mybatis实现 MERGE INTO 
+ORA-30926: 无法在源表中获得一组稳定的行
+
+原因是using的结果里出现关联字段重复的记录，比如
+
+MERGE INTO A
+USING B
+ON (B.ID=A.ID)
+
+在B表有相同ID的多条记录
+
+error:
+ORA-01722: 无效数字
+1、对于两个类型不匹配（一个数字类型，一个非数字类型，同下）的值进行赋值操作;
+2、两个类型不匹配的值进行比较操作（例如，“=”）;
+3、to_number函数中的值，非数字的，比如,to_number('a')肯定是不行的，to_number('12306')则是正常的。
+要避免这些问题，要做到在写sql语句时就好认真处理好不同类型的问题。
+比如如果要比较的话，同时都用to_number强制转换（to_number(字段a) = to_number(字段b)），或者同时转换为字符串类型（字段a||'' = 字段b||'',都连接一个空字符串使之变成字符串
+
+类型）。
+在语句中使用to_number函数时，要保证值一定是数字格式，或者写好异常处理。
+当我们碰到这个错误提示时，就从所有用到的数字类型的字段开始检查，逐一排查，从而解决问题。
+参考：http://blog.csdn.net/yysyangyangyangshan/article/details/51762746
+
+
+LEARN:
+一、数据表有主键但无主键约束名
+
+先删除之前的主键，后添加主键
+
+a.  alter table 表名 drop primary key;
+
+b. alter table 表名 add primary key(想要更改的字段名称);
+
+二、数据表有主键也有主键约束名
+
+（1）删除已有的主键约束名
+
+a. 若已知主键约束名：alter table 表名 drop constraint 约束名 ;
+
+b. 若不知主键约束名：
+
+select * from user_cons_columns c where c.table_name='表名';
+
+先查询出改表的主键约束名，在执行
+
+alter table  表名 drop constraint 约束名；
+
+（2）增加新的主键约束
+
+alter table 表名 add constraint 约束名 primary key(字段名);
+
+
+
+error:
+ ORA-00927: 缺失等号
+
+
+
+error：
+ORA-30926: 无法在源表中获得一组稳定的行
+
+首先我们要知道merge into存在的意义是什么！！！
+      使用merge into是为了根据匹配条件on(condition)利用table_source 的数据更新合并table_target的数据。
+merge into的内部处理是将table_source的每一条记录和table_target的每一条记录对比匹配，匹配到符合条件的记录就会进行修改，匹配不到的话就会insert。如果table_source的匹配列
+
+中有重复值的话，等到第二次重复的列值匹配的时候，就会将第一次的update后的值再一次update,就是说合并后的table_target中会丢失在table_source中的记录！！！如果记录丢失的话，
+
+两表合并的意义何在？！！因此我们使用merge into要注意：源表匹配列中不能有重复值，否则无法匹配（报错！     ）。
+
+
+learn：
+INSERT INTO SELECT语句
+语句形式为：Insert into Table2(field1,field2,...) select value1,value2,... from Table1
+
+注意：
+（1）要求目标表Table2必须存在，并且字段field,field2...也必须存在
+
+（2）注意Table2的主键约束，如果Table2有主键而且不为空，则 field1， field2...中必须包括主键
+
+（3）注意语法，不要加values，和插入一条数据的sql混了，不要写成:
+
+
+learn：
+自打我用to_char来转换数字就发现了这个问题，即转换结果字符串最前面多了一个空格。我一直用trim再处理一下，没有关注过原因。今天上网查了一下，看到了一个说法及解决方案。
+解决办法：   
+select   trim(to_char(12,'00'))   from   dual   
+或者  
+select   to_char(12,'fm00')   from   dual   
+
+总结：   
+select   to_char(12,'00000')   from   dual 结果为：  
+00012（1个空格）  
+select   to_char(12,'99999')   from   dual 结果为：  
+12（4个空格）  
+select   to_char(-12,'00000')   from   dual 结果为：  
+-00012（无个空格）  
+select   to_char(-12,'99999')   from   dual 结果为：  
+   -12（3个空格）
+
+error：
+ORA-01747: user.table.column, table.column 或列说明无效
+set 语句中多了个逗号。
+
+
+learn:
+fastJson过滤字段
+
+PropertyFilter profilter = new PropertyFilter(){
+            public boolean apply(Object object, String name, Object value) {
+                if(name.equalsIgnoreCase("trans_pdf_file_after")){
+                    //false表示last字段将被排除在外
+                    return false;
+                }
+                return true;
+            }
+
+        };
+JSONObject json = (JSONObject) JSONObject.toJSON(TemplateBuildReqquest);
+String templateContent = json.toJSONString(json, profilter);
+
+
+learn:
+Springboot中获取application.yml中的数据
+ @Value("${server.address}")
+    private String callBackIp;
+	
+learn：
+注意就是注解@param 这个，是mybatis的
+
+int updateTransferInfo(@Param("paramsMap") HashMap<String, String> paramsMap);
+ <update id="updateSealInfo" parameterType="java.util.HashMap">
+        update ZLY_BID_SEAL
+            set seal_status ='3',
+                UPDATE_DATE_TIME = to_char(sysdate, 'YYYY-MM-DD hh24:mi:ss'),
+        where  pk_id = #{fileId,jdbcType=VARCHAR}
+        and seal_status ='2'
+
+    </update>
+
+
+learn：
+表名需要大写
+--获取表注释：
+
+select * 
+from user_tab_comments 
+where Table_Name='RC_METADATA'
+order by Table_Name
+
+--获取字段注释：
+
+select * 
+from user_col_comments 
+where Table_Name='RC_METADATA'
+order by column_name
+
+
+error:
+java.lang.IllegalStateException: Target host is null
+http请求域名，前面需要加上http://
+
+error：
+myBatis 中的if标签必须放在“<![CDATA[  ]]>之外”。否则会报错误，“命令未正确结束”
+
+error：
+ORA-01722: 无效数字
+
+jdbcType = VARCHAR  与jdbcType = NUMERIC之间的转换
+
+
+error:
+运行Maven是报错：No goals have been specified for this build
+
+No goals have been specified for this build. You must specify a valid lifecycle phase or a goal in the format <plugin-prefix>:<goal> or <plugin-group-id>:<plugin-
+
+artifact-id>[:<plugin-version>]:<goal>. Available lifecycle phases are: validate, initialize, generate-sources, process-sources, generate-resources, process-resources, 
+
+compile, process-classes, generate-test-sources, process-test-sources, generate-test-resources, process-test-resources, test-compile, process-test-classes, test, 
+
+prepare-package, package, pre-integration-test, integration-test, post-integration-test, verify, install, deploy, pre-clean, clean, post-clean, pre-site, site, post-
+
+site, site-deploy. -> [Help 1]  
+解决方法：pom.xml文件<build>标签后面加上<defaultGoal>compile</defaultGoal>即可  
+
+
+learn：
+Oracle lpad函数
+lpad函数从左边对字符串使用指定的字符进行填充。从其字面意思也可以理解，l是left的简写，pad是填充的意思，所以lpad就是从左边填充的意思。
+语法格式如下：
+lpad( string, padded_length, [ pad_string ] )
+
+error：ORA-01438: 值大于为此列指定的允许精度
+number许菊类型的精度太小
+
+
+error：controller 里面直接new Service方法调用对象，导致无法自动注入mapper（mapper为null），
+解决方法：controller 里面的service应该使用自动注入@Autowired
+
+
+learn：多个表信息汇集到一个结果集
+select *
+from (select datas.*, ROWNUM RN
+      from (select distinct a.LN_ACCT,
+                            a.recovery_Date,
+                            a.total_INSURE_AMT_GBF,
+                            b.CURRENT_PS_PERD_NO,
+                            b.PS_COVERAGE_FEE,
+                            b.PS_REAL_PRCP_AMT,
+                            c.max_term
+            from (select aa.LN_ACCT             as LN_ACCT,
+                         aa.recovery_Date       as recovery_Date,
+                         sum(aa.INSURE_AMT_GBF) as total_INSURE_AMT_GBF
+                  from PAGB_CLAIM_REPAY_DETAIL aa
+                  where aa.SYN_STATUS ='0'
+                      and aa.BUSINESS_DATE = '2018-12-12'
+                  group by aa.LN_ACCT, recovery_Date) a
+                   left join (select bb.BILL_NO as BB_BILL_NO,
+                                     bb.PS_PERD_NO as CURRENT_PS_PERD_NO,
+                                     bb.PS_COVERAGE_FEE,
+                                     bb.PS_REAL_PRCP_AMT
+                              from ACC_FEE_MTD_PLAN bb
+                              where PS_PERD_NO = (select min(PS_PERD_NO) PS_PERD_NO
+                                                  from ACC_FEE_MTD_PLAN
+                                                  where REPAY_FLAG = '30')) b
+                     on b.BB_BILL_NO = a.LN_ACCT
+                   left join (select cc.term as MAX_TERM, cc.BILL_NO as CC_BILL_NO from acc_fee_info cc) c
+                     on a.LN_ACCT = c.cc_bill_no) datas
+
+      where rownum < 100)
+where rn >= 1;
+
+
+error： 出现不支持的 SQL92 标记: 1071
+
+
+
+error：元素类型为 "mapper" 的内容必须匹配 "(cache-ref|cache|resultMap*|parameterMap*|sql*|insert*|update*|delete*|select*)+"
+
+
+
+error：ibatis中的入参类型，和返回结果类型和mybatis是有区别的   parameterClass=”参数类型”    resultClass=”查询结果类型”
+
+a.Ibatis添加：
+<insert id=”Ibatis添加实体操作Id” parameterClass=”参数类型”>  
+     insert into 实体对应数据库中的表名(实体字段对应的表的列名1, 实体字段对应的表的列名2,……) values(#实体类字段1#,#实体类字段2#......);  
+</insert>
+注意：Ibatis增删改查语句的参数是通过 parameterClass或者parameterMap 传递的。 Ibatis只能传递 一个参数 ，如果又多个参数需要封装在一个对象中。
+
+b. Ibatis删除：
+<delete id=”Ibatis删除实体操作Id” parameterClass=”参数类型”>  
+       delete from 实体对应数据库中的表名 where 列名=#列名对应的实体字段名#;  
+</delete>
+注意：删除和查询时，经常需要根据一定条件操作，有时可能需要模糊查询，对于
+
+c. Ibatis 模糊查询
+
+如name like‘%c%’。在Ibatis中有两种写法：
+
+写法1：在java方法中传递参数时写成：”%字段名%”。
+
+写法2：在Ibatis的sql语句中可以写成如：where name=’%$字段名$%’。
+
+d.       Ibatis更新：
+<update id=”Ibatis更新实体操作Id” parameterClass=”参数类型”>  
+       update 实体对应数据库的表名 set 列名1=#字段1#，列名2=#字段2#，…….where ….;  
+</update>   
+e.       Ibatis查询
+<select id=”Ibatis查询实体操作Id” resultClass=”查询结果类型” >  
+       select * from 实体对应的表名;  
+</select>
+
+
+
+error：后台返回浏览的json中文变问号
+添加produces = "application/json; charset=utf-8"
+ 即：  @RequestMapping(value = "/test", produces = "application/json; charset=utf-8")
+
+
+或者
+ <!-- 注册MVC注解驱动 -->
+<mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+        <bean id="stringHttpMessageConverter" class="org.springframework.http.converter.StringHttpMessageConverter">
+                <property name="supportedMediaTypes"  value="text/html;charset=UTF-8"/>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+		response.setContentType("text/xml;charset=UTF-8");
+        response.setCharacterEncoding("utf-8");
+
+
+
+error:
+Cause: java.sql.SQLException: sql injection violation, comment not allow :  
+使用ibatis或者Druid的时候sql映射文件中不允许出现注释语句
+
+error：
+Error: executeQueryForObject returned too many results.
+returned too many results说的是返回的值多于一个了，executeQueryForObject要求只返回一个值，
+看看你的这个查询是应该用executeQueryForList，还是本身的Sql有问题
+
+
+
+error：
+No goals have been specified for this build.
+运行命令配置错误 clean,complile,package
+
+
+learn:
+ResourceBundle与Properties的区别在于ResourceBundle通常是用于国际化的属性配置文件读取，Properties则是一般的属性配置文件读取。
+https://www.cnblogs.com/alfredinchange/p/5384760.html
+
+
+learn：
+在oracle中使用merge into时，没法使用序列，此时需要对序列建立一个函数，通过函数来获取序列
+
+create function get_seq_next (seq_name in varchar2) return number
+is
+  seq_val number ;
+  begin
+    execute immediate 'select '|| seq_name|| '.nextval from dual' into seq_val ;
+    return seq_val ;
+  end get_seq_next;
+/
+
+
+
+error:
+ORA-00910: 指定的长度对于数据类型而言过长
+
+
+
+error: ORA-01830: 日期格式图片在转换整个输入字符串之前结束
+内容和转换格式长度不匹配
+ to_timestamp('2019-04-11 09:28:29.181000','YYYY-MM-DD HH24:MI:SS'))
+
+error:
+java.lang.OutOfMemoryError: PermGen space
+
+learn:
+smallint是有符号或无符号2字节的整数，范围是0～65,536，5位整数
+bigint是有符号或无符号8字节的整数，范围是0～18,446,744,073,709,551,616,20位整数
+所以，smal
+lint-->number(5),bigint-->number(20)
+
+
+
+ERROR:
+ORA-00917: 缺失逗号
+oracle 不支持sysdate()函数，该函数为mysql。
+
+
+
+learn:
+replace into 跟 insert 功能类似，不同点在于：replace into 首先尝试插入数据到表中， 1. 如果发现表中已经有此行数据（根据主键或者唯一索引判断）则先删除此行数据，然后插入
+
+新的数据。 2. 否则，直接插入新数据。
+
+要注意的是：插入数据的表必须有主键或者是唯一索引！否则的话，replace into 会直接插入数据，这将导致表中出现重复的数据。
+
+
+
+error:
+ Error getting generated key or setting result to parameter object. Cause: java.sql.SQLException: 不允许的操作
+
+https://my.oschina.net/MrBamboo/blog/882873
+
+出现这个异常的原因是在mybatis配置文件中配置了下面这一行.
+
+<!-- 允许使用自定义的主键值(比如由程序生成的UUID 32位编码作为键值)，数据表的PK生成策略将被覆盖 -->  
+<setting name="useGeneratedKeys" value="true" />  
+这样配置的话dao接口上会默认返回insert之后返回的id
+
+只要将value设置为false或者直接删除(默认就是false)就不在出现这个异常信息
+
+如果有需要返回id的接口方法可以手动设置useGeneratedKeys为true来实现
+
+
+
+learn:
+<setting name="useGeneratedKeys" value="true" />  
+对于支持自动生成记录主键的数据库，如：MySQL，SQL Server，此时设置useGeneratedKeys参数值为true，在执行添加记录之后可以获取到数据库自动生成的主键ID。
+
+
+
+error:
+ORA-01810: 格式代码出现两次
+
+原因是java中的年月日和oracle中的年月日表示形式不一样
+
+oracle用MI来代表分钟,而不是java中的mm
+
+
+
+learn:
+分页助手
+PageHelper插件当然支持oracle，它支持6种主流的数据库。配置的时候只需要修改方言属性，即pagehelper.helperDialect=oracle  。具体可参考链接：
+
+https://my.oschina.net/u/3866531/blog/2249986
+
+application.properties配置文件中支持的数据库类型
+目前Pagehelper插件支持Oracle,Mysql,MariaDB,SQLite,Hsqldb,PostgreSQL六种数据库分页，不同数据库只需要修改helperDialect就行。
+
+Oracle数据库写法
+########################################## pagehelper分页插件配置
+pagehelper.helperDialect=oracle
+pagehelper.reasonable=true
+pagehelper.supportMethodsArguments=true
+pagehelper.params=count=countSql
+MySQL数据库写法
+########################################## pagehelper分页插件配置
+pagehelper.helperDialect=mysql
+pagehelper.reasonable=true
+pagehelper.supportMethodsArguments=true
+pagehelper.params=count=countSql
+
+
+
+
+learn:
+避免浏览器打开HTML文件乱码
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+
+learn：
+
+springboot启动图案修改在 src/main/resources 目录下 banner.txt
+
+
+
+
+
+
+
+
+
+
+
+
+
