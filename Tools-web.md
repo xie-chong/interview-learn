@@ -4,3 +4,4 @@
 4. [JDK 1.8 API](http://www.matools.com/api/java8)
 5. [OpenJDK](http://hg.openjdk.java.net/jdk/jdk/file/26ac622a4cab/src)
 6. [算法教程](https://www.coursera.org/learn/algorithms-part1)
+7. [Java文献资料](https://docs.oracle.com/javase/tutorial/tutorialLearningPaths.html)
