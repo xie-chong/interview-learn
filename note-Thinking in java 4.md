@@ -449,15 +449,109 @@ public class MultiNestingAccess {
 
 ### 10.8 为什么需要内部类
 
+**答案**：   
+
+1. 可以认为内部类提供了某种进入内部类的窗口。
+2. 最吸引人的原因：每个内部类都能独立地继承自一个（接口的）实现，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响。
+3. 内部类使得多重继承的解决方案变得完整。也就是说，内部类允许继承多个非接口类型（类或抽象类）。
 
 
 
+使用内部类，还可以获得其他一些特性：   
+
+1. 内部类可以有多个实例，每个实例都有自己的状态信息，并且与外围类对象的信息相互独立。
+2. 在单个外围类中，可以让多个内部类以不同的方式实现同一个接口，或继承同一个类。
+3. 创建内部类对象的时刻并不依赖于外围类对象的创建。
+4. 内部类并没有令人迷惑的“is-a”关系，它就是一个独立的实体。
 
 
+考虑这样一种情形：即必须在一个类中一某种方式实现两个接口。由于接口的灵活性，你有两种选择：**使用单一类，或者使用内部类**   
+
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/MultiInterfaces.java
+// Two ways that a class can implement multiple interfaces.
+
+interface A {
+}
+
+interface B {
+}
+
+class X implements A, B {
+}
+
+class Y implements A {
+    B makeB() {
+        // Anonymous inner class:
+        return new B() {
+        };
+    }
+}
+
+public class MultiInterfaces {
+    static void takesA(A a) {
+    }
+
+    static void takesB(B b) {
+    }
+
+    public static void main(String[] args) {
+        X x = new X();
+        Y y = new Y();
+        takesA(x);
+        takesA(y);
+        takesB(x);
+        takesB(y.makeB());
+    }
+} ///:~
 
 
+```
+
+**如果拥有的是抽象**的类或具体的类**，而不是接口，那就只能使用内部类才能实现多重继承。
+
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/MultiImplementation.java
+// With concrete or abstract classes, inner
+// classes are the only way to produce the effect
+// of "multiple implementation inheritance."
+
+class D {
+}
+
+abstract class E {
+}
+
+class Z extends D {
+    E makeE() {
+        return new E() {
+        };
+    }
+}
+
+public class MultiImplementation {
+    static void takesD(D d) {
+    }
+
+    static void takesE(E e) {
+    }
+
+    public static void main(String[] args) {
+        Z z = new Z();
+        takesD(z);
+        takesE(z.makeE());
+    }
+} ///:~
 
 
+```
+
+
+#### 10.8.1 闭包与调用   
 
 
 
