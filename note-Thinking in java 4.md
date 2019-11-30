@@ -685,83 +685,110 @@ public class InheritInner extends WithInner.Inner {
 可以看到，**InheritInner**只能继承自内部类，而不是外围类。但是当要生成一个构造器时，默认的构造器并不算好，而且不能只是传递一个指向外围类对象的引用。还必须在构造器内使用如下语法：**encloseingClassReference.super();** 这样才提供了必要的引用，然后程序才能编译通过。
 
 
+### 10.10 内部类可以被覆盖吗   
+
+如果创建一个内部类，然后继承其外围类并重新定义此内部类时，会发生什么呢？内部类可以被覆盖吗？（其实并不起什么作用）
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/BigEgg.java
+// An inner class cannot be overriden like a method.
+
+class Egg {
+    private Yolk y;
+
+    protected class Yolk {
+        public Yolk() {
+            System.out.println("Egg.Yolk()");
+        }
+    }
+
+    public Egg() {
+        System.out.println("New Egg()");
+        y = new Yolk();
+    }
+}
+
+public class BigEgg extends Egg {
+    public class Yolk {
+        public Yolk() {
+            System.out.println("BigEgg.Yolk()");
+        }
+    }
+
+    public static void main(String[] args) {
+        new BigEgg();
+    }
+} /* Output:
+New Egg()
+Egg.Yolk()
+*///:~
+
+
+```
+这个例子说明，当继承了某个外围类的时候，内部类并没有发生什么特别神奇的变化。这两个内部类时完全独立的两个实体，各自在自己的命名空间内。
+
+当然，明确的继承某个内部类也是可以的。
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/BigEgg2.java
+// Proper inheritance of an inner class.
+
+class Egg2 {
+    protected class Yolk {
+        public Yolk() {
+            System.out.println("Egg2.Yolk()");
+        }
+
+        public void f() {
+            System.out.println("Egg2.Yolk.f()");
+        }
+    }
+
+    private Yolk y = new Yolk();
+
+    public Egg2() {
+        System.out.println("New Egg2()");
+    }
+
+    public void insertYolk(Yolk yy) {
+        y = yy;
+    }
+
+    public void g() {
+        y.f();
+    }
+}
+
+public class BigEgg2 extends Egg2 {
+    public class Yolk extends Egg2.Yolk {
+        public Yolk() {
+            System.out.println("BigEgg2.Yolk()");
+        }
+
+        public void f() {
+            System.out.println("BigEgg2.Yolk.f()");
+        }
+    }
+
+    public BigEgg2() {
+        insertYolk(new Yolk());
+    }
+
+    public static void main(String[] args) {
+        Egg2 e2 = new BigEgg2();
+        e2.g();
+    }
+} /* Output:
+Egg2.Yolk()
+New Egg2()
+Egg2.Yolk()
+BigEgg2.Yolk()
+BigEgg2.Yolk.f()
+*///:~
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+```
 
 
 
