@@ -451,7 +451,7 @@ public class MultiNestingAccess {
 
 **答案**：   
 
-1. 可以认为内部类提供了某种进入内部类的窗口。
+1. 可以认为内部类提供了某种进入其外围类的窗口。
 2. 最吸引人的原因：每个内部类都能独立地继承自一个（接口的）实现，所以无论外围类是否已经继承了某个（接口的）实现，对于内部类都没有影响。
 3. 内部类使得多重继承的解决方案变得完整。也就是说，内部类允许继承多个非接口类型（类或抽象类）。
 
@@ -510,7 +510,7 @@ public class MultiInterfaces {
 
 ```
 
-**如果拥有的是抽象**的类或具体的类**，而不是接口，那就只能使用内部类才能实现多重继承。
+**如果拥有的是抽象的类或具体的类**，而不是接口，那就只能使用内部类才能实现多重继承。
 
 ```
 package thinking.in.java.innerclasses;
@@ -553,12 +553,136 @@ public class MultiImplementation {
 
 #### 10.8.1 闭包与调用   
 
+**闭包（closure）**是一个可调用的对象，它记录一些信息，这些信息来自于创建它的作用域。通过这个定义，可以看出内部类是面向对象的闭包，因为它不仅包含外围类对象（创建内部类的作用域）的信息，还自动拥有一个指向此外围类对象的引用，在此作用域内，内部类有权操作所有的成员，包括private成员。   
+
+通过内部类提闭包的功能是优良解决java语言指针的方案，它比指针更灵活、更安全。
+
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/Callbacks.java
+// Using inner classes for callbacks
+
+interface Incrementable {
+    void increment();
+}
+
+// Very simple to just implement the interface:
+class Callee1 implements Incrementable {
+    private int i = 0;
+
+    public void increment() {
+        i++;
+        System.out.println(i);
+        ;
+    }
+}
+
+class MyIncrement {
+    public void increment() {
+        System.out.println("Other operation");
+    }
+
+    static void f(MyIncrement mi) {
+        mi.increment();
+    }
+}
+
+// If your class must implement increment() in
+// some other way, you must use an inner class:
+class Callee2 extends MyIncrement {
+    private int i = 0;
+
+    public void increment() {
+        super.increment();
+        i++;
+        System.out.println(i);
+    }
+
+    private class Closure implements Incrementable {
+        public void increment() {
+            // Specify outer-class method, otherwise
+            // you'd get an infinite recursion:
+            Callee2.this.increment();
+        }
+    }
+
+    Incrementable getCallbackReference() {
+        return new Closure();
+    }
+}
+
+class Caller {
+    private Incrementable callbackReference;
+
+    Caller(Incrementable cbh) {
+        callbackReference = cbh;
+    }
+
+    void go() {
+        callbackReference.increment();
+    }
+}
+
+public class Callbacks {
+    public static void main(String[] args) {
+        Callee1 c1 = new Callee1();
+        Callee2 c2 = new Callee2();
+        MyIncrement.f(c2);
+        Caller caller1 = new Caller(c1);
+        Caller caller2 = new Caller(c2.getCallbackReference());
+        caller1.go();
+        caller1.go();
+        caller2.go();
+        caller2.go();
+    }
+} /* Output:
+Other operation
+1
+1
+2
+Other operation
+2
+Other operation
+3
+*///:~
+
+```
 
 
+#### 10.8.2 内部类与控制框架   
 
 
+### 10.9 内部类的继承   
 
+因为内部类的构造器必须链接到指向其外围类对象的引用，所以在继承内部类的时候，事情会变得有点复杂。问题在于，那个指向外围类对象的“秘密的”引用必须被初始化，而在导出类中不再存在可连接的默认对象。要解决这个问题，必须使用特殊的语法来明确说清他们之间的关联。
 
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/InheritInner.java
+// Inheriting an inner class.
+
+class WithInner {
+    class Inner {
+    }
+}
+
+public class InheritInner extends WithInner.Inner {
+    //! InheritInner() {} // Won't compile
+    InheritInner(WithInner wi) {
+        wi.super();
+    }
+
+    public static void main(String[] args) {
+        WithInner wi = new WithInner();
+        InheritInner ii = new InheritInner(wi);
+    }
+} ///:~
+
+```
+
+可以看到，**InheritInner**只能继承自内部类，而不是外围类。但是当要生成一个构造器时，默认的构造器并不算好，而且不能只是传递一个指向外围类对象的引用。还必须在构造器内使用如下语法：**encloseingClassReference.super();** 这样才提供了必要的引用，然后程序才能编译通过。
 
 
 
