@@ -124,15 +124,66 @@ Tasmania
   当某个外围类的对象创建了一个内部类对象时，此内部类对象必定会秘密的捕获一个指向那个外围类对象的引用。然后，在你访问此外围类的成员时，就是用那个引用来选择外围的成员。幸运的是，编译器会帮你处理所有的细节，但你现在可以看到：**内部类的对象只能在与其外围类的对象相关联的情况下才能被创建（就像你应该看到的，在内部类是非static类时）**。构建内部类对象时，需要一个指向其外围类对象的引用，如果编译器访问不到这个引用就会报错。
 
 
-### 10.3 使用.this 与 .new
+### 10.3 使用 .this 与 .new
 
 如果需要生成对外部类对象的引用，可以使用外部类的名字后面紧跟原点和**this**。
 ```
+package thinking.in.java.innerclasses;
+
+public class DotThis {
+    private int num = 99;
+
+    void f() {
+        System.out.println("DotThis.f()");
+    }
+
+    public class Inner {
+        public DotThis outer() {
+            return DotThis.this;
+            // A plain "this" would be Inner's "this"
+        }
+
+        void test() {
+            System.out.println("num = " + num);
+            f();
+        }
+    }
+
+    public Inner inner() {
+        return new Inner();
+    }
+
+    public static void main(String[] args) {
+        DotThis dt = new DotThis();
+        DotThis.Inner dti = dt.inner();
+        dti.outer().f();
+
+        dti.test();
+    }
+}
+/*
+DotThis.f()
+num = 99
+DotThis.f()*/
 
 ```
 
-如果想要告知某些其他对象，去创建其某个内部类的对象，必须在new表达式中提供对其他外部类对象的引用，这需要使用**.new**语法。   
+如果想要告知某些其他对象，去创建其某个内部类的对象，必须在new表达式中提供对其他外部类对象的引用，这需要使用** .new**语法。   
 ```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/DotNew.java
+// Creating an inner class directly using the .new syntax.
+
+public class DotNew {
+    public class Inner {
+    }
+
+    public static void main(String[] args) {
+        DotNew dn = new DotNew();
+        DotNew.Inner dni = dn.new Inner();
+    }
+} ///:~
 
 ```
 
