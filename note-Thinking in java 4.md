@@ -191,6 +191,162 @@ public class DotNew {
   在拥有外部类对象之前是不可能创建内部类对象的。这是因为内部类对象会暗暗地连接到创建它的外部类对象上。但是，如果你创建的是**嵌套类**（静态内部类），那么它就不需要对外部类对象的引用。
 
 
+### 10.4 内部类与向上转型
+
+### 10.5 在方法和作用域内的内部类
+
+在一个方法里面或者在任意的作用域内定义内部类。
+
+**这么做的理由**：
+1. 你实现了某类型的接口，于是可以创建并返回对其的引用。
+2. 你需要解决一个复杂的问题，想创建一个类来辅助你的解决方案。
+
+### 10.6 匿名内部类
+
+```
+//: innerclasses/Parcel7.java
+// Returning an instance of an anonymous inner class.
+
+public class Parcel7 {
+  public Contents contents() {
+    return new Contents() { // Insert a class definition
+      private int i = 11;
+      public int value() { return i; }
+    }; // Semicolon required in this case
+  }
+  public static void main(String[] args) {
+    Parcel7 p = new Parcel7();
+    Contents c = p.contents();
+  }
+} ///:~
+
+```
+
+上述匿名内部类的语法是下述形式的简化
+```
+//: innerclasses/Parcel7b.java
+// Expanded version of Parcel7.java
+
+public class Parcel7b {
+  class MyContents implements Contents {
+    private int i = 11;
+    public int value() { return i; }
+  }
+  public Contents contents() { return new MyContents(); }
+  public static void main(String[] args) {
+    Parcel7b p = new Parcel7b();
+    Contents c = p.contents();
+  }
+} ///:~
+
+```
+
+如果定义一个匿名内部类，并且希望它使用一个在其外部定义的对象，那么编译器会要求其参数引用时**final**的。
+
+**与正规的继承相比有些受限，匿名内部类既可以扩展类，也可以实现接口，但是不能两者兼备。而且，如果实现接口，也只能实现一个接口**。
+
+#### 10.6.1 再访工厂方法
+
+### 10.7 嵌套类
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
