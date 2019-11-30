@@ -243,7 +243,55 @@ public class Parcel7b {
 
 如果定义一个匿名内部类，并且希望它使用一个在其外部定义的对象，那么编译器会要求其参数引用时**final**的。
 
+
 **与正规的继承相比有些受限，匿名内部类既可以扩展类，也可以实现接口，但是不能两者兼备。而且，如果实现接口，也只能实现一个接口**。
+```
+package thinking.in.java.innerclasses;
+
+public class Parcel9 {
+    public Destination destination(final String dest) {
+        return new Destination() {
+            private String label = dest;
+
+            public String readLabel() {
+                return label;
+            }
+        };
+    }
+
+    public AbstractDestination destination(String dest, String ab) {
+        return new AbstractDestination() {
+            private String label = dest;
+
+            public String readLabel() {
+                return label;
+            }
+        };
+    }
+
+    public static void main(String[] args) {
+        Parcel9 p = new Parcel9();
+        Destination d = p.destination("Destination");
+        AbstractDestination ad = p.destination("AbstractDestination", "test");
+
+        System.out.println(d.readLabel());
+        System.out.println(ad.readLabel());
+    }
+}
+
+
+//interface Destination {
+//    String readLabel();
+//
+//}
+//
+abstract class AbstractDestination {
+    abstract String readLabel();
+}
+
+
+```
+
 
 #### 10.6.1 再访工厂方法
 
