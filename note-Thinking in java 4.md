@@ -301,7 +301,7 @@ abstract class AbstractDestination {
 
 如果不需要内部类对象与其外围类对象之间有联系，那么可以将内部类申明为**static**。这通常称为**嵌套类**。   
 
-嵌套类一位着：
+**嵌套类意味着**：
 1. 要创建嵌套类的对象，并不需要其外围类的对象。
 2. 不能从嵌套类的对象中访问非静态的外围类对象。
 3. 嵌套类与普通的内部类还有一个区别。普通内部类的字段与方法，只能放在类的外部层次上，所以普通的内部类不能有**static**数据和**static**字段，也不能包含嵌套类。但是嵌套类可以包含所有这些东西。
@@ -379,7 +379,75 @@ interface Contents {
 
 #### 10.7.1 接口内部的类
 
+正常情况下，不能在接口内部放置任何代码，但嵌套类可以作为接口的一部分。你放到接口中的任何类目都自动地是**public**和**static**的。因为类时**static**的，只是将嵌套类置于接口的命名空间内，这并不违反接口的规则。你甚至可以在内部类中实现其外围接口。
 
+如果你想要创建某些公共代码，使得他们可以被某个接口的所有不同实现所共用，那么使用接口内部的嵌套类会显得很方便。
+
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/ClassInInterface.java
+// {main: ClassInInterface$Test}
+
+public interface ClassInInterface {
+    void howdy();
+
+    class Test implements ClassInInterface {
+        public void howdy() {
+            System.out.println("Howdy!");
+        }
+
+        public static void main(String[] args) {
+            new Test().howdy();
+        }
+    }
+} /* Output:
+Howdy!
+*///:~
+
+```
+
+#### 10.7.2 从多层嵌套中访问外部类的成员
+
+一个内部类被嵌套多少层并不重要--它能透明地访问所有它所嵌入的外围类的所有成员。   
+
+```
+package thinking.in.java.innerclasses;
+
+//: innerclasses/MultiNestingAccess.java
+// Nested classes can access all members of all
+// levels of the classes they are nested within.
+
+class MNA {
+    private void f() {
+    }
+
+    class A {
+        private void g() {
+        }
+
+        public class B {
+            void h() {
+                g();
+                f();
+            }
+        }
+    }
+}
+
+public class MultiNestingAccess {
+    public static void main(String[] args) {
+        MNA mna = new MNA();
+        MNA.A mnaa = mna.new A();
+        MNA.A.B mnaab = mnaa.new B();
+        mnaab.h();
+    }
+} ///:~
+
+```
+
+
+### 10.8 为什么需要内部类
 
 
 
