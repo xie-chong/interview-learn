@@ -790,6 +790,94 @@ BigEgg2.Yolk.f()
 
 ```
 
+### 10.11 局部内部类   
+
+典型的方式是在一个方法体的里面创建。
+局部内部类不能有访问说明符，因为它不是外围类的一部分，但是它可以访问但钱代码块内的常量以及此外围类的所有成员。
+```
+//: innerclasses/LocalInnerClass.java
+// Holds a sequence of Objects.
+import static net.mindview.util.Print.*;
+
+interface Counter {
+  int next();
+}	
+
+public class LocalInnerClass {
+  private int count = 0;
+  Counter getCounter(final String name) {
+    // A local inner class:
+    class LocalCounter implements Counter {
+      public LocalCounter() {
+        // Local inner class can have a constructor
+        print("LocalCounter()");
+      }
+      public int next() {
+        printnb(name); // Access local final
+        return count++;
+      }
+    }
+    return new LocalCounter();
+  }	
+  // The same thing with an anonymous inner class:
+  Counter getCounter2(final String name) {
+    return new Counter() {
+      // Anonymous inner class cannot have a named
+      // constructor, only an instance initializer:
+      {
+        print("Counter()");
+      }
+      public int next() {
+        printnb(name); // Access local final
+        return count++;
+      }
+    };
+  }	
+  public static void main(String[] args) {
+    LocalInnerClass lic = new LocalInnerClass();
+    Counter
+      c1 = lic.getCounter("Local inner "),
+      c2 = lic.getCounter2("Anonymous inner ");
+    for(int i = 0; i < 5; i++)
+      print(c1.next());
+    for(int i = 0; i < 5; i++)
+      print(c2.next());
+  }
+} /* Output:
+LocalCounter()
+Counter()
+Local inner 0
+Local inner 1
+Local inner 2
+Local inner 3
+Local inner 4
+Anonymous inner 5
+Anonymous inner 6
+Anonymous inner 7
+Anonymous inner 8
+Anonymous inner 9
+*///:~
+
+```
+
+
+居然局部内部类的名字在方法外是不可见的，那为什么我们仍然使用局部内部类而不是匿名内部类？
+1. 我们需要一个已命名的构造器或者需要重载构造器，而匿名内部类只能用于实例初始化。  
+2. 需要不止一个该内部类的对象。
+
+
+### 10.12 内部类标识   
+
+内部类必须生成一个.class文件以包含他们的Class对象信息。
+命名规则：外围类的名字，加上"$"，再加上内部类的名字。
+如果内部类是匿名的，编译器会简单地产生一个数字作为其标识符。
+如果内部类是嵌套在别的内部类之中，只需要直接将它们的名字加在其外围类标识符与"$"的后面。
+
+
+
+
+
+
 
 
 
