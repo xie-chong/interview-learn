@@ -52,6 +52,51 @@ abstract class AbstractDestination {
 ```
 
 
+3. 多态类型转换示例   
+```
+package test.interview;
+
+interface Base {
+//    String getFields();
+}
+
+public class Agg implements Base {
+    public String getFields() {
+        String name = "Agg";
+        return name;
+    }
+
+    public static void main(String[] args) {
+        Base a = new Agg();
+        // 此方法在Base中是不存在的，必须把a转换为Agg类的一个实例，这样才可以调用它的方法。
+        System.out.println(((Agg) a).getFields());
+//        System.out.println(a.getFields());
+    }
+}
+```
+
+```
+package test.interview;
+
+class Base {
+}
+
+class Agg extends Base {
+    public String getFields() {
+        String name = "Agg";
+        return name;
+    }
+}
+
+public class Avf {
+    public static void main(String[] args) {
+        Base a = new Agg();
+        //此方法在Base中是不存在的，必须把a转换为Agg类的一个实例，这样才可以调用它的方法。
+        System.out.println(((Agg) a).getFields());
+    }
+}
+
+```
 
 
 
