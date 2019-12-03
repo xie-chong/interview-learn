@@ -99,4 +99,73 @@ public class Avf {
 ```
 
 
+3. 向下转型与运行时类型识别
+
+向上转型--在继承层次中向上移动，会丢失具体的类型信息，但是该操作是安全的。
+向下转型--在继承层次中向下移动，因为基类不会具有大于导出类的接口，所以该操作不安全。
+
+但是在java语言中，所有转型都会得到检查。这种在运行期间对类型进行检查的行为称作“运行时类型识别”（RTTI）。以便保证它的确是我们希望的那种类型，否则就会返回一个**ClassCastException**。
+
+示例：
+```
+package thinking.in.java.innerclasses.polymorphism;
+
+//: polymorphism/RTTI.java
+// Downcasting & Runtime type information (RTTI).
+// {ThrowsException}
+
+class Useful {
+    public void f() {
+        System.out.println("Useful.f()");
+    }
+
+    public void g() {
+        System.out.println("Useful.g()");
+    }
+}
+
+class MoreUseful extends Useful {
+    public void f() {
+        System.out.println("MoreUseful.f()");
+    }
+
+    public void g() {
+        System.out.println("MoreUseful.f()");
+    }
+
+    public void u() {
+        System.out.println("MoreUseful.u()");
+    }
+
+    public void v() {
+    }
+
+    public void w() {
+    }
+}
+
+public class RTTI {
+    public static void main(String[] args) {
+        Useful[] x = {
+                new Useful(),
+                new MoreUseful()
+        };
+        x[0].f();
+        x[1].g();
+        // Compile time: method not found in Useful:
+        //! x[1].u();
+        ((MoreUseful) x[1]).u(); // Downcast/RTTI
+        ((MoreUseful) x[0]).u(); // Exception thrown
+    }
+}
+/*
+Useful.f()
+MoreUseful.f()
+MoreUseful.u()
+Exception in thread "main" java.lang.ClassCastException: ...*/
+
+```
+
+
+
 
