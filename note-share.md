@@ -108,7 +108,7 @@ public class Avf {
 
 示例：
 ```
-package thinking.in.java.innerclasses.polymorphism;
+package thinking.in.java.polymorphism;
 
 //: polymorphism/RTTI.java
 // Downcasting & Runtime type information (RTTI).
@@ -167,7 +167,59 @@ Exception in thread "main" java.lang.ClassCastException: ...*/
 ```
 
 
+4. 构造器内部的多态方法的行为   
+
+如果在一个构造器的内部调用正在构造的对象的某个动态绑定方法，那会发生什么情况？
+
+在一般的方法内部，动态绑定的调用是在运行时才决定的，因为对象无法知道它是属于方法所在的那个类，还是属于那个类的导出类？
+
+如果要调用构造器内部的一个动态绑定方法，就要用到那个方法的被覆盖后的定义。然而，这个调用的效果可能相当难于预料，因为被覆盖的方法在对象被完全构造之前就会被调用。这可能会造成一些难于发现的隐藏错误（方法所操纵的成员可能还未初始化）。
+
 ```
-graph TB
-A-->B
+package thinking.in.java.polymorphism;
+
+//: polymorphism/PolyConstructors.java
+// Constructors and polymorphism
+// don't produce what you might expect.
+
+class Glyph {
+    void draw() {
+        System.out.println("Glyph.draw()");
+    }
+
+    Glyph() {
+        System.out.println("Glyph() before draw()");
+        draw();
+        System.out.println("Glyph() after draw()");
+    }
+}
+
+class RoundGlyph extends Glyph {
+    private int radius = 1;
+
+    RoundGlyph(int r) {
+        radius = r;
+        System.out.println("RoundGlyph.RoundGlyph(), radius = " + radius);
+    }
+
+    void draw() {
+        System.out.println("RoundGlyph.draw(), radius = " + radius);
+    }
+}
+
+public class PolyConstructors {
+    public static void main(String[] args) {
+        new RoundGlyph(5);
+    }
+} /* Output:
+Glyph() before draw()
+RoundGlyph.draw(), radius = 0
+Glyph() after draw()
+RoundGlyph.RoundGlyph(), radius = 5
+*///:~
+
 ```
+
+
+
+
