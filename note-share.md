@@ -220,6 +220,19 @@ RoundGlyph.RoundGlyph(), radius = 5
 
 ```
 
+5. 
+11.4.1　冒泡排序面试例题1：请用Java写出一个冒泡排序程序，要求输入10个整数，输出排序结果。解析：本题考查交换排序中冒泡排序的问题。答案：程序如下：
+
+、、、
+
+    public class Test{              public static void bubbleSort（int[] source） {                            for （int i = source.length-1；i ＞ 0；i——） {                     for （int j = 0；j ＜ i；j++） {                         if （source[j] ＞ source[j + 1]） {                             swap（source，j，j + 1）；                         }                     }                 }                  }                      private static void swap（int[] source，int x，int y） {                     int temp = source[x]；                     source[x] = source[y]；                     source[y] = temp；                 }           public   static   void   main（String[]   args）   {          int [] a = {4，2，1，6，3，6，0，-5，1，1 }；          int i；          bubbleSort（a）；               for（i=0；i ＜10；i++）           System.out.printf（"％d  "，a[i]）；      }     }
+
+、、、
 
 
 
+、、、
+
+ public class Test{              public static void selectSort（int[] source） {                        for （int i = 0；i ＜ source.length；i++） {                 for （int j = i + 1；j ＜ source.length；j++） {                     if （source[i] ＞ source[j]） {                         swap（source，i，j）；                     }                 }             }                  }
+
+、、、
