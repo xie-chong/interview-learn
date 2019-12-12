@@ -15,9 +15,10 @@ CodeCogs 提供了一个[在线 LaTeX 编辑器](https://link.jianshu.com/?t=htt
 
 比如输入下面的代码：
 
-<img src="https://latex.codecogs.com/gif.latex?S&space;=&space;\frac{1}{(1-p)&plus;\frac{p}{n}}" title="S = \frac{1}{(1-p)+\frac{p}{n}}" />  
+S = 1 / ( (1 - p) + p / n )
 
 便可以得到：
 
-<img src="https://latex.codecogs.com/gif.latex?S&space;=&space;\frac{1}{(1-p))&plus;\frac{p}{n}}" title="S = \frac{1}{(1-p))+\frac{p}{n}}" />
+<img src="https://latex.codecogs.com/gif.latex?S&space;=&space;\frac{1}{(1-p)&plus;\frac{p}{n}}" title="S = \frac{1}{(1-p)+\frac{p}{n}}" />   
+
 由于 Markdown 允许嵌入 HTML，所以直接把生成的代码粘贴过去就可以了。
