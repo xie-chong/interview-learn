@@ -15,7 +15,7 @@ CodeCogs 提供了一个[在线 LaTeX 编辑器](https://link.jianshu.com/?t=htt
 
 比如输入下面的代码：
 
-S = 1/( (1-p) + (p/n) )   
+<img src="https://latex.codecogs.com/gif.latex?S&space;=&space;\frac{1}{(1-p)&plus;\frac{p}{n}}" title="S = \frac{1}{(1-p)+\frac{p}{n}}" />  
 
 便可以得到：
 
