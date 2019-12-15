@@ -220,3 +220,11 @@ RoundGlyph.RoundGlyph(), radius = 5
 
 ```
 
+、、、
+
+ public class Test{      public static void main(String args[]) {           String aSource[] = { "dad", "bood", "bada", "Admin",  "  ", "Good",      "aete", "cc", "Ko", "Beta", "Could" };      boolean isChanged;      int nMaxIndex = aSource.length-1;      String sTemp = null;      try {           do {                   isChanged = false;                   for (int i = 0; i < nMaxIndex; i++) {                       if (StringCmp(aSource[i], aSource[i + 1]) > 0) {                         sTemp = aSource[i];                         aSource[i] = aSource[i + 1];                         aSource[i + 1] = sTemp;                         isChanged = true;                      }                    }                nMaxIndex--;         } while (isChanged);      } catch (Exception e) {         System.out.print(e.getMessage());      }      for (int i = 0; i < aSource.length; i++) {         System.out.println(aSource[i]);      }     }     /**     *字符串比较函数 */     public static int StringCmp(String s1, String s2) throws Exception {          int nResult = s1.length()-s2.length();          int nLen = Math.min(s1.length(), s2.length());          int nCharOrder1,nCharOrder2;          char aChar1[] = s1.toCharArray();          char aChar2[] = s2.toCharArray();          try {              for (int i = 0; i < nLen; i++) {                   if (aChar1[i] != aChar2[i]) {                       System.out.println(aChar1[i]);                       System.out.println(aChar1[i]-96);                       System.out.println(aChar1[i]-64);                      //如果大于a，则减96，否则减64                       nCharOrder1 = aChar1[i] > 96 ? aChar1[i]-96                                 : aChar1[i]-64;                       nCharOrder2 = aChar2[i] > 96 ? aChar2[i]-96                                 : aChar2[i]-64;                       if (nCharOrder1 != nCharOrder2) {                          nResult = nCharOrder1-nCharOrder2;                          break;                       } else {                          nResult = aChar1[i]-aChar2[i];                          break;                       }                    }              }         } catch (Exception e) {              throw e;         }         return nResult;       }     }
+、、、
+
+
+
+
