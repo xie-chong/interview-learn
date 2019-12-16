@@ -241,7 +241,39 @@ try {                  System.out.println("cut1bit" + Test.cutstring(s,
 
 
 
+```
+package test.interview;
 
+import java.util.Comparator;
+import java.util.PriorityQueue;
+import java.util.Queue;
+
+public class PriorityQueueTest {
+
+    public static void main(String[] args) {
+//        System.out.println((6 - 1) >>> 1);
+        Queue<Integer> queue = new PriorityQueue<>(10, new Comparator<Integer>() {
+            @Override
+            public int compare(Integer i, Integer j) {
+                int result = i % 2 - j % 2;
+                if (result == 0) {
+                    result = i - j;
+                }
+                return result;
+            }
+        });
+
+        for (int i = 0; i < 10; i++) {
+            queue.offer(i);
+        }
+
+        for (int i = 0; i < 10; i++) {
+            System.out.println(queue.poll());
+        }
+    }
+}
+
+```
 
 
 
