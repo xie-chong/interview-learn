@@ -36,22 +36,26 @@ public class TransientTest implements java.io.Serializable {
             o = new ObjectOutputStream(new FileOutputStream("logInfo.out"));
             o.writeObject(logInfo);
             o.close();
-        } catch (Exception e) { // deal with exception              }
-            // To read the object back, we can write
-            try {
-                ObjectInputStream in = new ObjectInputStream(new FileInputStream("logInfo.out"));
-                Test logInfo1 = (Test) in.readObject();
-                System.out.println(logInfo1.toString());
-            } catch (Exception e2) {
-                // deal with exception              
-            }
+        } catch (Exception e) {
+            // deal with exception
+        }
+        // To read the object back, we can write
+        try {
+            ObjectInputStream in = new ObjectInputStream(new FileInputStream("logInfo.out"));
+            TransientTest logInfo1 = (TransientTest) in.readObject();
+            System.out.println(logInfo1.toString());
+        } catch (Exception e) {
+            // deal with exception
         }
     }
 }/*out:
 logon info:
     user: Jinder
-    logging date : Tue Dec 17 23:28:43 CST 2019
-    password: Rh-ab703*/
+    logging date : Tue Dec 17 23:39:49 CST 2019
+    password: Rh-ab703 
+logon info:
+    user: Jinder
+    logging date : Tue Dec 17 23:39:49 CST 2019
+    password: NOT SET*/
 
 ```
-
