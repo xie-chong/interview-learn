@@ -89,3 +89,76 @@ sellman1 sell 1
 	这样只卖了20张票，synchronized()的括号中需要的是一个class的对象，所以不能直接在括号中写上i，于是这里定义了一个String的对象a。a可以认为是一个标志位，a标志位默认任何人都能使用，这样售票员sellman1的卖票线程拿到了a以后就开始卖票了，同时他把a这个对象标志位置为不可用，然后其他售票员卖票的线程发现他们拿不到a这个对象，就只能先搁置了，一直到sellmanl的卖票线程释放了a，a的标志位就又变成可用，这个时候其他售票员（线程）就可以竞争了，看谁先拿到a这个对象，不过Stringa和卖票没什么关系，所以我们可以用this来代替synchronized()中的a，它和a的效果一样表示谁拿到了this对象才能执行。
 
 	这里有两个容易误解的地方。
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	import java.io.FileInputStream;     
+import java.io.FileOutputStream;     
+import java.io.ObjectInputStream;     
+import java.io.ObjectOutputStream;     
+import java.util.Date;     
+public class Test implements java.io.Serializable {         
+private static final long serialVersionUID = 1L;         
+private Date loggingDate = new Date();         
+private String uid;         
+private transient String pwd;         
+Test(String user, String password) {             
+uid = user;             
+pwd = password;         
+}         
+
+public String toString() {             
+String password = null;             
+if (pwd == null) {                 
+password = "NOT SET";             
+} else {                 
+password = pwd;             
+}             
+return "logon info: \n   " + "user: " + uid + "\n   logging date : "                     + loggingDate.toString() + "\n   password: " + password;         
+}         
+
+public static void main(String[] args) {             
+Test logInfo = new Test("Jinder", "Rh-ab703");             
+System.out.println(logInfo.toString());             
+try {                 
+ObjectOutputStream o=new ObjectOutputStream(newFileOutputStream(                         "logInfo.out"));                 
+o.writeObject(logInfo);                 
+o.close();             
+} catch (Exception e) {
+// deal with exception             
+}             
+// To read the object back, we can write             
+try {                 ObjectInputStream in = new ObjectInputStream(new FileInputStream(                         "logInfo.out"));                 
+Test logInfo1 = (Test) in.readObject();                 
+System.out.println(logInfo1.toString());             
+} catch (Exception e) {
+// deal with exception             
+}         
+}     
+}
+
