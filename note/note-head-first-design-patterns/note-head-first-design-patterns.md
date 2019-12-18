@@ -17,6 +17,9 @@
 
 **单件模式**确保一个类只有一个实例，并提供一个全局访问点。
 
+### 类图   
+![](https://github.com/xie-chong/interview-learn/blob/master/note/note-head-first-design-patterns/document-image/uml-05-01.png?raw=true)   
+
 ### 剖析经典的单件模式实现
 
 #### 1. 延迟实例化   
