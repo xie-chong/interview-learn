@@ -96,6 +96,22 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 
 **SpringCloud VS DUBBO**:   
 
+对比结果：
+
+| | Dubbo | SpringCloud |
+|:----|:----| :----|
+| 服务注册中心 | Zookeeper | Spring Cloud Netflix Eureka | 
+| 服务调用方式 | RPC | REST API | 
+| 服务监控 | Dubbo-monitor | Spring Boot Admin | 
+| 断路器 | 不完善 | Spring Cloud Netflix Hystrix | 
+| 服务网关 | 无 | Spring Cloud Netflix Zuul | 
+| 分布式配置 | 无 | Spring Cloud Netflix Config | 
+| 服务跟踪 | 无 | Spring Cloud Sleuth | 
+| 消息总线 | 无 | Spring Cloud Bus | 
+| 数据流 | 无 | Spring Cloud Stream | 
+| 批量任务 | 无 | Spring Cloud Task | 
+
+
 **最大区别**：SpringCloud抛弃了Dubbo的RPC通信，采用的是基于HTTP的REST方式。
 严格来说，这两种方式各有优劣。虽然从一定程度上来说，后者牺牲了服务调用的性能，但也避免了上面提到的原生RPC带来的问题。而且REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更加合适。
  
