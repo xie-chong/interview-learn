@@ -70,7 +70,29 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 
 #### 3.3 Dubbo是怎么到SpringCloud的？哪些优缺点让你去技术选型？
 
-目前成熟的互联网架构（分布式+服务治理Dubbo）.
+目前成熟的互联网架构（分布式+服务治理Dubbo）。
+
+
+各服务框架对比：
+
+| 功能点/服务框架 | Netflix/SpringCloud | Motan | gRPC | Thrift | Dubbo/Dubbox|
+|:----|:----| :----|:----|:----| :----  |
+| 功能定位 | 完整的微服务框架 | RPC框架但整合了ZK或者Consul,实现集群环境的基 本服务注册/发现 | RPC框架 | RPC框架 | 服务框架
+| 是否支持Rest | 是，Ribbon支持多种可插拔的序列化选择 | 否 | 否 | 否 | 否
+| 是否支持RPC | 否 | 是(Hession2) | 是 | 是 | 是
+| 是否支持多语言 | 是 | 否 | 是 | 是 | 否
+| 服务注册/发现 | 是(Eureka) Eureka服务注册表,Karyon服务端框架支持服务自注册和健康检查 | 是(zookeeper/consul) | 否 | 否 | 是
+| 负载均衡 | 是(服务器zuul+客户端Ribbon) zuul-服务，动态路由, 云端负载均衡, Eureka(针对中间层服务) | 是(客户端) | 否 | 否 | 是(客户端)
+| 配置服务 | NetflixArchaius SpringCloudConfigServer集中配置 | 是(zookeeper提供) | 否 | 否 | 否
+| 服务调用链监控 | 是(zuul) Zuul提供边缘服务,API网关 | 否 | 否 | 否 | 否
+| 高可用/容错 | 是(服务器Hystrix+客户端Ribbon) | 是(客户端) | 否 | 否 | 是(客户端)
+| 典型应用案例 | Netflix | Sina | Google | Facebook | 
+| 社区活跃程度 | 高 | 一般 | 高 | 一般 | 2012年停止维护，2017年7月以后开始维护
+| 学习难度 | 中等 | 低 | 高 | 高 | 低
+| 文档丰富度 | 高 | 一般 | 一般 | 一般 | 高
+| 其他 | SpringCloudBus为我们的应用程序带来了更多管理端点 | 支持降级 | Netflix内部在开发集成gRPC | IDL定义 | 实践的公司比较多
+
+
 
 **SpringCloud VS DUBBO**:   
 
