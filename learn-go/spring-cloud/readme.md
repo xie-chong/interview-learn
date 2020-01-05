@@ -21,18 +21,34 @@ SpringCloud 相关知识
 
 ---
 
-### 微服务与微服务架构（技术维度理解）:   
+### 1. 微服务与微服务架构（技术维度理解）:   
 微服务化的核心就是将传统的一站式应用，根据业务拆分成一个一个的服务，彻底地去耦合,每一个微服务提供单个业务功能的服务，一个服务做一件事，从技术角度看就是一种小而独立的处理过程，类似进程概念，能够自行单独启动或销毁，拥有自己独立的数据库。
 
 
-### 微服务技术栈有哪些
+### 2. 微服务技术栈有哪些
 
-微服务条目落地技术备注服务开发Springboot、Spring、SpringMVC服务配置与管理Netflix公司的Archaius、阿里的Diamond等服务注册与发现Eureka、Consul、Zookeeper等服务调用Rest、RPC、gRPC服务熔断器Hystrix、Envoy等负载均衡Ribbon、Nginx等服务接口调用(客户端调用服务的简化工具)Feign等消息队列Kafka、RabbitMQ、ActiveMQ等服务配置中心管理SpringCloudConfig、Chef等服务路由（API网关）Zuul等服务监控Zabbix、Nagios、Metrics、Spectator等全链路追踪Zipkin，Brave、Dapper等服务部署Docker、OpenStack、Kubernetes等数据流操作开发包SpringCloud Stream（封装与Redis,Rabbit、Kafka等发送接收消息）事件消息总线Spring Cloud Bus......
- 
+|微服务条目| 落地技术| 备注|
+|:----|:----| ----:  |
+| 服务开发 | Springboot、Spring、SpringMVC | 
+| 服务配置与管理 | Netflix公司的Archaius、阿里的Diamond | 
+| 等服务注册与发现 | Eureka、Consul、Zookeeper等 | 
+| 服务调用 | Rest、RPC、gRPC | 
+| 服务熔断器 | Hystrix、Envoy等 | 
+| 负载均衡 | Ribbon、Nginx等 | 
+| 服务接口调用(客户端调用服务的简化工具) | Feign等 | 
+| 消息队列 | Kafka、RabbitMQ、ActiveMQ等 | 
+| 服务配置中心管理 | SpringCloudConfig、Chef等 | 
+| 服务路由（API网关） | Zuul等 | 
+| 服务监控 | Zabbix、Nagios、Metrics、Spectator等 | 
+| 全链路追踪 | Zipkin，Brave、Dapper等 | 
+| 服务部署 | Docker、OpenStack、Kubernetes等 | 
+| 数据流操作开发包 | SpringCloud Stream（封装与Redis,Rabbit、Kafka等发送接收消息） | 
+| 事件消息总线 | Spring Cloud Bus | 
+| ...... |  | 
 
-### SpringCloud是什么？
+### 3. SpringCloud是什么？
 
-#### 1. 官网说明   
+#### 3.1 官网说明   
 * SpringCloud，基于SpringBoot提供了一套微服务解决方案，包括服务注册与发现，配置中心，全链路监控，服务网关，负载均衡，熔断器等组件，除了基于NetFlix的开源组件做高度抽象封装之外，还有一些选型中立的开源组件。
  
 * SpringCloud利用SpringBoot的开发便利性巧妙地简化了分布式系统基础设施的开发，SpringCloud为开发人员提供了快速构建分布式系统的一些工具，包括配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等,它们都可以用SpringBoot的开发风格做到一键启动和部署。
@@ -41,7 +57,7 @@ SpringCloud 相关知识
 
 SpringCloud = 分布式微服务架构下的一站式解决方案，是各个微服务架构落地技术的集合体，俗称微服务全家桶。
 
-#### 2. SpringCloud和SpringBoot是什么关系？
+#### 3.2 SpringCloud和SpringBoot是什么关系？
 
 SpringBoot专注于快速方便的开发单个个体微服务。
 
@@ -52,7 +68,7 @@ SpringBoot可以离开SpringCloud独立使用开发项目，但是SpringCloud离
 SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud关注全局的服务治理框架。
 
 
-#### 3. Dubbo是怎么到SpringCloud的？哪些优缺点让你去技术选型？
+#### 3.3 Dubbo是怎么到SpringCloud的？哪些优缺点让你去技术选型？
 
 目前成熟的互联网架构（分布式+服务治理Dubbo）.
 
@@ -77,7 +93,7 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 刘军，阿里巴巴中间件高级研发工程师，主导了 Dubbo 重启维护以后的几个发版计划，专注于高性能 RPC 框架和微服务相关领域。曾负责网易考拉 RPC 框架的研发及指导在内部使用，参与了服务治理平台、分布式跟踪系统、分布式一致性框架等从无到有的设计与开发过程。
 
 
-### 参考资料
+### 4. 参考资料
 
 http://projects.spring.io/spring-cloud/
 
