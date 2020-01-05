@@ -77,6 +77,19 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 刘军，阿里巴巴中间件高级研发工程师，主导了 Dubbo 重启维护以后的几个发版计划，专注于高性能 RPC 框架和微服务相关领域。曾负责网易考拉 RPC 框架的研发及指导在内部使用，参与了服务治理平台、分布式跟踪系统、分布式一致性框架等从无到有的设计与开发过程。
 
 
+### 参考资料
+
+http://projects.spring.io/spring-cloud/
+
+https://springcloud.cc/spring-cloud-netflix.html
+
+http://cloud.spring.io/spring-cloud-static/Dalston.SR1/
+
+https://springcloud.cc/spring-cloud-dalston.html
+
+[springcloud中国社区](http://springcloud.cn/)
+
+[springcloud中文网](https://springcloud.cc/)
 
 
 
