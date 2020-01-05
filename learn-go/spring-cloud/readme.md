@@ -2,7 +2,7 @@ SpringCloud 相关知识
 
 
 [01 | 微服务概述与SpringCloud](#01)   
-
+[02 | Rest微服务构建案例工程模块](#02)   
 ---
 ---
 
@@ -96,7 +96,7 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 
 **SpringCloud VS DUBBO**:   
 
-最大区别：SpringCloud抛弃了Dubbo的RPC通信，采用的是基于HTTP的REST方式。
+**最大区别**：SpringCloud抛弃了Dubbo的RPC通信，采用的是基于HTTP的REST方式。
 严格来说，这两种方式各有优劣。虽然从一定程度上来说，后者牺牲了服务调用的性能，但也避免了上面提到的原生RPC带来的问题。而且REST相比RPC更为灵活，服务提供方和调用方的依赖只依靠一纸契约，不存在代码级别的强依赖，这在强调快速演化的微服务环境下，显得更加合适。
  
 品牌机与组装机的区别
@@ -116,9 +116,9 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 
 **目前 Dubbo 被拿来比较最多的就是 Spring Cloud ，您怎么看待二者的关系，业务上是否有所冲突**？
 
-关于 Dubbo 和 Spring Cloud 间的关系，我们在开源中国年终盛典的 Dubbo 分享中也作了简单阐述，首先要明确的一点是 Dubbo 和 Spring Cloud 并不是完全的竞争关系，两者所解决的问题域并不一样：Dubbo 的定位始终是一款 RPC 框架，而 Spring Cloud 的目标是微服务架构下的一站式解决方案。如果非要比较的话，我觉得 Dubbo 可以类比到 Netflix OSS 技术栈，而 Spring Cloud 集成了 Netflix OSS 作为分布式服务治理解决方案，但除此之外 Spring Cloud 还提供了包括 config、stream、security、sleuth 等等分布式问题解决方案。
+关于 Dubbo 和 Spring Cloud 间的关系，我们在开源中国年终盛典的 Dubbo 分享中也作了简单阐述，首先要明确的一点是 Dubbo 和 Spring Cloud 并不是完全的竞争关系，两者所解决的问题域并不一样：**Dubbo 的定位始终是一款 RPC 框架，而 Spring Cloud 的目标是微服务架构下的一站式解决方案**。如果非要比较的话，我觉得 **Dubbo 可以类比到 Netflix OSS 技术栈，而 Spring Cloud 集成了 Netflix OSS 作为分布式服务治理解决方案**，但除此之外 Spring Cloud 还提供了包括 config、stream、security、sleuth 等等分布式问题解决方案。
 
-当前由于 RPC 协议、注册中心元数据不匹配等问题，在面临微服务基础框架选型时 Dubbo 与 Spring Cloud 是只能二选一，这也是为什么大家总是拿 Dubbo 和 Spring Cloud 做对比的原因之一。Dubbo 之后会积极寻求适配到 Spring Cloud 生态，比如作为 Spring Cloud 的二进制通信方案来发挥 Dubbo 的性能优势，或者 Dubbo 通过模块化以及对 http 的支持适配到 Spring Cloud 。
+当前由于 RPC 协议、注册中心元数据不匹配等问题，**在面临微服务基础框架选型时 Dubbo 与 Spring Cloud 是只能二选一**，这也是为什么大家总是拿 Dubbo 和 Spring Cloud 做对比的原因之一。Dubbo 之后会积极寻求适配到 Spring Cloud 生态，比如作为 Spring Cloud 的二进制通信方案来发挥 Dubbo 的性能优势，或者 Dubbo 通过模块化以及对 http 的支持适配到 Spring Cloud 。
 
 
 [开源访谈 刘军](https://www.oschina.net/question/2896879_2272652?sort=time)
@@ -136,6 +136,32 @@ https://springcloud.cc/spring-cloud-dalston.html
 [springcloud中国社区](http://springcloud.cn/)
 
 [springcloud中文网](https://springcloud.cc/)
+
+
+
+
+
+
+
+
+
+---
+<h2 id="02">02 | Rest微服务构建案例工程模块</h2>
+
+---
+
+
+
+### 1. 总体介绍
+
+
+
+
+
+
+
+
+
 
 
 
