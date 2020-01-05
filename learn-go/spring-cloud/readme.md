@@ -114,6 +114,14 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
  
 刘军，阿里巴巴中间件高级研发工程师，主导了 Dubbo 重启维护以后的几个发版计划，专注于高性能 RPC 框架和微服务相关领域。曾负责网易考拉 RPC 框架的研发及指导在内部使用，参与了服务治理平台、分布式跟踪系统、分布式一致性框架等从无到有的设计与开发过程。
 
+**目前 Dubbo 被拿来比较最多的就是 Spring Cloud ，您怎么看待二者的关系，业务上是否有所冲突**？
+
+关于 Dubbo 和 Spring Cloud 间的关系，我们在开源中国年终盛典的 Dubbo 分享中也作了简单阐述，首先要明确的一点是 Dubbo 和 Spring Cloud 并不是完全的竞争关系，两者所解决的问题域并不一样：Dubbo 的定位始终是一款 RPC 框架，而 Spring Cloud 的目标是微服务架构下的一站式解决方案。如果非要比较的话，我觉得 Dubbo 可以类比到 Netflix OSS 技术栈，而 Spring Cloud 集成了 Netflix OSS 作为分布式服务治理解决方案，但除此之外 Spring Cloud 还提供了包括 config、stream、security、sleuth 等等分布式问题解决方案。
+
+当前由于 RPC 协议、注册中心元数据不匹配等问题，在面临微服务基础框架选型时 Dubbo 与 Spring Cloud 是只能二选一，这也是为什么大家总是拿 Dubbo 和 Spring Cloud 做对比的原因之一。Dubbo 之后会积极寻求适配到 Spring Cloud 生态，比如作为 Spring Cloud 的二进制通信方案来发挥 Dubbo 的性能优势，或者 Dubbo 通过模块化以及对 http 的支持适配到 Spring Cloud 。
+
+
+[开源访谈 刘军](https://www.oschina.net/question/2896879_2272652?sort=time)
 
 ### 4. 参考资料
 
