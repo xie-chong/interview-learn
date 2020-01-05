@@ -32,7 +32,7 @@ SpringCloud 相关知识
 
 ### SpringCloud是什么？
 
-#### 官网说明   
+#### 1. 官网说明   
 * SpringCloud，基于SpringBoot提供了一套微服务解决方案，包括服务注册与发现，配置中心，全链路监控，服务网关，负载均衡，熔断器等组件，除了基于NetFlix的开源组件做高度抽象封装之外，还有一些选型中立的开源组件。
  
 * SpringCloud利用SpringBoot的开发便利性巧妙地简化了分布式系统基础设施的开发，SpringCloud为开发人员提供了快速构建分布式系统的一些工具，包括配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等,它们都可以用SpringBoot的开发风格做到一键启动和部署。
@@ -41,7 +41,7 @@ SpringCloud 相关知识
 
 SpringCloud = 分布式微服务架构下的一站式解决方案，是各个微服务架构落地技术的集合体，俗称微服务全家桶。
 
-#### SpringCloud和SpringBoot是什么关系？
+#### 2. SpringCloud和SpringBoot是什么关系？
 
 SpringBoot专注于快速方便的开发单个个体微服务。
  
@@ -52,7 +52,7 @@ SpringBoot可以离开SpringCloud独立使用开发项目，但是SpringCloud离
 SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud关注全局的服务治理框架。
 
 
-#### Dubbo是怎么到SpringCloud的？哪些优缺点让你去技术选型？
+#### 3. Dubbo是怎么到SpringCloud的？哪些优缺点让你去技术选型？
 
 目前成熟的互联网架构（分布式+服务治理Dubbo）.
 
@@ -67,7 +67,8 @@ SpringBoot专注于快速、方便的开发单个微服务个体，SpringCloud�
 社区支持与更新力度
 最为重要的是，DUBBO停止了5年左右的更新，虽然2017.7重启了。对于技术发展的新需求，需要由开发者自行拓展升级（比如当当网弄出了DubboX），这对于很多想要采用微服务架构的中小软件组织，显然是不太合适的，中小公司没有这么强大的技术能力去修改Dubbo源码+周边的一整套解决方案，并不是每一个公司都有阿里的大牛+真实的线上生产环境测试过。
 
-总结Cloud与Dubbo:   
+**总结Cloud与Dubbo**:   
+
 问题：   
 曾风靡国内的开源 RPC 服务框架 Dubbo 在重启维护后，令许多用户为之雀跃，但同时，也迎来了一些质疑的声音。互联网技术发展迅速，Dubbo 是否还能跟上时代？Dubbo 与 Spring Cloud 相比又有何优势和差异？是否会有相关举措保证 Dubbo 的后续更新频率？
  
