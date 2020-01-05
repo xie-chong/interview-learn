@@ -44,7 +44,7 @@ SpringCloud = 分布式微服务架构下的一站式解决方案，是各个微
 #### 2. SpringCloud和SpringBoot是什么关系？
 
 SpringBoot专注于快速方便的开发单个个体微服务。
- 
+
 SpringCloud是关注全局的微服务协调整理治理框架，它将SpringBoot开发的一个个单体微服务整合并管理起来，为各个微服务之间提供，配置管理、服务发现、断路器、路由、微代理、事件总线、全局锁、决策竞选、分布式会话等等集成服务。
  
 SpringBoot可以离开SpringCloud独立使用开发项目，但是SpringCloud离不开SpringBoot，属于依赖的关系。
