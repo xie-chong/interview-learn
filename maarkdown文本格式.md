@@ -1,4 +1,22 @@
 
+
+<!-- MarkdownTOC -->
+
+- [HashMap 简介](#hashmap-简介)
+- [底层数据结构分析](#底层数据结构分析)
+  - [JDK1.8之前](#jdk18之前)
+    - 1. aa
+    - 2. bb
+  - [JDK1.8之后](#jdk18之后)
+- [HashMap源码分析](#hashmap源码分析)
+  - [构造方法](#构造方法)
+  - [put方法](#put方法)
+  - [get方法](#get方法)
+  - [resize方法](#resize方法)
+- [HashMap常用方法测试](#hashmap常用方法测试)
+
+<!-- /MarkdownTOC -->
+
 ## 文本对齐方式   
 
 ```
