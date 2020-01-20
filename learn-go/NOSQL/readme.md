@@ -38,3 +38,15 @@
 |  |  |  |RPOPLPUSH source destination|
 |  |  |  |LREM key count value|
 
+## Hash
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|HMSET key field1 value1 [field2 value2 ]|HEXISTS key field|HINCRBY key field increment|HDEL key field1 [field2]|
+|HSET key field value|HGET key field|HINCRBYFLOAT key field increment|  |
+|HSETNX key field value|HMGET key field1 [field2]|  |  |
+|  |HGETALL key|  |  |
+|  |HKEYS key|  |  |
+|  |HVALS key|  |  |
+|  |HLEN key|  |  |
+|  |HSCAN key cursor [MATCH pattern] [COUNT count]|  |  |  |
+
