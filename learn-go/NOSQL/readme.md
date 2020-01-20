@@ -1,7 +1,7 @@
 ## redis常用操作命令
 
-| C        | R   |  U  |  D  |
-| :--------:   | :--------:   |  :--------:   | :--------:   |
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
 | String | String | String | String |
 |`SET key value`设置指定 key 的值|`GET key`获取指定 key 的值。|`GETSET key value`将给定 key 的值设为 value ，并返回 key 的旧值(old value)。|  |
 ||||
@@ -22,6 +22,11 @@
 |  |  |`DECRBY key decrementkey` 所储存的值减去给定的减量值（decrement）。|  |
 ||||
 |  |  |`APPEND key value`如果 key 已经存在并且是一个字符串， APPEND 命令将指定的 value 追加到该 key 原来值（value）的末尾。|  |
+
+---
+
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
 | SET | SET | SET | SET |
 |SADD key member1 [member2]向集合添加一个或多个成员     |SCARD key获取集合的成员数|SDIFFSTORE destination key1 [key2]返回给定所有集合的差集并存储在 destination 中|SMOVE source destination member将 member 元素从 source 集合移动到 destination 集合|
 |  |SDIFF key1 [key2]返回给定所有集合的差集|SINTERSTORE destination key1 [key2]返回给定所有集合的交集并存储在 destination 中|SPOP key移除并返回集合中的一个随机元素|
