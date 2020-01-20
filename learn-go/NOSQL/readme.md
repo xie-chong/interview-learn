@@ -1,6 +1,27 @@
-# redis常用操作命令
+# NoSQL常用操作命令
 
-## String   
+<!-- MarkdownTOC -->
+
+- [redis常用操作命令](#1)
+  - [String](#1.1)
+  - [List](#1.2)
+  - [Hash](#1.3)
+  - [Set](#1.4)
+  - [sorted set](#1.5)
+
+  
+  
+  
+  
+  
+  
+  
+<!-- /MarkdownTOC -->
+
+<h1 id="1">redis常用操作命令</h1>
+
+<h2 id="1.1">String</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
 |SET key value|GET key|GETSET key value|  |
@@ -15,7 +36,8 @@
 |  |  |APPEND key value|  |  |
 
 
-## List
+<h2 id="1.2">List</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
 |LPUSHX key value|LINDEX key index|LSET key index value|LPOP key|
@@ -26,7 +48,8 @@
 |  |  |  |RPOPLPUSH source destination|
 |  |  |  |LREM key count value|
 
-## Hash
+<h2 id="1.3">Hash</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
 |HMSET key field1 value1 [field2 value2 ]|HEXISTS key field|HINCRBY key field increment|HDEL key field1 [field2]|
@@ -39,7 +62,8 @@
 |  |HSCAN key cursor [MATCH pattern] [COUNT count]|  |  |  |
 
 
-## Set   
+<h2 id="1.4">Set</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
 |SADD key member1 [member2]|SCARD key|SDIFFSTORE destination key1 [key2]|SMOVE source destination |
@@ -53,7 +77,8 @@
 
 
 
-## sorted set   
+<h2 id="1.5">sorted set</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
 |ZADD key score1 member1 [score2 member2]|ZCARD key|ZINCRBY key increment member|ZREM key member [member ...]|
