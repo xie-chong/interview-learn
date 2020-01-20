@@ -15,7 +15,7 @@
 |  |  |APPEND key value|  |  |
 
 
-## SET   
+## Set   
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
 |SADD key member1 [member2]|SCARD key|SDIFFSTORE destination key1 [key2]|SMOVE source destination |
@@ -27,4 +27,14 @@
 |  |SUNION key1 [key2]|  |  |
 |  |SSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
 
+## List
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|LPUSHX key value|LINDEX key index|LSET key index value|LPOP key|
+|RPUSH key value1 [value2]|LLEN key|LTRIM key start stop|RPOP key|
+|LPUSHX key value|LRANGE key start stop|  |BLPOP key1 [key2 ] timeout|
+|RPUSHX key value|  |  |BRPOP key1 [key2 ] timeout|
+|LINSERT key BEFORE/AFTER pivot value|  |  |BRPOPLPUSH source destination timeout|
+|  |  |  |RPOPLPUSH source destination|
+|  |  |  |LREM key count value|
 
