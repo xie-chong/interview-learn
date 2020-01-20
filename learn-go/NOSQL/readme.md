@@ -3,7 +3,6 @@
 ## String   
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
-| String | String | String | String |
 |SET key value|GET key|GETSET key value|  |
 |MSET key value [key value ...]|MGET key1 [key2..]|SETBIT key offset value|  |
 |MSETNX key value [key value ...]|GETRANGE key start end|SETRANGE key offset value|  |
@@ -19,7 +18,6 @@
 ## SET   
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
-| SET | SET | SET | SET |
 |SADD key member1 [member2]|SCARD key|SDIFFSTORE destination key1 [key2]|SMOVE source destination |
 |  |SDIFF key1 [key2]|SINTERSTORE destination key1 [key2]|SPOP key|
 |  |SINTER key1 [key2]|SUNIONSTORE destination key1 [key2]|SREM key member1 [member2]|
