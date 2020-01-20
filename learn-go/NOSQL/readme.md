@@ -15,18 +15,6 @@
 |  |  |APPEND key value|  |  |
 
 
-## Set   
-|  C  |  R  |  U  |  D  |
-| :--------   | :--------   |  :--------   | :--------   |
-|SADD key member1 [member2]|SCARD key|SDIFFSTORE destination key1 [key2]|SMOVE source destination |
-|  |SDIFF key1 [key2]|SINTERSTORE destination key1 [key2]|SPOP key|
-|  |SINTER key1 [key2]|SUNIONSTORE destination key1 [key2]|SREM key member1 [member2]|
-|  |SISMEMBER key member|  |  |
-|  |SMEMBERS key|  |  |
-|  |SRANDMEMBER key [count]|  |  |
-|  |SUNION key1 [key2]|  |  |
-|  |SSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
-
 ## List
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
@@ -49,4 +37,35 @@
 |  |HVALS key|  |  |
 |  |HLEN key|  |  |
 |  |HSCAN key cursor [MATCH pattern] [COUNT count]|  |  |  |
+
+
+## Set   
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|SADD key member1 [member2]|SCARD key|SDIFFSTORE destination key1 [key2]|SMOVE source destination |
+|  |SDIFF key1 [key2]|SINTERSTORE destination key1 [key2]|SPOP key|
+|  |SINTER key1 [key2]|SUNIONSTORE destination key1 [key2]|SREM key member1 [member2]|
+|  |SISMEMBER key member|  |  |
+|  |SMEMBERS key|  |  |
+|  |SRANDMEMBER key [count]|  |  |
+|  |SUNION key1 [key2]|  |  |
+|  |SSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
+
+
+
+## sorted set   
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|ZADD key score1 member1 [score2 member2]|ZCARD key|ZINCRBY key increment member|ZREM key member [member ...]|
+|  |ZCOUNT key min max|ZINTERSTORE destination numkeys key [key ...]|ZREMRANGEBYLEX key min max|
+|  |ZLEXCOUNT key min max|ZUNIONSTORE destination numkeys key [key ...]|ZREMRANGEBYRANK key start stop|
+|  |ZRANGE key start stop [WITHSCORES]|  |	ZREMRANGEBYSCORE key min max|
+|  |ZRANGEBYLEX key min max [LIMIT offset count]|  |  |
+|  |ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT]|  |  |
+|  |ZRANK key member|  |  |
+|  |ZREVRANGE key start stop [WITHSCORES]|  |  |
+|  |ZREVRANGEBYSCORE key max min [WITHSCORES]|  |  |
+|  |ZREVRANK key member|  |  |
+|  |ZSCORE key member|  |  |
+|  |ZSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
 
