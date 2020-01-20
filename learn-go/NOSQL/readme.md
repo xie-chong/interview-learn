@@ -15,7 +15,6 @@
 |  |  |DECRBY key decrementkey|  |
 |  |  |APPEND key value|  |  |
 
----
 
 ## SET   
 |  C  |  R  |  U  |  D  |
