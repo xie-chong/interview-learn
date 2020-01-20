@@ -1,8 +1,8 @@
-## redis常用操作命令
+# redis常用操作命令
 
+## String   
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
-| String | String | String | String |
 |`SET key value`设置指定 key 的值|`GET key`获取指定 key 的值。|`GETSET key value`将给定 key 的值设为 value ，并返回 key 的旧值(old value)。|  |
 ||||
 |`MSET key value [key value ...]`同时设置一个或多个 key-value 对。|`MGET key1 [key2..]`获取所有(一个或多个)给定 key 的值。|`SETBIT key offset value`对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。|  |
@@ -25,9 +25,9 @@
 
 ---
 
+## SET   
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
-| SET | SET | SET | SET |
 |SADD key member1 [member2]向集合添加一个或多个成员     |SCARD key获取集合的成员数|SDIFFSTORE destination key1 [key2]返回给定所有集合的差集并存储在 destination 中|SMOVE source destination member将 member 元素从 source 集合移动到 destination 集合|
 |  |SDIFF key1 [key2]返回给定所有集合的差集|SINTERSTORE destination key1 [key2]返回给定所有集合的交集并存储在 destination 中|SPOP key移除并返回集合中的一个随机元素|
 |  |SINTER key1 [key2]返回给定所有集合的交集|SUNIONSTORE destination key1 [key2]所有给定集合的并集存储在 destination 集合中|SREM key member1 [member2]移除集合中一个或多个成员|
