@@ -1,30 +1,220 @@
 # redis常用操作命令
 
-## String   
+<!-- MarkdownTOC -->
+
+- [redis常用操作命令](#1)
+  - [String](#1.1)
+  - [List](#1.2)
+  - [Hash](#1.3)
+  - [Set](#1.4)
+  - [sorted set](#1.5)
+- [解析配置文件redis.conf](#2)
+
+
+  
+  
+  
+  
+  
+  
+  
+<!-- /MarkdownTOC -->
+
+<h1 id="1">redis常用操作命令</h1>
+
+<h2 id="1.1">String</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
-|`SET key value`设置指定 key 的值|`GET key`获取指定 key 的值。|`GETSET key value`将给定 key 的值设为 value ，并返回 key 的旧值(old value)。|  |
-|`MSET key value [key value ...]`同时设置一个或多个 key-value 对。|`MGET key1 [key2..]`获取所有(一个或多个)给定 key 的值。|`SETBIT key offset value`对 key 所储存的字符串值，设置或清除指定偏移量上的位(bit)。|  |
-|`MSETNX key value [key value ...]`同时设置一个或多个 key-value 对，当且仅当所有给定 key 都不存在。|`GETRANGE key start end`返回 key 中字符串值的子字符|`SETRANGE key offset value`用 value 参数覆写给定 key 所储存的字符串值，从偏移量 offset 开始。|  |
-|`SETNX key value`只有在 key 不存在时设置 key 的值。|`STRLEN key`返回 key 所储存的字符串值的长度。|`PSETEX key milliseconds value`这个命令和 SETEX 命令相似，但它以毫秒为单位设置 key 的生存时间，而不是像 SETEX 命令那样，以秒为单位。|  |
-|`SETEX key seconds value`将值 value 关联到 key ，并将 key 的过期时间设为 seconds (以秒为单位)。|`GETBIT key offset`对 key 所储存的字符串值，获取指定偏移量上的位(bit)。|`INCR key`将 key 中储存的数字值增一。|  |
-|  |  |`INCRBY key increment`将 key 所储存的值加上给定的增量值（increment）。|  |
-|  |  |`INCRBYFLOAT key increment`将 key 所储存的值加上给定的浮点增量值（increment）。|  |
-|  |  |`DECR key`将 key 中储存的数字值减一。|  |
-|  |  |`DECRBY key decrementkey` 所储存的值减去给定的减量值（decrement）。|  |
-|  |  |`APPEND key value`如果 key 已经存在并且是一个字符串， APPEND 命令将指定的 value 追加到该 key 原来值（value）的末尾。|  |
+|SET key value|GET key|GETSET key value|  |
+|MSET key value [key value ...]|MGET key1 [key2..]|SETBIT key offset value|  |
+|MSETNX key value [key value ...]|GETRANGE key start end|SETRANGE key offset value|  |
+|SETNX key value|STRLEN key|PSETEX key milliseconds value|  |
+|SETEX key seconds value|GETBIT key offset|INCR key|  |
+|  |  |INCRBY key increment|  |
+|  |  |INCRBYFLOAT key increment|  |
+|  |  |DECR key|  |
+|  |  |DECRBY key decrementkey|  |
+|  |  |APPEND key value|  |  |
 
----
 
-## SET   
+<h2 id="1.2">List</h2>
+
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
-|SADD key member1 [member2]向集合添加一个或多个成员     |SCARD key获取集合的成员数|SDIFFSTORE destination key1 [key2]返回给定所有集合的差集并存储在 destination 中|SMOVE source destination member将 member 元素从 source 集合移动到 destination 集合|
-|  |SDIFF key1 [key2]返回给定所有集合的差集|SINTERSTORE destination key1 [key2]返回给定所有集合的交集并存储在 destination 中|SPOP key移除并返回集合中的一个随机元素|
-|  |SINTER key1 [key2]返回给定所有集合的交集|SUNIONSTORE destination key1 [key2]所有给定集合的并集存储在 destination 集合中|SREM key member1 [member2]移除集合中一个或多个成员|
-|  |SISMEMBER key member判断 member 元素是否是集合 key 的成员|  |  |
-|  |SMEMBERS key返回集合中的所有成员|  |  |
-|  |SRANDMEMBER key [count]返回集合中一个或多个随机数|  |  |
-|  |SUNION key1 [key2]返回所有给定集合的并集|  |  |
-|  |SSCAN key cursor [MATCH pattern] [COUNT count]迭代集合中的元素|  |  |
+|LPUSHX key value|LINDEX key index|LSET key index value|LPOP key|
+|RPUSH key value1 [value2]|LLEN key|LTRIM key start stop|RPOP key|
+|LPUSHX key value|LRANGE key start stop|  |BLPOP key1 [key2 ] timeout|
+|RPUSHX key value|  |  |BRPOP key1 [key2 ] timeout|
+|LINSERT key BEFORE/AFTER pivot value|  |  |BRPOPLPUSH source destination timeout|
+|  |  |  |RPOPLPUSH source destination|
+|  |  |  |LREM key count value|
+
+<h2 id="1.3">Hash</h2>
+
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|HMSET key field1 value1 [field2 value2 ]|HEXISTS key field|HINCRBY key field increment|HDEL key field1 [field2]|
+|HSET key field value|HGET key field|HINCRBYFLOAT key field increment|  |
+|HSETNX key field value|HMGET key field1 [field2]|  |  |
+|  |HGETALL key|  |  |
+|  |HKEYS key|  |  |
+|  |HVALS key|  |  |
+|  |HLEN key|  |  |
+|  |HSCAN key cursor [MATCH pattern] [COUNT count]|  |  |  |
+
+
+<h2 id="1.4">Set</h2>
+
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|SADD key member1 [member2]|SCARD key|SDIFFSTORE destination key1 [key2]|SMOVE source destination |
+|  |SDIFF key1 [key2]|SINTERSTORE destination key1 [key2]|SPOP key|
+|  |SINTER key1 [key2]|SUNIONSTORE destination key1 [key2]|SREM key member1 [member2]|
+|  |SISMEMBER key member|  |  |
+|  |SMEMBERS key|  |  |
+|  |SRANDMEMBER key [count]|  |  |
+|  |SUNION key1 [key2]|  |  |
+|  |SSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
+
+
+
+<h2 id="1.5">sorted set</h2>
+
+|  C  |  R  |  U  |  D  |
+| :--------   | :--------   |  :--------   | :--------   |
+|ZADD key score1 member1 [score2 member2]|ZCARD key|ZINCRBY key increment member|ZREM key member [member ...]|
+|  |ZCOUNT key min max|ZINTERSTORE destination numkeys key [key ...]|ZREMRANGEBYLEX key min max|
+|  |ZLEXCOUNT key min max|ZUNIONSTORE destination numkeys key [key ...]|ZREMRANGEBYRANK key start stop|
+|  |ZRANGE key start stop [WITHSCORES]|  |	ZREMRANGEBYSCORE key min max|
+|  |ZRANGEBYLEX key min max [LIMIT offset count]|  |  |
+|  |ZRANGEBYSCORE key min max [WITHSCORES] [LIMIT]|  |  |
+|  |ZRANK key member|  |  |
+|  |ZREVRANGE key start stop [WITHSCORES]|  |  |
+|  |ZREVRANGEBYSCORE key max min [WITHSCORES]|  |  |
+|  |ZREVRANK key member|  |  |
+|  |ZSCORE key member|  |  |
+|  |ZSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
+
+
+
+
+
+
+<h1 id="2">解析配置文件redis.conf</h1>
+
+**启动redis服务**   
+```
+# Note that in order to read the configuration file, Redis must be
+# started with the file path as first argument:
+#
+# ./redis-server /path/to/redis.conf
+
+```
+
+**配置文件路径**  
+```
+/opt/redis-5.0.7/redis.conf
+```
+
+**redis安装路径**   
+```
+/usr/local/redis/5.0.7/bin
+```
+
+**启动服务**   
+```
+./redis-server /opt/redis-5.0.7/redis.conf
+```
+
+<h2 id="2.1">units单位</h2>
+
+```
+# Note on units: when memory size is needed, it is possible to specify
+# it in the usual form of 1k 5GB 4M and so forth:
+#
+# 1k => 1000 bytes
+# 1kb => 1024 bytes
+# 1m => 1000000 bytes
+# 1mb => 1024*1024 bytes
+# 1g => 1000000000 bytes
+# 1gb => 1024*1024*1024 bytes
+#
+# units are case insensitive so 1GB 1Gb 1gB are all the same.
+```
+
+1. 配置大小单位,开头定义了一些基本的度量单位，只支持bytes，不支持bit   
+2. 对大小写不敏感
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
