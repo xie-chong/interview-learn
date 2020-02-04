@@ -356,18 +356,394 @@ RDB是整个内存的压缩过的Snapshot，RDB的数据结构，可以配置复
 * **dir**   
 
 
+<h2 id="2.6">2.6 REPLICATION</h2>
+
+```
+################################# REPLICATION #################################
+
+# Master-Replica replication. Use replicaof to make a Redis instance a copy of
+# another Redis server. A few things to understand ASAP about Redis replication.
+#
+#   +------------------+      +---------------+
+#   |      Master      | ---> |    Replica    |
+#   | (receive writes) |      |  (exact copy) |
+#   +------------------+      +---------------+
+#
+# 1) Redis replication is asynchronous, but you can configure a master to
+#    stop accepting writes if it appears to be not connected with at least
+#    a given number of replicas.
+# 2) Redis replicas are able to perform a partial resynchronization with the
+#    master if the replication link is lost for a relatively small amount of
+#    time. You may want to configure the replication backlog size (see the next
+#    sections of this file) with a sensible value depending on your needs.
+# 3) Replication is automatic and does not need user intervention. After a
+#    network partition replicas automatically try to reconnect to masters
+#    and resynchronize with them.
+#
+# replicaof <masterip> <masterport>
+
+# If the master is password protected (using the "requirepass" configuration
+# directive below) it is possible to tell the replica to authenticate before
+# starting the replication synchronization process, otherwise the master will
+# refuse the replica request.
+#
+# masterauth <master-password>
+
+# When a replica loses its connection with the master, or when the replication
+# is still in progress, the replica can act in two different ways:
+#
+# 1) if replica-serve-stale-data is set to 'yes' (the default) the replica will
+#    still reply to client requests, possibly with out of date data, or the
+#    data set may just be empty if this is the first synchronization.
+#
+# 2) if replica-serve-stale-data is set to 'no' the replica will reply with
+#    an error "SYNC with master in progress" to all the kind of commands
+#    but to INFO, replicaOF, AUTH, PING, SHUTDOWN, REPLCONF, ROLE, CONFIG,
+#    SUBSCRIBE, UNSUBSCRIBE, PSUBSCRIBE, PUNSUBSCRIBE, PUBLISH, PUBSUB,
+#    COMMAND, POST, HOST: and LATENCY.
+#
+replica-serve-stale-data yes
+
+# You can configure a replica instance to accept writes or not. Writing against
+# a replica instance may be useful to store some ephemeral data (because data
+# written on a replica will be easily deleted after resync with the master) but
+# may also cause problems if clients are writing to it because of a
+# misconfiguration.
+#
+# Since Redis 2.6 by default replicas are read-only.
+#
+# Note: read only replicas are not designed to be exposed to untrusted clients
+# on the internet. It's just a protection layer against misuse of the instance.
+# Still a read only replica exports by default all the administrative commands
+# such as CONFIG, DEBUG, and so forth. To a limited extent you can improve
+# security of read only replicas using 'rename-command' to shadow all the
+# administrative / dangerous commands.
+replica-read-only yes
+
+# Replication SYNC strategy: disk or socket.
+#
+# -------------------------------------------------------
+# WARNING: DISKLESS REPLICATION IS EXPERIMENTAL CURRENTLY
+# -------------------------------------------------------
+#
+# New replicas and reconnecting replicas that are not able to continue the replication
+# process just receiving differences, need to do what is called a "full
+# synchronization". An RDB file is transmitted from the master to the replicas.
+# The transmission can happen in two different ways:
+#
+# 1) Disk-backed: The Redis master creates a new process that writes the RDB
+#                 file on disk. Later the file is transferred by the parent
+#                 process to the replicas incrementally.
+# 2) Diskless: The Redis master creates a new process that directly writes the
+#              RDB file to replica sockets, without touching the disk at all.
+#
+# With disk-backed replication, while the RDB file is generated, more replicas.
+# The transmission can happen in two different ways:
+#
+# 1) Disk-backed: The Redis master creates a new process that writes the RDB
+#                 file on disk. Later the file is transferred by the parent
+#                 process to the replicas incrementally.
+# 2) Diskless: The Redis master creates a new process that directly writes the
+#              RDB file to replica sockets, without touching the disk at all.
+#
+# With disk-backed replication, while the RDB file is generated, more replicas
+# can be queued and served with the RDB file as soon as the current child producing
+# the RDB file finishes its work. With diskless replication instead once
+# the transfer starts, new replicas arriving will be queued and a new transfer
+# will start when the current one terminates.
+#
+# When diskless replication is used, the master waits a configurable amount of
+# time (in seconds) before starting the transfer in the hope that multiple replicas
+# will arrive and the transfer can be parallelized.
+#
+# With slow disks and fast (large bandwidth) networks, diskless replication
+# works better.
+repl-diskless-sync no
+
+# When diskless replication is enabled, it is possible to configure the delay
+# the server waits in order to spawn the child that transfers the RDB via socket
+# to the replicas.
+#
+# This is important since once the transfer starts, it is not possible to serve
+# new replicas arriving, that will be queued for the next RDB transfer, so the server
+# waits a delay in order to let more replicas arrive.
+#
+# The delay is specified in seconds, and by default is 5 seconds. To disable
+# it entirely just set it to 0 seconds and the transfer will start ASAP.
+repl-diskless-sync-delay 5
+
+# Replicas send PINGs to server in a predefined interval. It's possible to change
+# this interval with the repl_ping_replica_period option. The default value is 10
+# seconds.
+#
+# repl-ping-replica-period 10
+
+# The following option sets the replication timeout for:
+#
+# 1) Bulk transfer I/O during SYNC, from the point of view of replica.
+# 2) Master timeout from the point of view of replicas (data, pings).
+# 3) Replica timeout from the point of view of masters (REPLCONF ACK pings).
+#
+# It is important to make sure that this value is greater than the value
+# specified for repl-ping-replica-period otherwise a timeout will be detected
+# every time there is low traffic between the master and the replica.
+#
+# repl-timeout 60
+
+# Disable TCP_NODELAY on the replica socket after SYNC?
+#
+# If you select "yes" Redis will use a smaller number of TCP packets and
+# less bandwidth to send data to replicas. But this can add a delay for
+# the data to appear on the replica side, up to 40 milliseconds with
+# Linux kernels using a default configuration.
+#
+# If you select "no" the delay for data to appear on the replica side will
+# be reduced but more bandwidth will be used for replication.
+#
+# By default we optimize for low latency, but in very high traffic conditions
+# or when the master and replicas are many hops away, turning this to "yes" may
+# be a good idea.
+repl-disable-tcp-nodelay no
+
+# Set the replication backlog size. The backlog is a buffer that accumulates
+# replica data when replicas are disconnected for some time, so that when a replica
+# wants to reconnect again, often a full resync is not needed, but a partial
+# resync is enough, just passing the portion of data the replica missed while
+# disconnected.
+#
+# The bigger the replication backlog, the longer the time the replica can be
+# disconnected and later be able to perform a partial resynchronization.
+#
+# The backlog is only allocated once there is at least a replica connected.
+#
+# repl-backlog-size 1mb
+
+# After a master has no longer connected replicas for some time, the backlog
+# will be freed. The following option configures the amount of seconds that
+# need to elapse, starting from the time the last replica disconnected, for
+# the backlog buffer to be freed.
+#
+# Note that replicas never free the backlog for timeout, since they may be
+# promoted to masters later, and should be able to correctly "partially
+# resynchronize" with the replicas: hence they should always accumulate backlog.
+#
+# A value of 0 means to never release the backlog.
+#
+# repl-backlog-ttl 3600
+
+# The replica priority is an integer number published by Redis in the INFO output.
+# It is used by Redis Sentinel in order to select a replica to promote into a
+# master if the master is no longer working correctly.
+#
+# A replica with a low priority number is considered better for promotion, so
+# for instance if there are three replicas with priority 10, 100, 25 Sentinel will
+# pick the one with priority 10, that is the lowest.
+#
+# However a special priority of 0 marks the replica as not able to perform the
+# role of master, so a replica with priority of 0 will never be selected by
+# Redis Sentinel for promotion.
+#
+# By default the priority is 100.
+replica-priority 100
+
+# It is possible for a master to stop accepting writes if there are less than
+# N replicas connected, having a lag less or equal than M seconds.
+#
+# The N replicas need to be in "online" state.
+#
+# The lag in seconds, that must be <= the specified value, is calculated from
+# the last ping received from the replica, that is usually sent every second.
+#
+# This option does not GUARANTEE that N replicas will accept the write, but
+# will limit the window of exposure for lost writes in case not enough replicas
+# are available, to the specified number of seconds.
+#
+# For example to require at least 3 replicas with a lag <= 10 seconds use:
+#
+# min-replicas-to-write 3
+# min-replicas-max-lag 10
+#
+# Setting one or the other to 0 disables the feature.
+#
+# By default min-replicas-to-write is set to 0 (feature disabled) and
+# min-replicas-max-lag is set to 10.
+
+# A Redis master is able to list the address and port of the attached
+# replicas in different ways. For example the "INFO replication" section
+# offers this information, which is used, among other tools, by
+# Redis Sentinel in order to discover replica instances.
+# Another place where this info is available is in the output of the
+# "ROLE" command of a master.
+#
+# The listed IP and address normally reported by a replica is obtained
+# in the following way:
+#
+#   IP: The address is auto detected by checking the peer address
+#   of the socket used by the replica to connect with the master.
+#
+#   Port: The port is communicated by the replica during the replication
+#   handshake, and is normally the port that the replica is using to
+#   listen for connections.
+#
+# However when port forwarding or Network Address Translation (NAT) is
+# used, the replica may be actually reachable via different IP and port
+# pairs. The following two options can be used by a replica in order to
+# report to its master a specific set of IP and port, so that both INFO
+# and ROLE will report those values.
+#
+# There is no need to use both the options if you need to override just
+# the port or the IP address.
+#
+# replica-announce-ip 5.5.5.5
+# replica-announce-port 1234
+
+```
+
+<h2 id="2.7">2.7 SECURITY</h2>
+
+```
+################################## SECURITY ###################################
+
+# Require clients to issue AUTH <PASSWORD> before processing any other
+# commands.  This might be useful in environments in which you do not trust
+# others with access to the host running redis-server.
+#
+# This should stay commented out for backward compatibility and because most
+# people do not need auth (e.g. they run their own servers).
+#
+# Warning: since Redis is pretty fast an outside user can try up to
+# 150k passwords per second against a good box. This means that you should
+# use a very strong password otherwise it will be very easy to break.
+#
+# requirepass foobared
+
+# Command renaming.
+#
+# It is possible to change the name of dangerous commands in a shared
+# environment. For instance the CONFIG command may be renamed into something
+# hard to guess so that it will still be available for internal-use tools
+# but not available for general clients.
+#
+# Example:
+#
+# rename-command CONFIG b840fc02d524045429941cc15f59e41cb7be6c52
+#
+# It is also possible to completely kill a command by renaming it into
+# an empty string:
+#
+# rename-command CONFIG ""
+#
+# Please note that changing the name of commands that are logged into the
+# AOF file or transmitted to replicas may cause problems.
+
+```   
+访问密码的查看、设置和取消
+
+<h2 id="2.8">2.8 LIMITS</h2>
+
+```
+############################## MEMORY MANAGEMENT ################################
+
+# Set a memory usage limit to the specified amount of bytes.
+# When the memory limit is reached Redis will try to remove keys
+# according to the eviction policy selected (see maxmemory-policy).
+#
+# If Redis can't remove keys according to the policy, or if the policy is
+# set to 'noeviction', Redis will start to reply with errors to commands
+# that would use more memory, like SET, LPUSH, and so on, and will continue
+# to reply to read-only commands like GET.
+#
+# This option is usually useful when using Redis as an LRU or LFU cache, or to
+# set a hard memory limit for an instance (using the 'noeviction' policy).
+#
+# WARNING: If you have replicas attached to an instance with maxmemory on,
+# the size of the output buffers needed to feed the replicas are subtracted
+# from the used memory count, so that network problems / resyncs will
+# not trigger a loop where keys are evicted, and in turn the output
+# buffer of replicas is full with DELs of keys evicted triggering the deletion
+# of more keys, and so forth until the database is completely emptied.
+#
+# In short... if you have replicas attached it is suggested that you set a lower
+# limit for maxmemory so that there is some free RAM on the system for replica
+# output buffers (but this is not needed if the policy is 'noeviction').
+#
+# maxmemory <bytes>
+
+# MAXMEMORY POLICY: how Redis will select what to remove when maxmemory
+# is reached. You can select among five behaviors:
+#
+# volatile-lru -> Evict using approximated LRU among the keys with an expire set.
+# allkeys-lru -> Evict any key using approximated LRU.
+# volatile-lfu -> Evict using approximated LFU among the keys with an expire set.
+# allkeys-lfu -> Evict any key using approximated LFU.
+# volatile-random -> Remove a random key among the ones with an expire set.
+# allkeys-random -> Remove a random key, any key.
+# volatile-ttl -> Remove the key with the nearest expire time (minor TTL)
+# noeviction -> Don't evict anything, just return an error on write operations.
+#
+# LRU means Least Recently Used
+# LFU means Least Frequently Used
+#
+# Both LRU, LFU and volatile-ttl are implemented using approximated
+# randomized algorithms.
+#
+# Note: with any of the above policies, Redis will return an error on write
+#       operations, when there are no suitable keys for eviction.
+#
+#       At the date of writing these commands are: set setnx setex append
+#       incr decr rpush lpush rpushx lpushx linsert lset rpoplpush sadd
+#       sinter sinterstore sunion sunionstore sdiff sdiffstore zadd zincrby
+#       zunionstore zinterstore hset hsetnx hmset hincrby incrby decrby
+#       getset mset msetnx exec sort
+#
+# The default is:
+#
+# maxmemory-policy noeviction
+
+# LRU, LFU and minimal TTL algorithms are not precise algorithms but approximated
+# algorithms (in order to save memory), so you can tune it for speed or
+# accuracy. For default Redis will check five keys and pick the one that was
+# used less recently, you can change the sample size using the following
+# configuration directive.
+#
+# The default of 5 produces good enough results. 10 Approximates very closely
+# true LRU but costs more CPU. 3 is faster but not very accurate.
+#
+# maxmemory-samples 5
+
+# Starting from Redis 5, by default a replica will ignore its maxmemory setting
+# (unless it is promoted to master after a failover or manually). It means
+# that the eviction of keys will be just handled by the master, sending the
+# DEL commands to the replica as keys evict in the master side.
+#
+# This behavior ensures that masters and replicas stay consistent, and is usually
+# what you want, however if your replica is writable, or you want the replica to have
+# a different memory setting, and you are sure all the writes performed to the
+# replica are idempotent, then you may change this default (but be sure to understand
+# what you are doing).
+#
+# Note that since the replica by default does not evict, it may end using more
+# memory than the one set via maxmemory (there are certain buffers that may
+# be larger on the replica, or data structures may sometimes take more memory and so
+# forth). So make sure you monitor your replicas and make sure they have enough
+# memory to never hit a real out-of-memory condition before the master hits
+# the configured maxmemory setting.
+#
+# replica-ignore-maxmemory yes
+
+```   
+* **maxclients**   
+设置redis同时可以与多少个客户端进行连接。默认情况下为10000个客户端。当你无法设置进程文件句柄限制时，redis会设置为当前的文件句柄限制值减去32，因为redis会为自身内部处理逻辑留一些句柄出来。如果达到了此限制，redis则会拒绝新的连接请求，并且向这些连接请求方发出“max number of clients reached”以作回应。
+
+* **maxmemory**   
+设置redis可以使用的内存量。一旦到达内存使用上限，redis将会试图移除内部数据，移除规则可以通过maxmemory-policy来指定。如果redis无法根据移除规则来移除内存中的数据，或者设置了“不允许移除”，那么redis则会针对那些需要申请内存的指令返回错误信息，比如SET、LPUSH等。
+
+但是对于无内存申请的指令，仍然会正常响应，比如GET等。如果你的redis是主redis（说明你的redis有从redis），那么在设置内存使用上限时，需要在系统中留出一些内存空间给同步队列缓存，只有在你设置的是“不移除”的情况下，才不用考虑这个因素。
 
 
-
-
-
-
-
-
-
-
-
-
+* **maxmemory-policy**   
+- volatile-lru -> remove the key with an expire set using an LRU algorithm(使用LRU算法移除key，只对设置了过期时间的键)   
+- allkeys-lru -> remove any key according to the LRU algorithm(使用LRU算法移除key)
 
 
 
