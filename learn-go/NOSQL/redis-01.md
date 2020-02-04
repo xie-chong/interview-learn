@@ -254,12 +254,16 @@ always-show-logo yes
 在高并发环境下你需要一个高backlog值来避免慢客户端连接问题。注意Linux内核会将这个值减小到/proc/sys/net/core/somaxconn的值，所以需要确认增大somaxconn和tcp_max_syn_backlog两个值来达到想要的效果。   
 * **timeout**   
 * **bind**    
-* **tcp-keepalive**  单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60    
+* **tcp-keepalive**   
+单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60    
 * **loglevel**   
 * **logfile**   
-* **syslog-enabled**  是否把日志输出到syslog中   
-* **syslog-ident**  指定syslog里的日志标志   
-* **syslog-facility**  指定syslog设备，值可以是USER或LOCAL0-LOCAL7   
+* **syslog-enabled**   
+是否把日志输出到syslog中   
+* **syslog-ident**   
+指定syslog里的日志标志   
+* **syslog-facility**   
+指定syslog设备，值可以是USER或LOCAL0-LOCAL7   
 * **databases**
 
 
