@@ -741,7 +741,7 @@ replica-priority 100
 但是对于无内存申请的指令，仍然会正常响应，比如GET等。如果你的redis是主redis（说明你的redis有从redis），那么在设置内存使用上限时，需要在系统中留出一些内存空间给同步队列缓存，只有在你设置的是“不移除”的情况下，才不用考虑这个因素。
 
 
-* **maxmemory-policy**   
+* **maxmemory-policy**
 - volatile-lru -> remove the key with an expire set using an LRU algorithm(使用LRU算法移除key，只对设置了过期时间的键)   
 - allkeys-lru -> remove any key according to the LRU algorithm(使用LRU算法移除key)
 
