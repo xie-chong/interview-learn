@@ -19,6 +19,9 @@
   - [2.8 MEMORY MANAGEMENT](#2.8)
   - [2.9 APPEND ONLY MODE](#2.9)
   - [2.10 常见配置redis.conf介绍](#2.10)
+- [3. redis的持久化](#3)
+  - [3.1 总体介绍](#3.1)
+   
   
 
 
@@ -1052,7 +1055,22 @@ aof-use-rdb-preamble yes
 
 
 
+<h1 id="3">3. redis的持久化</h1>
 
+<h2 id="3.1">3.1 总体介绍</h2>
+
+官网介绍：   
+```
+This page provides a technical description of Redis persistence, it is a suggested read for all Redis users. For a wider overview of Redis persistence and the durability guarantees it provides you may also want to read Redis persistence demystified.
+
+Redis Persistence
+Redis provides a different range of persistence options:
+
+The RDB persistence performs point-in-time snapshots of your dataset at specified intervals.
+The AOF persistence logs every write operation received by the server, that will be played again at server startup, reconstructing the original dataset. Commands are logged using the same format as the Redis protocol itself, in an append-only fashion. Redis is able to rewrite the log in the background when it gets too big.
+If you wish, you can disable persistence completely, if you want your data to just exist as long as the server is running.
+It is possible to combine both AOF and RDB in the same instance. Notice that, in this case, when Redis restarts the AOF file will be used to reconstruct the original dataset since it is guaranteed to be the most complete.
+```
 
 
 
