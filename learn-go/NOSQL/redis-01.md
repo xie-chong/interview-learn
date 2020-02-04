@@ -101,9 +101,13 @@
 
 
 
+---
 <h1 id="2">解析配置文件redis.conf</h1>
 
-**启动redis服务**   
+---
+
+<h2 id="2.1">启动redis服务</h2>
+
 ```
 # Note that in order to read the configuration file, Redis must be
 # started with the file path as first argument:
@@ -112,22 +116,25 @@
 
 ```
 
-**配置文件路径**  
+* 配置文件路径  
 ```
 /opt/redis-5.0.7/redis.conf
 ```
 
-**redis安装路径**   
+* redis安装路径   
 ```
 /usr/local/redis/5.0.7/bin
 ```
 
-**启动服务**   
+* 启动服务   
 ```
 ./redis-server /opt/redis-5.0.7/redis.conf
 ```
 
-<h2 id="2.1">units单位</h2>
+以上路径会由于安装或存放，存在差异，仅供参考。
+
+
+<h2 id="2.2">units单位</h2>
 
 ```
 # Note on units: when memory size is needed, it is possible to specify
@@ -141,19 +148,118 @@
 # 1gb => 1024*1024*1024 bytes
 #
 # units are case insensitive so 1GB 1Gb 1gB are all the same.
-```
 
+```   
 1. 配置大小单位,开头定义了一些基本的度量单位，只支持bytes，不支持bit   
 2. 对大小写不敏感
 
 
+<h2 id="2.3">INCLUDES</h2>
 
+```
+################################## INCLUDES ###################################
 
+# Include one or more other config files here.  This is useful if you
+# have a standard template that goes to all Redis servers but also need
+# to customize a few per-server settings.  Include files can include
+# other files, so use this wisely.
+#
+# Notice option "include" won't be rewritten by command "CONFIG REWRITE"
+# from admin or Redis Sentinel. Since Redis always uses the last processed
+# line as value of a configuration directive, you'd better put includes
+# at the beginning of this file to avoid overwriting config change at runtime.
+#
+# If instead you are interested in using includes to override configuration
+# options, it is better to use include as the last line.
+#
+# include /path/to/local.conf
+# include /path/to/other.conf
 
+```   
+和我们的Struts2配置文件类似，可以通过includes包含，redis.conf可以作为总闸，包含其他
 
+<h2 id="2.4">GENERAL</h2>
 
+```
+################################# GENERAL #####################################
 
+# By default Redis does not run as a daemon. Use 'yes' if you need it.
+# Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+daemonize no
 
+# If you run Redis from upstart or systemd, Redis can interact with your
+# supervision tree. Options:
+#   supervised no      - no supervision interaction
+#   supervised upstart - signal upstart by putting Redis into SIGSTOP mode
+#   supervised systemd - signal systemd by writing READY=1 to $NOTIFY_SOCKET
+#   supervised auto    - detect upstart or systemd method based on
+#                        UPSTART_JOB or NOTIFY_SOCKET environment variables
+# Note: these supervision methods only signal "process is ready."
+#       They do not enable continuous liveness pings back to your supervisor.
+supervised no
+
+# If a pid file is specified, Redis writes it where specified at startup
+# and removes it at exit.
+#
+# When the server runs non daemonized, no pid file is created if none is
+# specified in the configuration. When the server is daemonized, the pid file
+# is used even if not specified, defaulting to "/var/run/redis.pid".
+#
+# Creating a pid file is best effort: if Redis is not able to create it
+# nothing bad happens, the server will start and run normally.
+pidfile /var/run/redis_6379.pid
+
+# Specify the server verbosity level.
+# This can be one of:
+# debug (a lot of information, useful for development/testing)
+# verbose (many rarely useful info, but not a mess like the debug level)
+# notice (moderately verbose, what you want in production probably)
+# warning (only very important / critical messages are logged)
+loglevel notice
+
+# Specify the log file name. Also the empty string can be used to force
+# Redis to log on the standard output. Note that if you use standard
+# output for logging but daemonize, logs will be sent to /dev/null
+logfile ""
+
+# To enable logging to the system logger, just set 'syslog-enabled' to yes,
+# and optionally update the other syslog parameters to suit your needs.
+# syslog-enabled no
+
+# Specify the syslog identity.
+# syslog-ident redis
+
+# Specify the syslog facility. Must be USER or between LOCAL0-LOCAL7.
+# syslog-facility local0
+
+# Set the number of databases. The default database is DB 0, you can select
+# a different one on a per-connection basis using SELECT <dbid> where
+# dbid is a number between 0 and 'databases'-1
+databases 16
+
+# By default Redis shows an ASCII art logo only when started to log to the
+# standard output and if the standard output is a TTY. Basically this means
+# that normally a logo is displayed only in interactive sessions.
+#
+# However it is possible to force the pre-4.0 behavior and always show a
+# ASCII art logo in startup logs by setting the following option to yes.
+always-show-logo yes
+
+```   
+* daemonize   
+* pidfile   
+* port   
+* tcp-backlog  设置tcp的backlog，backlog其实是一个连接队列，backlog队列总和=未完成三次握手队列 + 已经完成三次握手队列。
+在高并发环境下你需要一个高backlog值来避免慢客户端连接问题。注意Linux内核会将这个值减小到/proc/sys/net/core/somaxconn的值，所以需要确认增大somaxconn和tcp_max_syn_backlog两个值来达到想要的效果。   
+* timeout   
+* bind    
+* tcp-keepalive  单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60    
+* loglevel   
+* logfile   
+* syslog-enabled  是否把日志输出到syslog中   
+* syslog-ident  指定syslog里的日志标志   
+* syslog-facility  指定syslog设备，值可以是USER或LOCAL0-LOCAL7   
+* databases
 
 
 
