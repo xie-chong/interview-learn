@@ -742,8 +742,8 @@ replica-priority 100
 
 
 * **maxmemory-policy**
-- volatile-lru -> remove the key with an expire set using an LRU algorithm(使用LRU算法移除key，只对设置了过期时间的键)   
-- allkeys-lru -> remove any key according to the LRU algorithm(使用LRU算法移除key)
+  - volatile-lru -> remove the key with an expire set using an LRU algorithm(使用LRU算法移除key，只对设置了过期时间的键)   
+  - allkeys-lru -> remove any key according to the LRU algorithm(使用LRU算法移除key)
 
 
 
