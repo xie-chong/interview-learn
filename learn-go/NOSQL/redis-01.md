@@ -2,13 +2,13 @@
 
 <!-- MarkdownTOC -->
 
-- [redis常用操作命令](#1)
+- [1. redis常用操作命令](#1)
   - [String](#1.1)
   - [List](#1.2)
   - [Hash](#1.3)
   - [Set](#1.4)
   - [sorted set](#1.5)
-- [解析配置文件redis.conf](#2)
+- [2. 解析配置文件redis.conf](#2)
 
 
   
@@ -267,16 +267,93 @@ always-show-logo yes
 * **databases**
 
 
+<h2 id="2.5">2.5 SNAPSHOTTING</h2>
 
+```
+################################ SNAPSHOTTING  ################################
+#
+# Save the DB on disk:
+#
+#   save <seconds> <changes>
+#
+#   Will save the DB if both the given number of seconds and the given
+#   number of write operations against the DB occurred.
+#
+#   In the example below the behaviour will be to save:
+#   after 900 sec (15 min) if at least 1 key changed
+#   after 300 sec (5 min) if at least 10 keys changed
+#   after 60 sec if at least 10000 keys changed
+#
+#   Note: you can disable saving completely by commenting out all "save" lines.
+#
+#   It is also possible to remove all the previously configured save
+#   points by adding a save directive with a single empty string argument
+#   like in the following example:
+#
+#   save ""
 
+save 900 1
+save 300 10
+save 60 10000
 
+# By default Redis will stop accepting writes if RDB snapshots are enabled
+# (at least one save point) and the latest background save failed.
+# This will make the user aware (in a hard way) that data is not persisting
+# on disk properly, otherwise chances are that no one will notice and some
+# disaster will happen.
+#
+# If the background saving process will start working again Redis will
+# automatically allow writes again.
+#
+# However if you have setup your proper monitoring of the Redis server
+# and persistence, you may want to disable this feature so that Redis will
+# continue to work as usual even if there are problems with disk,
+# permissions, and so forth.
+stop-writes-on-bgsave-error yes
 
+# Compress string objects using LZF when dump .rdb databases?
+# For default that's set to 'yes' as it's almost always a win.
+# If you want to save some CPU in the saving child set it to 'no' but
+# the dataset will likely be bigger if you have compressible values or keys.
+rdbcompression yes
 
+# Since version 5 of RDB a CRC64 checksum is placed at the end of the file.
+# This makes the format more resistant to corruption but there is a performance
+# hit to pay (around 10%) when saving and loading RDB files, so you can disable it
+# for maximum performances.
+#
+# RDB files created with checksum disabled have a checksum of zero that will
+# tell the loading code to skip the check.
+rdbchecksum yes
 
+# The filename where to dump the DB
+dbfilename dump.rdb
 
+# The working directory.
+#
+# The DB will be written inside this directory, with the filename specified
+# above using the 'dbfilename' configuration directive.
+#
+# The Append Only File will also be created inside this directory.
+#
+# Note that you must specify a directory here, not a file name.
+dir ./
 
+```   
 
-
+* **save**   
+save 秒钟 写操作次数   
+RDB是整个内存的压缩过的Snapshot，RDB的数据结构，可以配置复合的快照触发条件。   
+默认：是1分钟内改了1万次，或5分钟内改了10次，或15分钟内改了1次。
+禁用：如果想禁用RDB持久化的策略，只要不设置任何save指令，或者给save传入一个空字符串参数也可以   
+* **stop-writes-on-bgsave-error**   
+如果配置成no，表示你不在乎数据不一致或者有其他的手段发现和控制
+* **rdbcompression**   
+对于存储到磁盘中的快照，可以设置是否进行压缩存储。如果是的话，redis会采用LZF算法进行压缩。如果你不想消耗CPU来进行压缩的话，可以设置为关闭此功能。   
+* **rdbchecksum**   
+在存储快照后，还可以让redis使用CRC64算法来进行数据校验，但是这样做会增加大约10%的性能消耗，如果希望获取到最大的性能提升，可以关闭此功能。   
+* **dbfilename**   
+* **dir**   
 
 
 
