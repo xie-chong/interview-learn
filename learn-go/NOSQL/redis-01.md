@@ -20,9 +20,9 @@
   
 <!-- /MarkdownTOC -->
 
-<h1 id="1">redis常用操作命令</h1>
+<h1 id="1">1. redis常用操作命令</h1>
 
-<h2 id="1.1">String</h2>
+<h2 id="1.1">1.1 String</h2>
 
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
@@ -38,7 +38,7 @@
 |  |  |APPEND key value|  |  |
 
 
-<h2 id="1.2">List</h2>
+<h2 id="1.2">1.2 List</h2>
 
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
@@ -50,7 +50,7 @@
 |  |  |  |RPOPLPUSH source destination|
 |  |  |  |LREM key count value|
 
-<h2 id="1.3">Hash</h2>
+<h2 id="1.3">1.3 Hash</h2>
 
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
@@ -64,7 +64,7 @@
 |  |HSCAN key cursor [MATCH pattern] [COUNT count]|  |  |  |
 
 
-<h2 id="1.4">Set</h2>
+<h2 id="1.4">1.4 Set</h2>
 
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
@@ -79,7 +79,7 @@
 
 
 
-<h2 id="1.5">sorted set</h2>
+<h2 id="1.5">1.5 sorted set</h2>
 
 |  C  |  R  |  U  |  D  |
 | :--------   | :--------   |  :--------   | :--------   |
@@ -102,11 +102,11 @@
 
 
 ---
-<h1 id="2">解析配置文件redis.conf</h1>
+<h1 id="2">2. 解析配置文件redis.conf</h1>
 
 ---
 
-<h2 id="2.1">启动redis服务</h2>
+<h2 id="2.1">2.1 启动redis服务</h2>
 
 ```
 # Note that in order to read the configuration file, Redis must be
@@ -134,7 +134,7 @@
 以上路径会由于安装或存放，存在差异，仅供参考。
 
 
-<h2 id="2.2">units单位</h2>
+<h2 id="2.2">2.2 units单位</h2>
 
 ```
 # Note on units: when memory size is needed, it is possible to specify
@@ -154,7 +154,7 @@
 2. 对大小写不敏感
 
 
-<h2 id="2.3">INCLUDES</h2>
+<h2 id="2.3">2.3 INCLUDES</h2>
 
 ```
 ################################## INCLUDES ###################################
@@ -178,7 +178,7 @@
 ```   
 和我们的Struts2配置文件类似，可以通过includes包含，redis.conf可以作为总闸，包含其他
 
-<h2 id="2.4">GENERAL</h2>
+<h2 id="2.4">2.4 GENERAL</h2>
 
 ```
 ################################# GENERAL #####################################
@@ -246,20 +246,21 @@ databases 16
 always-show-logo yes
 
 ```   
-* daemonize   
-* pidfile   
-* port   
-* tcp-backlog  设置tcp的backlog，backlog其实是一个连接队列，backlog队列总和=未完成三次握手队列 + 已经完成三次握手队列。
+* **daemonize**   
+* **pidfile**   
+* **port**   
+* **tcp-backlog**   
+设置tcp的backlog，backlog其实是一个连接队列，backlog队列总和=未完成三次握手队列 + 已经完成三次握手队列。
 在高并发环境下你需要一个高backlog值来避免慢客户端连接问题。注意Linux内核会将这个值减小到/proc/sys/net/core/somaxconn的值，所以需要确认增大somaxconn和tcp_max_syn_backlog两个值来达到想要的效果。   
-* timeout   
-* bind    
-* tcp-keepalive  单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60    
-* loglevel   
-* logfile   
-* syslog-enabled  是否把日志输出到syslog中   
-* syslog-ident  指定syslog里的日志标志   
-* syslog-facility  指定syslog设备，值可以是USER或LOCAL0-LOCAL7   
-* databases
+* **timeout**   
+* **bind**    
+* **tcp-keepalive**  单位为秒，如果设置为0，则不会进行Keepalive检测，建议设置成60    
+* **loglevel**   
+* **logfile**   
+* **syslog-enabled**  是否把日志输出到syslog中   
+* **syslog-ident**  指定syslog里的日志标志   
+* **syslog-facility**  指定syslog设备，值可以是USER或LOCAL0-LOCAL7   
+* **databases**
 
 
 
