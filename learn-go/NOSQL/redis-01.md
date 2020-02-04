@@ -9,6 +9,15 @@
   - [Set](#1.4)
   - [sorted set](#1.5)
 - [2. 解析配置文件redis.conf](#2)
+  - [2.1 启动redis服务](#2.1)
+  - [2.2 units](#2.2)
+  - [2.3 INCLUDES](#2.3)
+  - [2.4 GENERAL](#2.4)
+  - [2.5 SNAPSHOTTING](#2.5)
+  - [2.6 REPLICATION](#2.6)
+  - [2.7 SECURITY](#2.7)
+  - [2.8 MEMORY MANAGEMENT](#2.8)
+  
 
 
   
@@ -134,7 +143,7 @@
 以上路径会由于安装或存放，存在差异，仅供参考。
 
 
-<h2 id="2.2">2.2 units单位</h2>
+<h2 id="2.2">2.2 units</h2>
 
 ```
 # Note on units: when memory size is needed, it is possible to specify
@@ -639,7 +648,7 @@ replica-priority 100
 ```   
 访问密码的查看、设置和取消
 
-<h2 id="2.8">2.8 LIMITS</h2>
+<h2 id="2.8">2.8 MEMORY MANAGEMENT</h2>
 
 ```
 ############################## MEMORY MANAGEMENT ################################
