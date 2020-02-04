@@ -17,6 +17,8 @@
   - [2.6 REPLICATION](#2.6)
   - [2.7 SECURITY](#2.7)
   - [2.8 MEMORY MANAGEMENT](#2.8)
+  - [2.9 APPEND ONLY MODE](#2.9)
+  - [2.10 常见配置redis.conf介绍](#2.10)
   
 
 
@@ -910,7 +912,7 @@ aof-use-rdb-preamble yes
 
 <h2 id="2.10">2.10 常见配置redis.conf介绍</h2>
 
-redis.conf 配置项参数说明如下：
+**redis.conf 配置项参数说明如下**：
 
 1. Redis默认不是以守护进程的方式运行，可以通过该配置项修改，使用yes启用守护进程
 ```
