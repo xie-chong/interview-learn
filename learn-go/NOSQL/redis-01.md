@@ -743,8 +743,13 @@ replica-priority 100
 * **maxmemory-policy**
   - volatile-lru -> remove the key with an expire set using an LRU algorithm(使用LRU算法移除key，只对设置了过期时间的键)   
   - allkeys-lru -> remove any key according to the LRU algorithm(使用LRU算法移除key)
-
-
+  - volatile-random -> remove a random key with an expire set(在过期集合中移除随机的key，只对设置了过期时间的键)
+  - allkeys-random -> remove a random key, any key(移除随机的key)
+  - volatile-ttl -> remove the key with the nearest expire time (minor TTL)(移除那些TTL值最小的key，即那些最近要过期的key)
+  - noeviction -> don't expire at all, just return an error on write operations(不进行移除。针对写操作，只是返回错误信息)
+  
+* **maxmemory-samples**   
+设置样本数量，LRU算法和最小TTL算法都并非是精确的算法，而是估算值，所以你可以设置样本的大小，redis默认会检查这么多个key并选择其中LRU的那个。
 
 
 
