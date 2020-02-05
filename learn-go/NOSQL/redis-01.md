@@ -21,6 +21,13 @@
   - [2.10 常见配置redis.conf介绍](#2.10)
 - [3. redis的持久化](#3)
   - [3.1 总体介绍](#3.1)
+  - [3.2 RDB(Redis DataBase)](#3.2)
+    - [3.2.1 官网介绍](#3.2.1)
+    - [3.2.2 是什么？](#3.2.2)
+    - [3.2.3 如何触发RDB快照](#3.2.3)
+    - [3.2.4 如何恢复？如何停止？](#3.2.4)
+    - [3.2.5 优势、劣势](#3.2.5)
+    - [3.2.6 小结](#3.2.6)
    
   
 
@@ -1071,18 +1078,135 @@ Redis provides a different range of persistence options:
 * It is possible to combine both AOF and RDB in the same instance. Notice that, in this case, when Redis restarts the AOF file will be used to reconstruct the original dataset since it is guaranteed to be the most complete.
 
 
+<h2 id="3.2">3.2 RDB(Redis DataBase)</h2>
 
 
+<h3 id="3.2.1">3.2.1 官网介绍</h3>
+
+https://redis.io/topics/persistence
+
+```
+The most important thing to understand is the different trade-offs between the RDB and AOF persistence. Let's start with RDB:
+
+**RDB advantages**   
+* RDB is a very compact single-file point-in-time representation of your Redis data. RDB files are perfect for backups. For instance you may want to archive your RDB files every hour for the latest 24 hours, and to save an RDB snapshot every day for 30 days. This allows you to easily restore different versions of the data set in case of disasters.
+* RDB is very good for disaster recovery, being a single compact file that can be transferred to far data centers, or onto Amazon S3 (possibly encrypted).
+* RDB maximizes Redis performances since the only work the Redis parent process needs to do in order to persist is forking a child that will do all the rest. The parent instance will never perform disk I/O or alike.
+* RDB allows faster restarts with big datasets compared to AOF.
+**RDB disadvantages**   
+* RDB is NOT good if you need to minimize the chance of data loss in case Redis stops working (for example after a power outage). You can configure different save points where an RDB is produced (for instance after at least five minutes and 100 writes against the data set, but you can have multiple save points). However you'll usually create an RDB snapshot every five minutes or more, so in case of Redis stopping working without a correct shutdown for any reason you should be prepared to lose the latest minutes of data.
+* RDB needs to fork() often in order to persist on disk using a child process. Fork() can be time consuming if the dataset is big, and may result in Redis to stop serving clients for some millisecond or even for one second if the dataset is very big and the CPU performance not great. AOF also needs to fork() but you can tune how often you want to rewrite your logs without any trade-off on durability.
+```
+
+<h3 id="3.2.2">3.2.2 是什么？</h3>
+
+* 在指定的时间间隔内将内存中的数据集快照写入磁盘，也就是行话讲的Snapshot快照，它恢复时是将快照文件直接读到内存里。
+
+* Redis会单独创建（fork）一个子进程来进行持久化，会先将数据写入到一个临时文件中，待持久化过程都结束了，再用这个临时文件替换上次持久化好的文件。整个过程中，主进程是不进行任何IO操作的，这就确保了极高的性能如果需要进行大规模数据的恢复，且对于数据恢复的完整性不是非常敏感，那RDB方式要比AOF方式更加的高效。RDB的缺点是最后一次持久化后的数据可能丢失。
+
+* rdb 保存的是dump.rdb文件。
+
+* 配置位置   
+```
+################################ SNAPSHOTTING  ################################
+#
+# Save the DB on disk:
+#
+#   save <seconds> <changes>
+#
+#   Will save the DB if both the given number of seconds and the given
+#   number of write operations against the DB occurred.
+#
+#   In the example below the behaviour will be to save:
+#   after 900 sec (15 min) if at least 1 key changed
+#   after 300 sec (5 min) if at least 10 keys changed
+#   after 60 sec if at least 10000 keys changed
+#
+#   Note: you can disable saving completely by commenting out all "save" lines.
+#
+#   It is also possible to remove all the previously configured save
+#   points by adding a save directive with a single empty string argument
+#   like in the following example:
+#
+#   save ""
+
+save 900 1
+save 300 10
+save 60 10000
+```
 
 
+**fork**：fork的作用是复制一个与当前进程一样的进程。新进程的所有数据（变量、环境变量、程序计数器等）数值都和原进程一致，但是是一个全新的进程，并作为原进程的子进程。
 
 
+<h3 id="3.2.3">3.2.3 如何触发RDB快照</h3>
+
+1. 配置文件中默认的快照配置   
+```
+[xiecentos@xiecentos bin]$ pwd
+/usr/local/redis/5.0.7/bin
+[xiecentos@xiecentos bin]$ ll
+total 32776
+-rw-r--r--. 1 root root     125 Feb  4 00:24 dump.rdb
+-rwxr-xr-x. 1 root root 4366792 Jan 19 09:54 redis-benchmark
+-rwxr-xr-x. 1 root root 8125184 Jan 19 09:54 redis-check-aof
+-rwxr-xr-x. 1 root root 8125184 Jan 19 09:54 redis-check-rdb
+-rwxr-xr-x. 1 root root 4807856 Jan 19 09:54 redis-cli
+lrwxrwxrwx. 1 root root      12 Jan 19 09:54 redis-sentinel -> redis-server
+-rwxr-xr-x. 1 root root 8125184 Jan 19 09:54 redis-server
+[xiecentos@xiecentos bin]$ 
+```
+
+冷拷贝后重新使用,可以cp dump.rdb dump_new.rdb
+
+2. 命令save或者是bgsave   
+
+**Snapshotting**   
+By default Redis saves snapshots of the dataset on disk, in a binary file called dump.rdb. You can configure Redis to have it save the dataset every N seconds if there are at least M changes in the dataset, or you can manually call the [SAVE](https://redis.io/commands/save) or [BGSAVE](https://redis.io/commands/bgsave) commands.
+
+For example, this configuration will make Redis automatically dump the dataset to disk every 60 seconds if at least 1000 keys changed:
+```
+save 60 1000
+```   
+This strategy is known as snapshotting.
+
+**How it works**   
+Whenever Redis needs to dump the dataset to disk, this is what happens:
+
+* Redis forks. We now have a child and a parent process.
+* The child starts to write the dataset to a temporary RDB file.
+* When the child is done writing the new RDB file, it replaces the old one.
+
+This method allows Redis to benefit from copy-on-write semantics.
+
+**SAVE**：save时只管保存，其它不管，全部阻塞。
+
+**BGSAVE：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间。
+
+3. 执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义
 
 
+<h3 id="3.2.4">3.2.4 如何恢复？如何停止？</h3>   
+**如何恢复**？   
+将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务即可。
 
+CONFIG GET dir获取目录
 
+**如何停止**？   
+动态所有停止RDB保存规则的方法：redis-cli config set save ""
 
+<h3 id="3.2.5">3.2.5 优势、劣势</h3>   
+**优势**  
+* 适合大规模的数据恢复。
+* 对数据完整性和一致性要求不高。
 
+**劣势**  
+* 在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照后的所有修改。
+* fork的时候，内存中的数据被克隆了一份，大致2倍的膨胀性需要考虑
+
+<h3 id="3.2.6">3.2.6 小结</h3>   
+
+![learn-go/NOSQL/document-image/redis/redis-001.png]   
 
 
 
