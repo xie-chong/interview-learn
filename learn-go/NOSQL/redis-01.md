@@ -1138,7 +1138,7 @@ save 60 10000
 
 <h3 id="3.2.3">3.2.3 如何触发RDB快照</h3>
 
-1. 配置文件中默认的快照配置   
+#### 1. 配置文件中默认的快照配置   
 ```
 [xiecentos@xiecentos bin]$ pwd
 /usr/local/redis/5.0.7/bin
@@ -1154,9 +1154,12 @@ lrwxrwxrwx. 1 root root      12 Jan 19 09:54 redis-sentinel -> redis-server
 [xiecentos@xiecentos bin]$ 
 ```
 
-冷拷贝后重新使用,可以cp dump.rdb dump_new.rdb
+冷拷贝后重新使用,可以cp dump.rdb dump_new.rdb   
 
-2. 命令save或者是bgsave   
+<p align="center">操作参考</p>   
+![](document-image/redis/redis-001.png)   
+
+#### 2. 命令save或者是bgsave   
 
 >**Snapshotting**   
 By default Redis saves snapshots of the dataset on disk, in a binary file called dump.rdb. You can configure Redis to have it save the dataset every N seconds if there are at least M changes in the dataset, or you can manually call the [SAVE](https://redis.io/commands/save) or [BGSAVE](https://redis.io/commands/bgsave) commands.
@@ -1179,7 +1182,7 @@ Whenever Redis needs to dump the dataset to disk, this is what happens:
 
 **BGSAVE**：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间。
 
-3. 执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义
+#### 3. 执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义
 
 
 <h3 id="3.2.4">3.2.4 如何恢复？如何停止？</h3>
