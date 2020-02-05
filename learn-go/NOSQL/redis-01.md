@@ -1296,7 +1296,7 @@ appendfilename "appendonly.aof"
 >So Redis supports an interesting feature: it is able to rebuild the AOF in the background without interrupting service to clients. Whenever you issue a BGREWRITEAOF Redis will write the shortest sequence of commands needed to rebuild the current dataset in memory. If you're using the AOF with Redis 2.2 you'll need to run [BGREWRITEAOF](https://redis.io/commands/bgrewriteaof) from time to time. Redis 2.4 is able to trigger log rewriting automatically (see the 2.4 example configuration file for more information).
 
 >**How durable is the append only file?**   
->You can configure how many times Redis will fsync data on disk. There are three options:
+>You can configure how many times Redis will [fsync](http://linux.die.net/man/2/fsync) data on disk. There are three options:
 
 * appendfsync always: fsync every time a new command is appended to the AOF. Very very slow, very safe.
 * appendfsync everysec: fsync every second. Fast enough (in 2.4 likely to be as fast as snapshotting), and you can lose 1 second of data if there is a disaster.
