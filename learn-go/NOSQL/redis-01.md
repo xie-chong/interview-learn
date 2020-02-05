@@ -1067,11 +1067,10 @@ aof-use-rdb-preamble yes
 <h2 id="3.1">3.1 总体介绍</h2>
 
 官网介绍：   
-This page provides a technical description of Redis persistence, it is a suggested read for all Redis users. For a wider overview of Redis persistence and the durability guarantees it provides you may also want to read [Redis persistence demystified](http://antirez.com/post/redis-persistence-demystified.html).
+>This page provides a technical description of Redis persistence, it is a suggested read for all Redis users. For a wider overview of Redis persistence and the durability guarantees it provides you may also want to read [Redis persistence demystified](http://antirez.com/post/redis-persistence-demystified.html).
 
-**Redis Persistence**   
-Redis provides a different range of persistence options:
-
+>**Redis Persistence**   
+>Redis provides a different range of persistence options:
 * The RDB persistence performs point-in-time snapshots of your dataset at specified intervals.
 * The AOF persistence logs every write operation received by the server, that will be played again at server startup, reconstructing the original dataset. Commands are logged using the same format as the Redis protocol itself, in an append-only fashion. Redis is able to rewrite the log in the background when it gets too big.
 * If you wish, you can disable persistence completely, if you want your data to just exist as long as the server is running.
@@ -1085,10 +1084,9 @@ Redis provides a different range of persistence options:
 
 https://redis.io/topics/persistence
 
-```
-The most important thing to understand is the different trade-offs between the RDB and AOF persistence. Let's start with RDB:
+>The most important thing to understand is the different trade-offs between the RDB and AOF persistence. Let's start with RDB:
 
-**RDB advantages**   
+>**RDB advantages**   
 * RDB is a very compact single-file point-in-time representation of your Redis data. RDB files are perfect for backups. For instance you may want to archive your RDB files every hour for the latest 24 hours, and to save an RDB snapshot every day for 30 days. This allows you to easily restore different versions of the data set in case of disasters.
 * RDB is very good for disaster recovery, being a single compact file that can be transferred to far data centers, or onto Amazon S3 (possibly encrypted).
 * RDB maximizes Redis performances since the only work the Redis parent process needs to do in order to persist is forking a child that will do all the rest. The parent instance will never perform disk I/O or alike.
@@ -1096,7 +1094,6 @@ The most important thing to understand is the different trade-offs between the R
 **RDB disadvantages**   
 * RDB is NOT good if you need to minimize the chance of data loss in case Redis stops working (for example after a power outage). You can configure different save points where an RDB is produced (for instance after at least five minutes and 100 writes against the data set, but you can have multiple save points). However you'll usually create an RDB snapshot every five minutes or more, so in case of Redis stopping working without a correct shutdown for any reason you should be prepared to lose the latest minutes of data.
 * RDB needs to fork() often in order to persist on disk using a child process. Fork() can be time consuming if the dataset is big, and may result in Redis to stop serving clients for some millisecond or even for one second if the dataset is very big and the CPU performance not great. AOF also needs to fork() but you can tune how often you want to rewrite your logs without any trade-off on durability.
-```
 
 <h3 id="3.2.2">3.2.2 是什么？</h3>
 
@@ -1161,23 +1158,22 @@ lrwxrwxrwx. 1 root root      12 Jan 19 09:54 redis-sentinel -> redis-server
 
 2. 命令save或者是bgsave   
 
-**Snapshotting**   
+>**Snapshotting**   
 By default Redis saves snapshots of the dataset on disk, in a binary file called dump.rdb. You can configure Redis to have it save the dataset every N seconds if there are at least M changes in the dataset, or you can manually call the [SAVE](https://redis.io/commands/save) or [BGSAVE](https://redis.io/commands/bgsave) commands.
 
-For example, this configuration will make Redis automatically dump the dataset to disk every 60 seconds if at least 1000 keys changed:
+>For example, this configuration will make Redis automatically dump the dataset to disk every 60 seconds if at least 1000 keys changed:
 ```
 save 60 1000
 ```   
-This strategy is known as snapshotting.
+>This strategy is known as snapshotting.
 
-**How it works**   
+>**How it works**   
 Whenever Redis needs to dump the dataset to disk, this is what happens:
-
 * Redis forks. We now have a child and a parent process.
 * The child starts to write the dataset to a temporary RDB file.
 * When the child is done writing the new RDB file, it replaces the old one.
 
-This method allows Redis to benefit from copy-on-write semantics.
+>This method allows Redis to benefit from copy-on-write semantics.
 
 **SAVE**：save时只管保存，其它不管，全部阻塞。
 
@@ -1186,7 +1182,8 @@ This method allows Redis to benefit from copy-on-write semantics.
 3. 执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义
 
 
-<h3 id="3.2.4">3.2.4 如何恢复？如何停止？</h3>   
+<h3 id="3.2.4">3.2.4 如何恢复？如何停止？</h3>
+
 **如何恢复**？   
 将备份文件 (dump.rdb) 移动到 redis 安装目录并启动服务即可。
 
@@ -1195,7 +1192,8 @@ CONFIG GET dir获取目录
 **如何停止**？   
 动态所有停止RDB保存规则的方法：redis-cli config set save ""
 
-<h3 id="3.2.5">3.2.5 优势、劣势</h3>   
+<h3 id="3.2.5">3.2.5 优势、劣势</h3>
+
 **优势**  
 * 适合大规模的数据恢复。
 * 对数据完整性和一致性要求不高。
@@ -1204,7 +1202,7 @@ CONFIG GET dir获取目录
 * 在一定间隔时间做一次备份，所以如果redis意外down掉的话，就会丢失最后一次快照后的所有修改。
 * fork的时候，内存中的数据被克隆了一份，大致2倍的膨胀性需要考虑
 
-<h3 id="3.2.6">3.2.6 小结</h3>   
+<h3 id="3.2.6">3.2.6 小结</h3>
 
 ![learn-go/NOSQL/document-image/redis/redis-001.png]   
 
