@@ -1156,8 +1156,9 @@ lrwxrwxrwx. 1 root root      12 Jan 19 09:54 redis-sentinel -> redis-server
 
 冷拷贝后重新使用,可以cp dump.rdb dump_new.rdb   
 
-<p align="center">操作参考</p>   
-![](document-image/redis/redis-001.png)   
+<p align="center">操作参考</p>
+
+![](document-image/redis/redis-002.png)   
 
 #### 2. 命令save或者是bgsave   
 
