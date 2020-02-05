@@ -28,6 +28,13 @@
     - [3.2.4 如何恢复？如何停止？](#3.2.4)
     - [3.2.5 优势、劣势](#3.2.5)
     - [3.2.6 小结](#3.2.6)
+  - [3.3 AOF(Append Only File)](#3.3)
+    - [3.3.1 官网介绍](#3.3.1)
+    - [3.3.2 是什么？](#3.3.2)
+    - [3.3.3 AOF启动/修复/恢复](#3.3.3)
+    - [3.3.4 rewrite](#3.3.4)
+    - [3.3.5 优势、劣势](#3.3.5)
+    - [3.3.6 小结](#3.3.6)
    
   
 
@@ -1209,6 +1216,147 @@ CONFIG GET dir获取目录
 <h3 id="3.2.6">3.2.6 小结</h3>
 
 ![](document-image/redis/redis-001.png)
+
+
+<h2 id="3.3">3.3 AOF(Append Only File)</h2>
+
+<h3 id="3.3.1">3.3.1 官网介绍</h3>
+
+https://redis.io/topics/persistence
+
+>**AOF advantages**   
+* Using AOF Redis is much more durable: you can have different fsync policies: no fsync at all, fsync every second, fsync at every query. With the default policy of fsync every second write performances are still great (fsync is performed using a background thread and the main thread will try hard to perform writes when no fsync is in progress.) but you can only lose one second worth of writes.
+* The AOF log is an append only log, so there are no seeks, nor corruption problems if there is a power outage. Even if the log ends with an half-written command for some reason (disk full or other reasons) the redis-check-aof tool is able to fix it easily.
+* Redis is able to automatically rewrite the AOF in background when it gets too big. The rewrite is completely safe as while Redis continues appending to the old file, a completely new one is produced with the minimal set of operations needed to create the current data set, and once this second file is ready Redis switches the two and starts appending to the new one.
+* AOF contains a log of all the operations one after the other in an easy to understand and parse format. You can even easily export an AOF file. For instance even if you flushed everything for an error using a FLUSHALL command, if no rewrite of the log was performed in the meantime you can still save your data set just stopping the server, removing the latest command, and restarting Redis again.
+>**AOF disadvantages**   
+* AOF files are usually bigger than the equivalent RDB files for the same dataset.
+* AOF can be slower than RDB depending on the exact fsync policy. In general with fsync set to every second performance is still very high, and with fsync disabled it should be exactly as fast as RDB even under high load. Still RDB is able to provide more guarantees about the maximum latency even in the case of an huge write load.
+* In the past we experienced rare bugs in specific commands (for instance there was one involving blocking commands like [BRPOPLPUSH](https://redis.io/commands/brpoplpush)) causing the AOF produced to not reproduce exactly the same dataset on reloading. These bugs are rare and we have tests in the test suite creating random complex datasets automatically and reloading them to check everything is fine. However, these kind of bugs are almost impossible with RDB persistence. To make this point more clear: the Redis AOF works by incrementally updating an existing state, like MySQL or MongoDB does, while the RDB snapshotting creates everything from scratch again and again, that is conceptually more robust. However - 1) It should be noted that every time the AOF is rewritten by Redis it is recreated from scratch starting from the actual data contained in the data set, making resistance to bugs stronger compared to an always appending AOF file (or one rewritten reading the old AOF instead of reading the data in memory). 2) We have never had a single report from users about an AOF corruption that was detected in the real world.
+
+<h3 id="3.3.2">3.3.2 是什么？</h3>
+
+* **以日志的形式来记录每个写操作**，将Redis执行过的所有写指令记录下来(读操作不记录)，只许追加文件但不可以改写文件，redis启动之初会读取该文件重新构建数据，换言之，redis重启的话就根据日志文件的内容将写指令从前到后执行一次以完成数据的恢复工作。
+
+* aof保存的是appendonly.aof文件。
+
+* 配置位置   
+```
+############################## APPEND ONLY MODE ###############################
+
+# By default Redis asynchronously dumps the dataset on disk. This mode is
+# good enough in many applications, but an issue with the Redis process or
+# a power outage may result into a few minutes of writes lost (depending on
+# the configured save points).
+#
+# The Append Only File is an alternative persistence mode that provides
+# much better durability. For instance using the default data fsync policy
+# (see later in the config file) Redis can lose just one second of writes in a
+# dramatic event like a server power outage, or a single write if something
+# wrong with the Redis process itself happens, but the operating system is
+# still running correctly.
+#
+# AOF and RDB persistence can be enabled at the same time without problems.
+# If the AOF is enabled on startup Redis will load the AOF, that is the file
+# with the better durability guarantees.
+#
+# Please check http://redis.io/topics/persistence for more information.
+
+appendonly no
+
+# The name of the append only file (default: "appendonly.aof")
+
+appendfilename "appendonly.aof"
+
+```
+
+<h3 id="3.3.3">3.3.3 AOF启动/修复/恢复</h3>
+
+**正常恢复**   
+* 启动：设置Yes(修改默认的appendonly no，改为yes)
+* 将有数据的aof文件复制一份保存到对应目录(config get dir)
+* 恢复：重启redis然后重新加载
+
+**异常恢复**   
+* 启动：设置Yes(修改默认的appendonly no，改为yes)
+* 备份被写坏的AOF文件
+* 修复：redis-check-aof --fix进行修复
+* 恢复：重启redis然后重新加载
+
+<p align="center">操作参考</p>
+
+![](document-image/redis/redis-003.png)
+
+
+<h3 id="3.3.4">3.3.4 rewrite</h3>
+
+>**Log rewriting**   
+>As you can guess, the AOF gets bigger and bigger as write operations are performed. For example, if you are incrementing a counter 100 times, you'll end up with a single key in your dataset containing the final value, but 100 entries in your AOF. 99 of those entries are not needed to rebuild the current state.
+
+>So Redis supports an interesting feature: it is able to rebuild the AOF in the background without interrupting service to clients. Whenever you issue a BGREWRITEAOF Redis will write the shortest sequence of commands needed to rebuild the current dataset in memory. If you're using the AOF with Redis 2.2 you'll need to run [BGREWRITEAOF](https://redis.io/commands/bgrewriteaof) from time to time. Redis 2.4 is able to trigger log rewriting automatically (see the 2.4 example configuration file for more information).
+
+>**How durable is the append only file?**   
+>You can configure how many times Redis will fsync data on disk. There are three options:
+
+>* appendfsync always: fsync every time a new command is appended to the AOF. Very very slow, very safe.
+* appendfsync everysec: fsync every second. Fast enough (in 2.4 likely to be as fast as snapshotting), and you can lose 1 second of data if there is a disaster.
+* appendfsync no: Never fsync, just put your data in the hands of the Operating System. The faster and less safe method. Normally Linux will flush data every 30 seconds with this configuration, but it's up to the kernel exact tuning.
+
+>The suggested (and default) policy is to fsync every second. It is both very fast and pretty safe. The always policy is very slow in practice, but it supports group commit, so if there are multiple parallel writes Redis will try to perform a single fsync operation.
+
+#### 是什么？   
+AOF采用文件追加方式，文件会越来越大为避免出现此种情况，新增了重写机制,当AOF文件的大小超过所设定的阈值时，Redis就会启动AOF文件的内容压缩，只保留可以恢复数据的最小指令集。可以使用命令bgrewriteaof。
+
+#### 重写原理   
+AOF文件持续增长而过大时，会fork出一条新进程来将文件重写(也是先写临时文件最后再rename)，遍历新进程的内存中数据，每条记录有一条的Set语句。重写aof文件的操作，并没有读取旧的aof文件，而是将整个内存中的数据库内容用命令的方式重写了一个新的aof文件，这点和快照有点类似。
+
+#### 触发机制   
+**Redis会记录上次重写时的AOF大小，默认配置是当AOF文件大小是上次rewrite后大小的一倍且文件大于64M时触发**。
+
+
+<h3 id="3.3.5">3.3.5 优势、劣势</h3>
+
+**优势**   
+* 每修改同步：appendfsync always 同步持久化 每次发生数据变更会被立即记录到磁盘，性能较差但数据完整性比较好。
+* 每秒同步：appendfsync everysec 异步操作，每秒记录，如果一秒内宕机，有数据丢失。
+* 不同步：appendfsync no 从不同步。
+
+**劣势**   
+* 相同数据集的数据而言aof文件要远大于rdb文件，恢复速度慢于rdb。
+* aof运行效率要慢于rdb,每秒同步策略效率较好，不同步效率和rdb相同。
+
+<h3 id="3.3.6">3.3.6 小结</h3>
+
+![](document-image/redis/redis-004.png)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
