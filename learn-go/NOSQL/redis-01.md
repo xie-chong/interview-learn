@@ -1204,7 +1204,7 @@ CONFIG GET dir获取目录
 
 <h3 id="3.2.6">3.2.6 小结</h3>
 
-![](/document-image/redis/redis-001.png?raw=true)
+![](../learn-go/NOSQL/document-image/redis/redis-001.png)
 
 
 
