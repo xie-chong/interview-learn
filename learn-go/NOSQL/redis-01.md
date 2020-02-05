@@ -1177,7 +1177,7 @@ Whenever Redis needs to dump the dataset to disk, this is what happens:
 
 **SAVE**：save时只管保存，其它不管，全部阻塞。
 
-**BGSAVE：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间。
+**BGSAVE**：Redis会在后台异步进行快照操作，快照同时还可以响应客户端请求。可以通过lastsave命令获取最后一次成功执行快照的时间。
 
 3. 执行flushall命令，也会产生dump.rdb文件，但里面是空的，无意义
 
@@ -1204,7 +1204,7 @@ CONFIG GET dir获取目录
 
 <h3 id="3.2.6">3.2.6 小结</h3>
 
-![learn-go/NOSQL/document-image/redis/redis-001.png]   
+![](learn-go/NOSQL/document-image/redis/redis-001.png)   
 
 
 
