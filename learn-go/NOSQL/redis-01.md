@@ -35,6 +35,14 @@
     - [3.3.4 rewrite](#3.3.4)
     - [3.3.5 优势、劣势](#3.3.5)
     - [3.3.6 小结](#3.3.6)
+- [4. Redis的事务](#4)
+  - [4.1 是什么？](#4.1)
+  - [4.2 能干嘛？](#4.2)
+  - [4.3 怎么玩？](#4.3)
+    - [4.3.1 常用命令](#4.3.1)
+    - [4.3.2 CASE](#4.3.2)
+  - [4.4 三阶段](#4.4)
+  - [4.5 三特性](#4.5)
    
   
 
@@ -1330,7 +1338,119 @@ AOF文件持续增长而过大时，会fork出一条新进程来将文件重写(
 ![](document-image/redis/redis-004.png)
 
 
+---
+<h1 id="4">4. Redis的事务</h1>
 
+---
+
+<h2 id="4.1">4.1 是什么？</h2>
+
+https://redis.io/topics/transactions
+
+**官网介绍**：   
+>**Transactions**   
+>[MULTI](https://redis.io/commands/multi), [EXEC](https://redis.io/commands/exec), [DISCARD](https://redis.io/commands/discard) and [WATCH](https://redis.io/commands/watch) are the foundation of transactions in Redis. They allow the execution of a group of commands in a single step, with two important guarantees:
+
+>* All the commands in a transaction are serialized and executed sequentially. It can never happen that a request issued by another client is served **in the middle of** the execution of a Redis transaction. This guarantees that the commands are executed as a single isolated operation.
+
+>* Either all of the commands or none are processed, so a Redis transaction is also atomic. The [EXEC](https://redis.io/commands/exec) command triggers the execution of all the commands in the transaction, so if a client loses the connection to the server in the context of a transaction before calling the [EXEC](https://redis.io/commands/exec) command none of the operations are performed, instead if the [EXEC](https://redis.io/commands/exec) command is called, all the operations are performed. When using the [append-only file](https://redis.io/topics/persistence#append-only-file) Redis makes sure to use a single write(2) syscall to write the transaction on disk. However if the Redis server crashes or is killed by the system administrator in some hard way it is possible that only a partial number of operations are registered. Redis will detect this condition at restart, and will exit with an error. Using the redis-check-aof tool it is possible to fix the append only file that will remove the partial transaction so that the server can start again.
+
+>Starting with version 2.2, Redis allows for an extra guarantee to the above two, in the form of optimistic locking in a way very similar to a check-and-set (CAS) operation. This is documented [later](https://redis.io/topics/transactions#cas) on this page.
+
+可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，**按顺序地串行化执行而不会被其它命令插入，不许加塞**。
+
+<h2 id="4.2">4.2 能干嘛？</h2>
+
+一个队列中，一次性、顺序性、排他性的执行一系列命令。
+
+<h2 id="4.3">4.3 怎么玩？</h2>
+
+<h3 id="4.3.1">4.3.1 常用命令</h3>
+
+| 命令        | 描述   |
+| :-------- | :----- |
+|  DISCARD  |  取消事务，放弃执行事务块内的所有命令。  |
+|  EXEC  |  执行所有事务块内的命令。  |
+|  MULTI  |  标记一个事务块的开始。  |
+|  UNWATCH  |  取消 WATCH 命令对所有 key 的监视。  |
+|  WATCH key [key ...]  |  监视一个(或多个) key ，如果在事务执行之前这个(或这些) key 被其他命令所改动，那么事务将被打断。  |
+
+<h3 id="4.3.2">4.3.2 CASE</h3>
+
+#### CASE-1 (正常执行)   
+demo:
+```
+CASE 1
+```
+
+#### CASE-2 (放弃事务)   
+demo:
+```
+CASE 2
+```
+
+#### CASE-3 (全体连坐)   
+demo:
+```
+CASE 3
+```
+
+#### CASE-4 (冤头债主)   
+demo:
+```
+CASE 4
+```
+
+#### CASE-5 (watch监控)   
+
+##### 锁机制   
+* **悲观锁**   
+悲观锁(Pessimistic Lock), 顾名思义，就是很悲观，每次去拿数据的时候都认为别人会修改，所以每次在拿数据的时候都会上锁，这样别人想拿这个数据就会block直到它拿到锁。传统的关系型数据库里边就用到了很多这种锁机制，比如行锁，表锁等，读锁，写锁等，都是在做操作之前先上锁。
+
+* **乐观锁**   
+ 乐观锁(Optimistic Lock), 顾名思义，就是很乐观，每次去拿数据的时候都认为别人不会修改，**所以不会上锁**，但是在更新的时候会判断一下在此期间别人有没有去更新这个数据，可以使用版本号等机制。乐观锁适用于多读的应用类型，这样可以提高吞吐量。
+ **乐观锁策略:提交版本必须大于记录当前版本才能执行更新**。
+
+* **CAS(Check And Set)**   
+
+
+##### demo   
+1. 初始化信用卡可用余额和欠额
+
+```
+CASE 5-1
+```   
+2. 无加塞篡改，先监控再开启multi，保证两笔金额变动在同一个事务内
+```
+CASE 5-2
+```   
+3. 有加塞篡改，监控了key，如果key被修改了，后面一个事务的执行失效
+```
+CASE 5-3
+```   
+4. unwatch   
+```
+CASE 5-4
+```
+
+5. 一旦执行了exec之前加的监控锁都会被取消掉了
+
+##### 小结   
+* Watch指令，类似乐观锁，事务提交时，如果Key的值已被别的客户端改变，比如某个list已被别的客户端push/pop过了，整个事务队列都不会被执行。
+* 通过WATCH命令在事务执行之前监控了多个Keys，倘若在WATCH之后有任何Key的值发生了变化，EXEC命令执行的事务都将被放弃，同时返回Nullmulti-bulk应答以通知调用者事务执行失败。
+
+
+<h2 id="4.4">4.4 三阶段</h2>
+
+1. **开启**：以MULTI开始一个事务；
+2. **入队**：将多个命令入队到事务中，接到这些命令并不会立即执行，而是放到等待执行的事务队列里面；
+3. **执行**：由EXEC命令触发事务。
+
+<h2 id="4.5">4.5 三特性</h2>
+
+1. **单独的隔离操作**：事务中的所有命令都会序列化、按顺序地执行。事务在执行的过程中，不会被其他客户端发送来的命令请求所打断。
+2. **没有隔离级别的概念**：队列中的命令没有提交之前都不会实际的被执行，因为事务提交前任何指令都不会被实际执行，也就不存在”事务内的查询要看到事务里的更新，在事务外查询不能看到”这个让人万分头痛的问题。
+3. **不保证原子性**：redis同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚。
 
 
 
