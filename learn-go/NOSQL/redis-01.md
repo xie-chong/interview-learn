@@ -1652,6 +1652,102 @@ redis 127.0.0.1:6379> PUBLISH redisChat "Learn redis by runoob.com"
 
 
 
+---
+<h1 id="6">6. Redis Replication</h1>
+
+---
+
+<h2 id="6.1">6.1 是什么？</h2>
+
+https://redis.io/topics/replication
+
+>**Replication**
+>
+>The following are some very important facts about Redis replication:
+>
+>* Redis uses asynchronous replication, with asynchronous replica-to-master acknowledges of the amount of data processed.
+>* A master can have multiple replicas.
+>* Replicas are able to accept connections from other replicas. Aside from connecting a number of replicas to the same master, replicas can also be connected to other replicas in a cascading-like structure. Since Redis 4.0, all the sub-replicas will receive exactly the same replication stream from the master.
+>* Redis replication is non-blocking on the master side. This means that the master will continue to handle queries when one or more replicas perform the initial synchronization or a partial resynchronization.
+>* Replication is also largely non-blocking on the replica side. While the replica is performing the initial synchronization, it can handle queries using the old version of the dataset, assuming you configured Redis to do so in redis.conf. Otherwise, you can configure Redis replicas to return an error to clients if the replication stream is down. However, after the initial sync, the old dataset must be deleted and the new one must be loaded. The replica will block incoming connections during this brief window (that can be as long as many seconds for very large datasets). Since Redis 4.0 it is possible to configure Redis so that the deletion of the old data set happens in a different thread, however loading the new initial dataset will still happen in the main thread and block the replica.
+>* Replication can be used both for scalability, in order to have multiple replicas for read-only queries (for example, slow O(N) operations can be offloaded to replicas), or simply for improving data safety and high availability.
+>* It is possible to use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master redis.conf to avoid persisting to disk at all, then connect a replica configured to save from time to time, or with AOF enabled. However this setup must be handled with care, since a restarting master will start with an empty dataset: if the replica tries to synchronized with it, the replica will be emptied as well.
+
+行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主，Slave以读为主。
+
+<h2 id="6.2">6.2 能干嘛？</h2>
+
+* 读写分离
+* 容灾恢复
+
+<h2 id="6.3">6.3 怎么玩？</h2>
+
+### 1. 配从(库)不配主(库)
+
+### 2. 从库配置：slaveof 主库IP 主库端口
+
+* 每次与master断开之后，都需要重新连接，除非你配置进redis.conf文件
+* info replication
+
+### 3. 修改配置文件细节操作
+
+1. 拷贝多个redis.conf文件
+
+![](document-image/redis/redis-006.png)   
+
+2. 开启daemonize yes
+
+3. pid文件名字
+
+4. log文件名字
+```
+################################# GENERAL #####################################
+
+# By default Redis does not run as a daemon. Use 'yes' if you need it.
+# Note that Redis will write a pid file in /var/run/redis.pid when daemonized.
+daemonize yes
+
+# ...
+
+# Creating a pid file is best effort: if Redis is not able to create it
+# nothing bad happens, the server will start and run normally.
+pidfile /var/run/redis_6379.pid
+
+# ...
+
+# Specify the log file name. Also the empty string can be used to force
+# Redis to log on the standard output. Note that if you use standard
+# output for logging but daemonize, logs will be sent to /dev/null
+logfile "mylog6379.log"
+
+```
+
+5. 指定端口
+```
+################################## NETWORK #####################################
+
+# ...
+
+# Accept connections on the specified port, default is 6379 (IANA #815344).
+# If port 0 is specified Redis will not listen on a TCP socket.
+port 6379
+```
+
+6. dump.rdb名字
+```
+################################ SNAPSHOTTING  ################################
+#
+# Save the DB on disk:
+#
+...
+
+# The filename where to dump the DB
+dbfilename dump.rdb
+```
+
+
+
+
 
 
 
