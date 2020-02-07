@@ -1186,8 +1186,8 @@ lrwxrwxrwx. 1 root root      12 Jan 19 09:54 redis-sentinel -> redis-server
 >
 >For example, this configuration will make Redis automatically dump the dataset to disk every 60 seconds if at least 1000 keys changed:
 >```
-save 60 1000
-```   
+>save 60 1000
+>```   
 >This strategy is known as snapshotting.
 >
 >**How it works**   
