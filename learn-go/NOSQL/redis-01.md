@@ -1602,9 +1602,6 @@ https://redis.io/topics/pubsub
 
 **Redis 客户端可以订阅任意数量的频道**。
 
-<p align="center">   </p>
-
-<p align="center">   </p>
 
 <p align="center">订阅/发布消息图</p>
 
