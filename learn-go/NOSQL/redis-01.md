@@ -1470,25 +1470,98 @@ QUEUED
 
 
 ##### demo   
-```
 1. 初始化信用卡可用余额和欠额
-
-CASE 5-1
-
+```
+127.0.0.1:6379> set balance 100
+OK
+127.0.0.1:6379> set debt 0
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> decrby balance 30
+QUEUED
+127.0.0.1:6379> incrby debt 30
+QUEUED
+127.0.0.1:6379> exec
+1) (integer) 70
+2) (integer) 30
+127.0.0.1:6379> mget balance debt
+1) "70"
+2) "30"
+```   
 2. 无加塞篡改，先监控再开启multi，保证两笔金额变动在同一个事务内
-CASE 5-2
-
+```
+127.0.0.1:6379> watch balance
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> decrby balance 10
+QUEUED
+127.0.0.1:6379> incrby debt 10
+QUEUED
+127.0.0.1:6379> exec
+1) (integer) 60
+2) (integer) 40
+127.0.0.1:6379> mget balance debt
+1) "60"
+2) "40"
+```   
 3. 有加塞篡改，监控了key，如果key被修改了，后面一个事务的执行失效
-CASE 5-3
-
-   
+```
+127.0.0.1:6379> watch balance
+OK
+127.0.0.1:6379> set balance 300
+OK
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> decrby balance 15
+QUEUED
+127.0.0.1:6379> incrby debt 15
+QUEUED
+127.0.0.1:6379> mget balance debt
+QUEUED
+127.0.0.1:6379> exec
+(nil)
+127.0.0.1:6379> mget balance debt
+1) "300"
+2) "40"
+```   
 4. unwatch   
-
-CASE 5-4
-
+```
+127.0.0.1:6379> mget balance debt
+1) "300"
+2) "40"
+127.0.0.1:6379> watch balance
+OK
+127.0.0.1:6379> set balance 350
+OK
+127.0.0.1:6379> set debt 0
+OK
+127.0.0.1:6379> unwatch
+OK
+127.0.0.1:6379> mget balance debt
+1) "350"
+2) "0"
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> decrby balance 150
+QUEUED
+127.0.0.1:6379> incrby debt 150
+QUEUED
+127.0.0.1:6379> mget balance debt
+QUEUED
+127.0.0.1:6379> exec
+1) (integer) 200
+2) (integer) 150
+3) 1) "200"
+   2) "150"
+127.0.0.1:6379> mget balance debt
+1) "200"
+2) "150"
+```
 
 5. 一旦执行了exec之前加的监控锁都会被取消掉了
-```
+
 
 ##### 小结   
 * Watch指令，类似乐观锁，事务提交时，如果Key的值已被别的客户端改变，比如某个list已被别的客户端push/pop过了，整个事务队列都不会被执行。
