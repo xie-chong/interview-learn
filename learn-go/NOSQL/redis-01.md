@@ -43,6 +43,10 @@
     - [4.3.2 CASE](#4.3.2)
   - [4.4 三阶段](#4.4)
   - [4.5 三特性](#4.5)
+- [5. Redis的发布订阅]( #5)
+  - [5.1 是什么？](#5.1)
+  - [5.2 命令](#5.2)
+  - [5.3 案列](#5.3)
    
   
 
@@ -1585,7 +1589,63 @@ QUEUED
 3. **不保证原子性**：redis同一个事务中如果有一条命令执行失败，其后的命令仍然会被执行，没有回滚。
 
 
+---
+<h1 id="5">5. Redis的发布订阅</h1>
 
+---
+
+<h2 id="5.1">5.1 是什么？</h2>
+
+https://redis.io/topics/pubsub
+
+**Redis 发布订阅(pub/sub)是一种消息通信模式：发送者(pub)发送消息，订阅者(sub)接收消息。**
+**Redis 客户端可以订阅任意数量的频道**。
+
+<p align="center">订阅/发布消息图</p>
+
+![](document-image/redis/redis-005.png)
+
+<h2 id="5.2">5.2 命令</h2>
+
+| 命令        | 描述   |
+| :-------- | :----- |
+|  PSUBSCRIBE pattern [pattern ...]  |  取消事务，放弃执行事务块内的所有命令。  |
+|  PUBSUB subcommand [argument [argument ...]]  |  查看订阅与发布系统状态。  |
+|  PUBLISH channel message  |  将信息发送到指定的频道。  |
+|  PUNSUBSCRIBE [pattern [pattern ...]]  |  退订所有给定模式的频道。  |
+|  SUBSCRIBE channel [channel ...]  |  订阅给定的一个或多个频道的信息。  |
+|  	UNSUBSCRIBE [channel [channel ...]]  |  指退订给定的频道。  |
+
+<h2 id="5.3">5.3 案列</h2>
+
+以下实例演示了发布订阅是如何工作的。在我们实例中我们创建了订阅频道名为 redisChat:
+```
+redis 127.0.0.1:6379> SUBSCRIBE redisChat
+
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "redisChat"
+3) (integer) 1
+```
+
+现在，我们先重新开启个 redis 客户端，然后在同一个频道 redisChat 发布两次消息，订阅者就能接收到消息。
+```
+redis 127.0.0.1:6379> PUBLISH redisChat "Redis is a great caching technique"
+
+(integer) 1
+
+redis 127.0.0.1:6379> PUBLISH redisChat "Learn redis by runoob.com"
+
+(integer) 1
+
+# 订阅者的客户端会显示如下消息
+1) "message"
+2) "redisChat"
+3) "Redis is a great caching technique"
+1) "message"
+2) "redisChat"
+3) "Learn redis by runoob.com"
+```
 
 
 
