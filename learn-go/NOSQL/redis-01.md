@@ -1087,7 +1087,7 @@ aof-use-rdb-preamble yes
 
 官网介绍：   
 >This page provides a technical description of Redis persistence, it is a suggested read for all Redis users. For a wider overview of Redis persistence and the durability guarantees it provides you may also want to read [Redis persistence demystified](http://antirez.com/post/redis-persistence-demystified.html).
-
+>
 >**Redis Persistence**   
 >Redis provides a different range of persistence options:
 >* The RDB persistence performs point-in-time snapshots of your dataset at specified intervals.
@@ -1104,7 +1104,7 @@ aof-use-rdb-preamble yes
 https://redis.io/topics/persistence
 
 >The most important thing to understand is the different trade-offs between the RDB and AOF persistence. Let's start with RDB:
-
+>
 >**RDB advantages**   
 >* RDB is a very compact single-file point-in-time representation of your Redis data. RDB files are perfect for backups. For instance you may want to archive your RDB files every hour for the latest 24 hours, and to save an RDB snapshot every day for 30 days. This allows you to easily restore different versions of the data set in case of disasters.
 >* RDB is very good for disaster recovery, being a single compact file that can be transferred to far data centers, or onto Amazon S3 (possibly encrypted).
@@ -1183,19 +1183,19 @@ lrwxrwxrwx. 1 root root      12 Jan 19 09:54 redis-sentinel -> redis-server
 
 >**Snapshotting**   
 >By default Redis saves snapshots of the dataset on disk, in a binary file called dump.rdb. You can configure Redis to have it save the dataset every N seconds if there are at least M changes in the dataset, or you can manually call the [SAVE](https://redis.io/commands/save) or [BGSAVE](https://redis.io/commands/bgsave) commands.
-
+>
 >For example, this configuration will make Redis automatically dump the dataset to disk every 60 seconds if at least 1000 keys changed:
-```
+>```
 save 60 1000
 ```   
 >This strategy is known as snapshotting.
-
+>
 >**How it works**   
 Whenever Redis needs to dump the dataset to disk, this is what happens:
 >* Redis forks. We now have a child and a parent process.
 >* The child starts to write the dataset to a temporary RDB file.
 >* When the child is done writing the new RDB file, it replaces the old one.
-
+>
 >This method allows Redis to benefit from copy-on-write semantics.
 
 **SAVE**：save时只管保存，其它不管，全部阻塞。
@@ -1304,16 +1304,16 @@ appendfilename "appendonly.aof"
 
 >**Log rewriting**   
 >As you can guess, the AOF gets bigger and bigger as write operations are performed. For example, if you are incrementing a counter 100 times, you'll end up with a single key in your dataset containing the final value, but 100 entries in your AOF. 99 of those entries are not needed to rebuild the current state.
-
+>
 >So Redis supports an interesting feature: it is able to rebuild the AOF in the background without interrupting service to clients. Whenever you issue a BGREWRITEAOF Redis will write the shortest sequence of commands needed to rebuild the current dataset in memory. If you're using the AOF with Redis 2.2 you'll need to run [BGREWRITEAOF](https://redis.io/commands/bgrewriteaof) from time to time. Redis 2.4 is able to trigger log rewriting automatically (see the 2.4 example configuration file for more information).
-
+>
 >**How durable is the append only file?**   
 >You can configure how many times Redis will [fsync](http://linux.die.net/man/2/fsync) data on disk. There are three options:
-
+>
 >* appendfsync always: fsync every time a new command is appended to the AOF. Very very slow, very safe.
 >* appendfsync everysec: fsync every second. Fast enough (in 2.4 likely to be as fast as snapshotting), and you can lose 1 second of data if there is a disaster.
 >* appendfsync no: Never fsync, just put your data in the hands of the Operating System. The faster and less safe method. Normally Linux will flush data every 30 seconds with this configuration, but it's up to the kernel exact tuning.
-
+>
 >The suggested (and default) policy is to fsync every second. It is both very fast and pretty safe. The always policy is very slow in practice, but it supports group commit, so if there are multiple parallel writes Redis will try to perform a single fsync operation.
 
 #### 是什么？   
@@ -1354,11 +1354,11 @@ https://redis.io/topics/transactions
 **官网介绍**：   
 >**Transactions**   
 >[MULTI](https://redis.io/commands/multi), [EXEC](https://redis.io/commands/exec), [DISCARD](https://redis.io/commands/discard) and [WATCH](https://redis.io/commands/watch) are the foundation of transactions in Redis. They allow the execution of a group of commands in a single step, with two important guarantees:
-
+>
 >* All the commands in a transaction are serialized and executed sequentially. It can never happen that a request issued by another client is served **in the middle of** the execution of a Redis transaction. This guarantees that the commands are executed as a single isolated operation.
-
+>
 >* Either all of the commands or none are processed, so a Redis transaction is also atomic. The [EXEC](https://redis.io/commands/exec) command triggers the execution of all the commands in the transaction, so if a client loses the connection to the server in the context of a transaction before calling the [EXEC](https://redis.io/commands/exec) command none of the operations are performed, instead if the [EXEC](https://redis.io/commands/exec) command is called, all the operations are performed. When using the [append-only file](https://redis.io/topics/persistence#append-only-file) Redis makes sure to use a single write(2) syscall to write the transaction on disk. However if the Redis server crashes or is killed by the system administrator in some hard way it is possible that only a partial number of operations are registered. Redis will detect this condition at restart, and will exit with an error. Using the redis-check-aof tool it is possible to fix the append only file that will remove the partial transaction so that the server can start again.
-
+>
 >Starting with version 2.2, Redis allows for an extra guarantee to the above two, in the form of optimistic locking in a way very similar to a check-and-set (CAS) operation. This is documented [later](https://redis.io/topics/transactions#cas) on this page.
 
 可以一次执行多个命令，本质是一组命令的集合。一个事务中的所有命令都会序列化，**按顺序地串行化执行而不会被其它命令插入，不许加塞**。
@@ -1599,6 +1599,7 @@ QUEUED
 https://redis.io/topics/pubsub
 
 **Redis 发布订阅(pub/sub)是一种消息通信模式：发送者(pub)发送消息，订阅者(sub)接收消息。**
+
 **Redis 客户端可以订阅任意数量的频道**。
 
 <p align="center">订阅/发布消息图</p>
