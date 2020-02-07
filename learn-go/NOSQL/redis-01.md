@@ -1378,27 +1378,82 @@ https://redis.io/topics/transactions
 <h3 id="4.3.2">4.3.2 CASE</h3>
 
 #### CASE-1 (正常执行)   
-demo:
 ```
-CASE 1
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> set id 12
+QUEUED
+127.0.0.1:6379> get id
+QUEUED
+127.0.0.1:6379> incr t1
+QUEUED
+127.0.0.1:6379> incr t1
+QUEUED
+127.0.0.1:6379> get t1
+QUEUED
+127.0.0.1:6379> exec
+1) OK
+2) "12"
+3) (integer) 1
+4) (integer) 2
+5) "2"
 ```
 
 #### CASE-2 (放弃事务)   
-demo:
 ```
-CASE 2
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> set name z3
+QUEUED
+127.0.0.1:6379> set age 30
+QUEUED
+127.0.0.1:6379> incr t1
+QUEUED
+127.0.0.1:6379> discard
+OK
+127.0.0.1:6379> mget name age t1
+1) (nil)
+2) (nil)
+3) "2"
 ```
 
 #### CASE-3 (全体连坐)   
-demo:
 ```
-CASE 3
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> set name z3
+QUEUED
+127.0.0.1:6379> get name
+QUEUED
+127.0.0.1:6379> incr t1
+QUEUED
+127.0.0.1:6379> set email
+(error) ERR wrong number of arguments for 'set' command
+127.0.0.1:6379> exec
+(error) EXECABORT Transaction discarded because of previous errors.
 ```
 
 #### CASE-4 (冤头债主)   
-demo:
 ```
-CASE 4
+127.0.0.1:6379> multi
+OK
+127.0.0.1:6379> set age 30
+QUEUED
+127.0.0.1:6379> set email abc@163.com
+QUEUED
+127.0.0.1:6379> incr t1
+QUEUED
+127.0.0.1:6379> incr email
+QUEUED
+127.0.0.1:6379> exec
+1) OK
+2) OK
+3) (integer) 3
+4) (error) ERR value is not an integer or out of range
+127.0.0.1:6379> mget age email t1
+1) "30"
+2) "abc@163.com"
+3) "3"
 ```
 
 #### CASE-5 (watch监控)   
