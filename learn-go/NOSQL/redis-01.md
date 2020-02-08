@@ -1675,7 +1675,7 @@ https://redis.io/topics/replication
 >* Replication can be used both for scalability, in order to have multiple replicas for read-only queries (for example, slow O(N) operations can be offloaded to replicas), or simply for improving data safety and high availability.
 >* It is possible to use replication to avoid the cost of having the master writing the full dataset to disk: a typical technique involves configuring your master redis.conf to avoid persisting to disk at all, then connect a replica configured to save from time to time, or with AOF enabled. However this setup must be handled with care, since a restarting master will start with an empty dataset: if the replica tries to synchronized with it, the replica will be emptied as well.
 
-行话：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主，Slave以读为主。
+**行话**：也就是我们所说的主从复制，主机数据更新后根据配置和策略，自动同步到备机的master/slaver机制，Master以写为主，Slave以读为主。
 
 <h2 id="6.2">6.2 能干嘛？</h2>
 
@@ -1768,15 +1768,15 @@ dbfilename dump.rdb
 ![](document-image/redis/redis-011.png)   
 
 4. 主从问题演示    
-1. 切入点问题？slave1、slave2是从头开始复制还是从切入点开始复制?比如从k4进来，那之前的123是否也可以复制
+* 切入点问题？slave1、slave2是从头开始复制还是从切入点开始复制?比如从k4进来，那之前的123是否也可以复制
 
-2. 从机是否可以写？set可否？
+* 从机是否可以写？set可否？
 
-3. 主机shutdown后情况如何？从机是上位还是原地待命
+* 主机shutdown后情况如何？从机是上位还是原地待命
 
-4. 主机又回来了后，主机新增记录，从机还能否顺利复制？
+* 主机又回来了后，主机新增记录，从机还能否顺利复制？
 
-5. 其中一台从机down后情况如何？依照原有它能跟上大部队吗？
+* 其中一台从机down后情况如何？依照原有它能跟上大部队吗？
 
 #### 6.3.4.2 薪火相传
 
