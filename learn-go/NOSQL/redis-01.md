@@ -1654,20 +1654,7 @@ redis 127.0.0.1:6379> PUBLISH redisChat "Learn redis by runoob.com"
 
 
 
----
-<h1 id="6">6. Redis Replication</h1>
 
----
-
-<h2 id="6.1">6.1 是什么？</h2>
-
-https://redis.io/topics/replication
-
->**Replication**
->
->The following are some very important facts about Redis replication:
->
->* Redis uses asynchronous replication, with asynchronous replica-to-master acknowledges of the amount of data processed.
 >* A master can have multiple replicas.
 >* Replicas are able to accept connections from other replicas. Aside from connecting a number of replicas to the same master, replicas can also be connected to other replicas in a cascading-like structure. Since Redis 4.0, all the sub-replicas will receive exactly the same replication stream from the master.
 >* Redis replication is non-blocking on the master side. This means that the master will continue to handle queries when one or more replicas perform the initial synchronization or a partial resynchronization.
@@ -1684,14 +1671,14 @@ https://redis.io/topics/replication
 
 <h2 id="6.3">6.3 怎么玩？</h2>
 
-### 1. 配从(库)不配主(库)
+### 6.3.1 配从(库)不配主(库)
 
-### 2. 从库配置：slaveof 主库IP 主库端口
+### 6.3.2 从库配置：slaveof 主库IP 主库端口
 
 * 每次与master断开之后，都需要重新连接，除非你配置进redis.conf文件
 * info replication
 
-### 3. 修改配置文件细节操作
+### 6.3.3 修改配置文件细节操作
 
 1. 拷贝多个redis.conf文件
 
@@ -1747,15 +1734,16 @@ port 6379
 dbfilename dump.rdb
 ```
 
-### 4. 常用3招
+### 6.3.4 常用3招
 
-#### 1. 一主二仆
+#### 6.3.4.1 一主二仆
 
 1. init   
 ![](document-image/redis/redis-007.png)   
 
 2. 一个Master两个Slave   
 ![](document-image/redis/redis-008.png)   
+
 3. 日志查看   
 * 主机日志   
 ![](document-image/redis/redis-009.png)   
@@ -1766,41 +1754,34 @@ dbfilename dump.rdb
 * info replication   
 ![](document-image/redis/redis-011.png)   
 
-#### 2. 薪火相传
+4. 主从问题演示   
+
+1. 切入点问题？slave1、slave2是从头开始复制还是从切入点开始复制?比如从k4进来，那之前的123是否也可以复制
+
+
+
+2. 从机是否可以写？set可否？
+
+
+
+3. 主机shutdown后情况如何？从机是上位还是原地待命
+
+
+
+4. 主机又回来了后，主机新增记录，从机还能否顺利复制？
+
+
+
+5. 其中一台从机down后情况如何？依照原有它能跟上大部队吗？
+
+#### 6.3.4.2 薪火相传
 
 * 上一个Slave可以是下一个slave的Master，Slave同样可以接收其他slaves的连接和同步请求，那么该slave作为了链条中下一个的master,可以有效减轻master的写压力。
 * 中途变更转向:会清除之前的数据，重新建立拷贝最新的。
 * slaveof 新主库IP 新主库端口。
 
-#### 3. 反客为主
+#### 6.3.4.3 反客为主
 
 SLAVEOF no one
 
 使当前数据库停止与其他数据库的同步，转成主数据库
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
