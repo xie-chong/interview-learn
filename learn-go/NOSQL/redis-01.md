@@ -1747,7 +1747,36 @@ port 6379
 dbfilename dump.rdb
 ```
 
+### 4. 常用3招
 
+#### 1. 一主二仆
+
+1. init   
+![](document-image/redis/redis-007.png)   
+
+2. 一个Master两个Slave   
+![](document-image/redis/redis-008.png)   
+3. 日志查看   
+* 主机日志   
+![](document-image/redis/redis-009.png)   
+
+* 备机日志   
+![](document-image/redis/redis-010.png)   
+
+* info replication   
+![](document-image/redis/redis-011.png)   
+
+#### 2. 薪火相传
+
+* 上一个Slave可以是下一个slave的Master，Slave同样可以接收其他slaves的连接和同步请求，那么该slave作为了链条中下一个的master,可以有效减轻master的写压力。
+* 中途变更转向:会清除之前的数据，重新建立拷贝最新的。
+* slaveof 新主库IP 新主库端口。
+
+#### 3. 反客为主
+
+SLAVEOF no one
+
+使当前数据库停止与其他数据库的同步，转成主数据库
 
 
 
