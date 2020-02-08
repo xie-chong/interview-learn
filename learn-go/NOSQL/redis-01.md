@@ -1654,7 +1654,20 @@ redis 127.0.0.1:6379> PUBLISH redisChat "Learn redis by runoob.com"
 
 
 
+---
+<h1 id="6">6. Redis Replication</h1>
 
+---
+
+<h2 id="6.1">6.1 是什么？</h2>
+
+https://redis.io/topics/replication
+
+>**Replication**
+>
+>The following are some very important facts about Redis replication:
+>
+>* Redis uses asynchronous replication, with asynchronous replica-to-master acknowledges of the amount of data processed.
 >* A master can have multiple replicas.
 >* Replicas are able to accept connections from other replicas. Aside from connecting a number of replicas to the same master, replicas can also be connected to other replicas in a cascading-like structure. Since Redis 4.0, all the sub-replicas will receive exactly the same replication stream from the master.
 >* Redis replication is non-blocking on the master side. This means that the master will continue to handle queries when one or more replicas perform the initial synchronization or a partial resynchronization.
@@ -1754,23 +1767,14 @@ dbfilename dump.rdb
 * info replication   
 ![](document-image/redis/redis-011.png)   
 
-4. 主从问题演示   
-
+4. 主从问题演示    
 1. 切入点问题？slave1、slave2是从头开始复制还是从切入点开始复制?比如从k4进来，那之前的123是否也可以复制
-
-
 
 2. 从机是否可以写？set可否？
 
-
-
 3. 主机shutdown后情况如何？从机是上位还是原地待命
 
-
-
 4. 主机又回来了后，主机新增记录，从机还能否顺利复制？
-
-
 
 5. 其中一台从机down后情况如何？依照原有它能跟上大部队吗？
 
@@ -1785,3 +1789,27 @@ dbfilename dump.rdb
 SLAVEOF no one
 
 使当前数据库停止与其他数据库的同步，转成主数据库
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
