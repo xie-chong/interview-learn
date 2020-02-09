@@ -11,7 +11,8 @@
   - [1.6 Redis 键(key)](#1.6)
 - [2. 解析配置文件redis.conf](#2)
   - [2.1 启动redis服务](#2.1)
-    - [2.1.1 Redis启动后杂项基础知识讲解](#2.1.1)
+    - [2.1.1 操作详解](#2.1.1)
+    - [2.1.2 Redis启动后杂项基础知识讲解](#2.1.2)
   - [2.2 units](#2.2)
   - [2.3 INCLUDES](#2.3)
   - [2.4 GENERAL](#2.4)
@@ -181,6 +182,8 @@
 
 <h2 id="2.1">2.1 启动redis服务</h2>
 
+<h3 id="2.1.1">2.1.1 操作详解</h3>
+
 ```
 # Note that in order to read the configuration file, Redis must be
 # started with the file path as first argument:
@@ -202,6 +205,18 @@
 * 启动服务   
 ```
 ./redis-server /opt/redis-5.0.7/redis.conf
+```
+
+* 开启命令行   
+```
+./redis-cli
+```
+
+* 关闭   
+```
+单实例关闭：redis-cli shutdown
+
+多实例关闭，指定端口关闭:redis-cli -p 6379 shutdown
 ```
 
 以上路径会由于安装或存放，存在差异，仅供参考。
