@@ -8,8 +8,10 @@
   - [Hash](#1.3)
   - [Set](#1.4)
   - [sorted set](#1.5)
+  - [1.6 Redis 键(key)](#1.6)
 - [2. 解析配置文件redis.conf](#2)
   - [2.1 启动redis服务](#2.1)
+    - [2.1.1 Redis启动后杂项基础知识讲解](#2.1.1)
   - [2.2 units](#2.2)
   - [2.3 INCLUDES](#2.3)
   - [2.4 GENERAL](#2.4)
@@ -146,6 +148,28 @@
 |  |ZSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
 
 
+<h2 id="1.6">1.6 Redis 键(key)</h2>
+
+| 命令        | 描述   |
+| :-------- | :----- |
+|  DEL key  |  该命令用于在 key 存在时删除 key。  |
+|  DUMP key  |  序列化给定 key ，并返回被序列化的值。  |
+|  EXISTS key  |  检查给定 key 是否存在。  |
+|  EXPIRE key seconds  |  为给定 key 设置过期时间，以秒计。  |
+|  EXPIREAT key timestamp  |  EXPIREAT 的作用和 EXPIRE 类似，都用于为 key 设置过期时间。 不同在于 EXPIREAT 命令接受的时间参数是 UNIX 时间戳(unix timestamp)。  |
+|  PEXPIRE key milliseconds  |  设置 key 的过期时间以毫秒计。  |
+|  PEXPIREAT key milliseconds-timestamp  |  设置 key 过期时间的时间戳(unix timestamp) 以毫秒计。  |
+|  KEYS pattern  |  查找所有符合给定模式( pattern)的 key 。  |
+|  MOVE key db  |  将当前数据库的 key 移动到给定的数据库 db 当中。  |
+|  PERSIST key  |  移除 key 的过期时间，key 将持久保持。  |
+|  PTTL key  |  以毫秒为单位返回 key 的剩余的过期时间。  |
+|  TTL key  |  以秒为单位，返回给定 key 的剩余生存时间(TTL, time to live)。  |
+|  RANDOMKEY  |  从当前数据库中随机返回一个 key 。  |
+|  RENAME key newkey  |  修改 key 的名称。  |
+|  RENAMENX key newkey  |  仅当 newkey 不存在时，将 key 改名为 newkey 。  |
+|  TYPE key  |  返回 key 所储存的值的类型。  |
+
+
 
 
 
@@ -181,6 +205,21 @@
 ```
 
 以上路径会由于安装或存放，存在差异，仅供参考。
+
+<h3 id="2.1.1">2.1.1 Redis启动后杂项基础知识讲解</h3>
+
+* 单进程   
+单进程模型来处理客户端的请求。对读写等事件的响应是通过对epoll函数的包装来做到的。Redis的实际处理速度完全依靠主进程的执行效率。
+epoll是Linux内核为处理大批量文件描述符而作了改进的epoll，是Linux下多路复用IO接口select/poll的增强版本，
+它能显著提高程序在大量并发连接中只有少量活跃的情况下的系统CPU利用率。
+* 默认16个数据库，类似数组下标从0开始，初始默认使用0号库。可以使用 `SELECT <dbid>` 命令在连接上指定数据库id
+* select命令切换数据库
+* dbsize查看当前数据库的key的数量
+* `flushdb` 清空当前库
+* `flushall` 通杀全部库
+* 统一密码管理，16个库都是同样密码，要么都OK要么一个也连接不上
+* Redis索引都是从零开始
+* 为什么默认端口是6379？
 
 
 <h2 id="2.2">2.2 units</h2>
