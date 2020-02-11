@@ -2149,6 +2149,8 @@ maven:
 * 用完Jedis实例需要返还给JedisPool
 * 如果Jedis在使用过程中出错，则也需要还给JedisPool
 
+[参考链接](https://www.alibabacloud.com/help/zh/doc-detail/98726.htm)
+
 **JedisPoolUtil**   
 ```
 package com.example.redistest;
