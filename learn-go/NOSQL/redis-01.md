@@ -59,6 +59,15 @@
     - [6.5.1 是什么？](#6.5.1)
     - [6.5.2 怎么玩(使用步骤)？](#6.5.2)
   - [6.6 复制的缺点](#6.6)
+- [7. Redis Java](#7)
+  - [7.1 Jedis所需要的jar包](#7.1)
+  - [7.2 Jedis常用操作](#7.2)
+    - [7.2.1 测试连通性](#7.2.1)
+    - [7.2.2 key以及五大数据类型](#7.2.2)
+    - [7.2.3 事务提交](#7.2.3)
+    - [7.2.4 主从复制](#7.2.4)
+  - [7.3 JedisPool](#7.3)
+  - [7.4 Spring Data Redis (Access + Driver)](#7.4)
    
   
 
@@ -1920,6 +1929,358 @@ redis-sentinel /myredis/sentinel.conf
 
 
 
+---
+<h1 id="7">7. Redis Java</h1>
+
+---
+
+<h2 id="7.1">7.1 Jedis所需要的jar包</h2>
+
+`jedis-2.1.0.jar`
+
+maven:
+```
+<dependency>
+    <groupId>redis.clients</groupId>
+    <artifactId>jedis</artifactId>
+    <version>3.2.0</version>
+</dependency>
+```
+
+<h2 id="7.2">7.2 Jedis常用操作</h2>
+
+<h3 id="7.2.1">7.2.1 测试连通性</h3>
+
+```
+   /*
+     测试连通性
+    */
+    @Test
+    void redisConnectTest() {
+        // 连接本地的 Redis 服务
+        Jedis jedis = new Jedis("192.168.35.136", 6379);
+        // 查看服务是否运行，打出pong表示OK
+        log.info("connection is OK==========>: " + jedis.ping());
+    }
+```
+
+<h3 id="7.2.2">7.2.2 key以及五大数据类型</h3>
+
+```
+   /*
+     * key以及五大数据类型测试
+     */
+    @Test
+    void redisDataTypeTest() {
+        Jedis jedis = new Jedis("192.168.35.136", 6379);
+
+        // key
+
+        log.info("--------------------key--------------------");
+        Set<String> keys = jedis.keys("*");
+        for (String key : keys) {
+            log.info(key);
+        }
+
+        log.info("jedis.exists====>" + jedis.exists("k2"));
+        log.info(jedis.ttl("k1") + "");
+
+        // String
+
+        log.info("--------------------string--------------------");
+        jedis.append("k1", "myreids");
+        log.info(jedis.get("k1"));
+        jedis.set("k4", "k4_redis");
+
+        jedis.mset("str1", "v1", "str2", "v2", "str3", "v3");
+        System.out.println(jedis.mget("str1", "str2", "str3"));
+
+        // list
+
+        log.info("--------------------list--------------------");
+        jedis.lpush("mylist", "v1", "v2", "v3", "v4", "v5");
+        List<String> list = jedis.lrange("mylist", 0, -1);
+
+        for (String element : list) {
+            log.info(element);
+        }
+
+        //hash
+
+        log.info("--------------------hash--------------------");
+        jedis.hset("hash1", "userName", "lisi");
+        log.info(jedis.hget("hash1", "userName"));
+
+        Map<String, String> map = new HashMap<>();
+        map.put("telphone", "13811814763");
+        map.put("address", "atguigu");
+        map.put("email", "abc@163.com");
+
+        jedis.hmset("hash2", map);
+
+        List<String> result = jedis.hmget("hash2", "telphone", "email");
+
+        for (String element : result) {
+            log.info(element);
+        }
+
+        // set
+
+        log.info("--------------------set--------------------");
+        jedis.sadd("orders", "jd001");
+        jedis.sadd("orders", "jd002");
+        jedis.sadd("orders", "jd003");
+
+        Set<String> set1 = jedis.smembers("orders");
+
+        for (String string : set1) {
+            log.info(string);
+        }
+
+        jedis.srem("orders", "jd002");
+        log.info(jedis.smembers("orders").size() + "");
+
+        // zset
+
+        log.info("--------------------zset--------------------");
+        jedis.zadd("zset01", 60d, "v1");
+        jedis.zadd("zset01", 70d, "v2");
+        jedis.zadd("zset01", 80d, "v3");
+        jedis.zadd("zset01", 90d, "v4");
+
+        Set<String> s1 = jedis.zrange("zset01", 0, -1);
+
+        for (String string : s1) {
+            log.info(string);
+        }
+    }
+```
+
+<h3 id="7.2.3">7.2.3 事务提交</h3>
+
+日常：   
+```
+    @Test
+    void redisTransactionTest() {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        //监控key，如果该动了事务就被放弃
+
+        jedis.watch("serialNum");
+        jedis.set("serialNum", "s#####################");
+        jedis.unwatch();
+
+//        Transaction transaction = jedis.multi();//被当作一个命令进行执行
+//        Response<String> response = transaction.get("serialNum");
+//        transaction.set("serialNum", "s002");
+//        response = transaction.get("serialNum");
+//        transaction.lpush("list3", "a");
+//        transaction.lpush("list3", "b");
+//        transaction.lpush("list3", "c");
+//        transaction.exec();
+//
+//        // transaction.discard();
+//
+//        log.info("serialNum***********" + response.get());
+    }
+```
+
+加锁：   
+```
+    /**
+     * 通俗点讲，watch命令就是标记一个键，如果标记了一个键， 在提交事务前如果该键被别人修改过，那事务就会失败，这种情况通常可以在程序中
+     * 重新再尝试一次。
+     * 首先标记了键balance，然后检查余额是否足够，不足就取消标记，并不做扣减； 足够的话，就启动事务进行更新操作，
+     * 如果在此期间键balance被其它人修改， 那在提交事务（执行exec）时就会报错， 程序中通常可以捕获这类错误再重新执行一次，直到成功。
+     */
+    @Test
+    boolean redisLockTest() {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        int balance;// 可用余额
+        int debt;// 欠额
+        int amtToSubtract = 10;// 实刷额度
+
+        jedis.watch("balance");
+//        jedis.set("balance", "5");//此句不该出现，讲课方便。模拟其他程序已经修改了该条目
+
+        balance = Integer.parseInt(jedis.get("balance"));
+        if (balance < amtToSubtract) {
+            jedis.unwatch();
+            log.info("don't modify");
+            return false;
+        } else {
+            log.info("***********transaction***********");
+            Transaction transaction = jedis.multi();
+            transaction.decrBy("balance", amtToSubtract);
+            transaction.incrBy("debt", amtToSubtract);
+            transaction.exec();
+
+            balance = Integer.parseInt(jedis.get("balance"));
+            debt = Integer.parseInt(jedis.get("debt"));
+
+            log.info("***result**** balance = " + balance);
+            log.info("***result**** debt = " + debt);
+
+            return true;
+        }
+    }
+```
+
+<h3 id="7.2.4">7.2.4 主从复制</h3>
+
+```
+   // 主写，从读
+    @Test
+    void redisReplicationTest() throws InterruptedException {
+        Jedis jedis_M = new Jedis("127.0.0.1", 6379);
+        Jedis jedis_S = new Jedis("127.0.0.1", 6380);
+
+        jedis_S.slaveof("127.0.0.1", 6379);
+
+        jedis_M.set("k6", "v6");
+        Thread.sleep(500);
+
+        System.out.println(jedis_S.get("k6"));
+    }
+```
+
+<h2 id="7.3">7.3 JedisPool</h2>
+
+* 获取Jedis实例需要从JedisPool中获取
+* 用完Jedis实例需要返还给JedisPool
+* 如果Jedis在使用过程中出错，则也需要还给JedisPool
+
+**JedisPoolUtil**   
+```
+package com.example.redistest;
+
+import lombok.extern.slf4j.Slf4j;
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
+
+@Slf4j
+public class JedisPoolUtil {
+    //服务器IP地址
+    private static String ADDR = "192.168.41.65";
+    //端口
+    private static int PORT = 6379;
+    //密码
+    private static String AUTH = "123456";
+    //连接实例的最大连接数
+    private static int MAX_ACTIVE = 1024;
+    //控制一个pool最多有多少个状态为idle(空闲的)的jedis实例，默认值也是8。
+    private static int MAX_IDLE = 200;
+    //等待可用连接的最大时间，单位毫秒，默认值为-1，表示永不超时。如果超过等待时间，则直接抛出JedisConnectionException
+    private static int MAX_WAIT = 10000;
+    //连接超时的时间　　
+    private static int TIMEOUT = 10000;
+    // 在borrow一个jedis实例时，是否提前进行validate操作；如果为true，则得到的jedis实例均是可用的；
+    private static boolean TEST_ON_BORROW = true;
+    //数据库模式是16个数据库 0~15
+    public static final int DEFAULT_DATABASE = 0;
+
+    private static volatile JedisPool jedisPool = null;
+    // 被volatile修饰的变量不会被本地线程缓存，对该变量的读写都是直接操作共享内存。
+
+    private JedisPoolUtil() {
+    }
+
+    /**
+     * 获取Jedis实例
+     */
+    public static JedisPool getJedisPoolInstance() {
+        if (null == jedisPool) {
+            synchronized (JedisPoolUtil.class) {
+                if (null == jedisPool) {
+                    // poolConfig.setMaxActive(1000);
+                    // poolConfig.setMaxWait(100 * 1000);
+                    // 高版本的jedis jar包废弃了setMaxActive和setMaxWait属性
+                    // maxActive  ==>  maxTotal
+                    // maxWait    ==>  maxWaitMillis
+
+                    JedisPoolConfig config = new JedisPoolConfig();
+                    config.setMaxTotal(MAX_ACTIVE);
+                    config.setMaxIdle(MAX_IDLE);
+                    config.setMaxWaitMillis(MAX_WAIT);
+                    config.setTestOnBorrow(TEST_ON_BORROW);
+                    jedisPool = new JedisPool(config, ADDR, PORT, TIMEOUT, AUTH, DEFAULT_DATABASE);
+                }
+            }
+        }
+        return jedisPool;
+    }
+
+    public static void release(JedisPool jedisPool, Jedis jedis) {
+        if (null != jedis) {
+            //jedisPool.returnResource(jedis);
+            jedis.close();
+        }
+    }
+}
+```
+
+**demo**   
+```
+package com.example.redistest;
+
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPool;
+
+public class JedisPoolTest {
+    public static void main(String[] args) {
+        JedisPool jedisPool = JedisPoolUtil.getJedisPoolInstance();
+        Jedis jedis = null;
+        try {
+            jedis = jedisPool.getResource();
+            jedis.set("k18", "v183");
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            JedisPoolUtil.release(jedisPool, jedis);
+        }
+    }
+}
+```
+
+<h2 id="7.4">7.4  配置总结</h2>
+
+**JedisPool的配置参数大部分是由JedisPoolConfig的对应项来赋值的**。
+
+* **maxActive**：控制一个pool可分配多少个jedis实例，通过pool.getResource()来获取；如果赋值为-1，则表示不限制；如果pool已经分配了maxActive个jedis实例，则此时pool的状态为exhausted。
+
+* **maxIdle**：控制一个pool最多有多少个状态为idle(空闲)的jedis实例；
+
+* **whenExhaustedAction**：表示当pool中的jedis实例都被allocated完时，pool要采取的操作；默认有三种。
+  - WHEN_EXHAUSTED_FAIL --> 表示无jedis实例时，直接抛出NoSuchElementException；
+  - WHEN_EXHAUSTED_BLOCK --> 则表示阻塞住，或者达到maxWait时抛出JedisConnectionException；
+  - WHEN_EXHAUSTED_GROW --> 则表示新建一个jedis实例，也就说设置的maxActive无用；
+
+* **maxWait**：表示当borrow一个jedis实例时，最大的等待时间，如果超过等待时间，则直接抛JedisConnectionException；
+
+* **testOnBorrow**：获得一个jedis实例的时候是否检查连接可用性（ping()）；如果为true，则得到的jedis实例均是可用的；
+
+* **testOnReturn**：return 一个jedis实例给pool时，是否检查连接可用性（ping()）；
+
+* **testWhileIdle**：如果为true，表示有一个idle object evitor线程对idle object进行扫描，如果validate失败，此object会被从pool中drop掉；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义；
+
+* **timeBetweenEvictionRunsMillis**：表示idle object evitor两次扫描之间要sleep的毫秒数；
+
+* **numTestsPerEvictionRun**：表示idle object evitor每次扫描的最多的对象数；
+
+* **minEvictableIdleTimeMillis**：表示一个对象至少停留在idle状态的最短时间，然后才能被idle object evitor扫描并驱逐；这一项只有在timeBetweenEvictionRunsMillis大于0时才有意义；
+
+* **softMinEvictableIdleTimeMillis**：在minEvictableIdleTimeMillis基础上，加入了至少minIdle个对象已经在pool里面了。如果为-1，evicted不会根据idle time驱逐任何对象。如果minEvictableIdleTimeMillis>0，则此项设置无意义，且只有在timeBetweenEvictionRunsMillis大于0时才有意义；
+
+* **lifo**：borrowObject返回对象时，是采用DEFAULT_LIFO（last in first out，即类似cache的最频繁使用队列），如果为False，则表示FIFO队列；
+
+
+**注意**：其中JedisPoolConfig对一些参数的默认设置如下：   
+```
+testWhileIdle = true
+minEvictableIdleTimeMills = 60000
+timeBetweenEvictionRunsMillis = 30000
+numTestsPerEvictionRun = -1
+```
 
 
 
