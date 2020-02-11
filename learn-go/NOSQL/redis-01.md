@@ -2242,7 +2242,7 @@ public class JedisPoolTest {
 }
 ```
 
-<h2 id="7.4">7.4  配置总结</h2>
+**配置总结**
 
 **JedisPool的配置参数大部分是由JedisPoolConfig的对应项来赋值的**。
 
@@ -2282,6 +2282,7 @@ timeBetweenEvictionRunsMillis = 30000
 numTestsPerEvictionRun = -1
 ```
 
+<h2 id="7.4">7.4 Spring Data Redis (Access + Driver)</h2>
 
 
 
