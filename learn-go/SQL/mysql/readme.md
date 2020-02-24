@@ -25,3 +25,10 @@ str_to_date(date,'%Y-%m-%d') -------------->oracle中的to_date();
 　　SELECT DATE_FORMAT(20130111191640,'%Y-%m-%d %H:%i:%s')
 　　DATE_FORMAT(20130111191640,'%Y-%m-%d %H:%i:%s')
   ```
+  
+  ## mysql不能类似Oracle使用函数作为默认值
+  错误示例：
+  ```
+  alter table stock
+    add input_date_time VARCHAR(20) default date_format(sysdate(),'%Y-%m-%d %H:%i:%s') comment '录入时间';
+  ```
