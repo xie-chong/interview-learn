@@ -65,7 +65,11 @@ JDK1.8 之前 HashMap 底层是 **数组和链表** 结合在一起使用也就�
 
 ```
 
+## 包含特殊符号的网页链接
+```
+* <p>利用多种静态分析工具如<a href="http://findbugs.sourceforge.net/">FindBugs</a>、<a href="https://labs.oracle.com/pls/apex/f?p=labs:49:::::P49_PROJECT_ID:13">Parfait</a> 等，帮助早期发现潜在安全风险，并对相应问题采取零容忍态度，强制要求解决。</p>
+```
 
-
+* <p>利用多种静态分析工具如<a href="http://findbugs.sourceforge.net/">FindBugs</a>、<a href="https://labs.oracle.com/pls/apex/f?p=labs:49:::::P49_PROJECT_ID:13">Parfait</a> 等，帮助早期发现潜在安全风险，并对相应问题采取零容忍态度，强制要求解决。</p>
 
 
