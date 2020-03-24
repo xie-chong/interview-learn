@@ -96,7 +96,7 @@ bubbles-xiechong.html
 			];
 
 			//
-			// with a while loop
+			// with a for loop
 			//
 			var highScore = 0;
 			var bestSolutions = [];
