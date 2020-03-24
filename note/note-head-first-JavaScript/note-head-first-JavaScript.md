@@ -27,3 +27,96 @@
 <h2 id="01">1 | JavaScript速览：进入JavaScript的世界</h2>
 
 ---
+
+
+
+
+
+
+
+
+
+
+---
+<h2 id="02">2 | 编写代码： 更进一步</h2>
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+<h2 id="03">3 | 函数简介： 养成函数思维</h2>
+
+---
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+---
+<h2 id="04">4 | 让数据排排坐： 数组</h2>
+
+---
+
+bubbles-xiechong.html   
+```
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<title>Bubble-xiechong Factory Test Lab</title>
+		<script>
+			var scores = [60, 50, 60, 58, 54, 54,
+				58, 50, 52, 54, 48, 69,
+				34, 55, 51, 52, 44, 51,
+				69, 64, 66, 55, 52, 61,
+				46, 31, 57, 52, 44, 18,
+				41, 53, 55, 61, 51, 44
+			];
+
+			//
+			// with a while loop
+			//
+			var highScore = 0;
+			var bestSolutions = [];
+			for (var i = 0; i < scores.length; i++) {
+				console.log("Bubble solution #" + i + " score: " + scores[i]);
+				if (scores[i] > highScore) {
+					highScore = scores[i];
+					bestSolutions = [];
+					bestSolutions.push(i);
+				} else if (scores[i] == highScore) {
+					bestSolutions.push(i);
+				}
+			}
+			console.log("Bubbles tests: " + scores.length);
+			console.log("Highest bubble score: " + highScore);
+		</script>
+	</head>
+	<body>
+	</body>
+</html>
+```
+
+
