@@ -41,11 +41,6 @@
 | 通知中心 | cloud_notification | cloud_notification.sql |
 
 
-**说明**：本例子host配置的都是127.0.0.1，具体ip个人根据实际情况修改。其中local开头的我们是模拟内网环境，部署在网络相同的内网即。
-
-
-
-
 
 
 
@@ -76,6 +71,7 @@ C:\Windows\System32\drivers\etc
 127.0.0.1 local.rabbitmq.com #rabbitmq ip
 ```
 
+**说明**：本例子host配置的都是127.0.0.1，具体ip个人根据实际情况修改。其中local开头的我们是模拟内网环境，部署在网络相同的内网即。
 
 
 
