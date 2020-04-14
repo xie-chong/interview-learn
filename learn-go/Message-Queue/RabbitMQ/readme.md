@@ -29,6 +29,8 @@ https://www.rabbitmq.com/documentation.html
 * https://packagecloud.io/rabbitmq/erlang/install#bash-rpm
 * https://packagecloud.io/rabbitmq/rabbitmq-server/install#bash-rpm
 
+### 步骤
+
 1. 使用脚本准备安装erlang（rabbitmq是erlang语言编写的）
 
 ```
@@ -137,11 +139,4 @@ cd /usr/lib/rabbitmq/lib/rabbitmq_server-3.8.3/sbin
 ```
 
 
-
-
-
-. 安装插件（启动web管理界面）
-```
-rabbitmq-plugins enable rabbitmq-management
-```
 
