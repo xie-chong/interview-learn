@@ -94,22 +94,23 @@ C:\Windows\System32\drivers\etc
 
 ### 4. Rabbitmq配置
 
-先在RabbitMQ控制台添加用户（administrator）,访问http://localhost:15672/
+1. 先在RabbitMQ控制台添加用户（administrator）,访问http://localhost:15672/
 
-username:cloud-dev
-password:cloud-dev
+| username | password |
+| :-----: | :----- |
+| cloud-dev | cloud-dev |
 
+2. 在项目目录cloud-service\config-center\src\main\resources\configs\dev\下，除去gateway-zuul.yml外，都有mq配置，如与视频不同，以文档为准
 
-除去gateway-zuul.yml外，都有mq配置，如与视频不同，以文档为准
+* file-center.yml
+* gateway-zuul.yml
+* log-center.yml
+* manage-backend.yml
+* notification-center.yml
+* oauth-center.yml
+* user-center.yml
 
-cloud-service\config-center\src\main\resources\configs\dev\file-center.yml
-cloud-service\config-center\src\main\resources\configs\dev\gateway-zuul.yml
-cloud-service\config-center\src\main\resources\configs\dev\log-center.yml
-cloud-service\config-center\src\main\resources\configs\dev\manage-backend.yml
-cloud-service\config-center\src\main\resources\configs\dev\notification-center.yml
-cloud-service\config-center\src\main\resources\configs\dev\oauth-center.yml
-cloud-service\config-center\src\main\resources\configs\dev\user-center.yml
-
+3. 配置信息（按实际情况修改即可）
 ```
 rabbitmq:
   host: local.rabbitmq.com
@@ -119,7 +120,6 @@ rabbitmq:
   virtual-host: /
 ```
 
-将配置按实际情况修改即可
 
 
 ### 5. 用户认证url修改
