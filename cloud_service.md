@@ -100,10 +100,7 @@ C:\Windows\System32\drivers\etc
 | :-----: | :----- |
 | cloud-dev | cloud-dev |
 
-2. 项目中，除去gateway-zuul.yml外，都有mq配置，如与视频不同，以文档为准
-
-cloud-service\config-center\src\main\resources\configs\dev\
-
+2. 项目目录cloud-service\config-center\src\main\resources\configs\dev\下，除去gateway-zuul.yml外，都有mq配置（如与视频不同，以文档为准）
 * file-center.yml
 * gateway-zuul.yml
 * log-center.yml
