@@ -158,3 +158,18 @@ firewall-cmd --reload
 netstat -tunlp |grep 5672
 ```
 
+12. 一切就绪后，就可以登陆RabbitMQ WEB 管理界面
+
+可以在界面添加用户，也可以在命令行操作
+
+```
+#添加用户
+#./rabbitmqctl add_user 账号 密码
+./rabbitmqctl add_user admin admin
+#分配用户标签(admin为要赋予administrator权限的刚创建的那个账号的名字)
+./rabbitmqctl set_user_tags admin administrator
+#设置权限<即开启远程访问>(如果需要远程连接,例如java项目中需要调用mq,则一定要配置,否则无法连接到mq,admin为要赋予远程访问权限的刚创建的那个账号的名字,必须运行着rabbitmq此命令才能执行)
+./rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*" 
+```
+
+
