@@ -82,10 +82,69 @@ C:\Windows\System32\drivers\etc
 
 ---
 
+### 1. 注册中心地址
 
 
 
+### 2. 数据库配置
 
+
+### 3. Redis配置
+
+
+### 4. Rabbitmq配置
+
+先在RabbitMQ控制台添加用户（administrator）,访问http://localhost:15672/
+
+username:cloud-dev
+password:cloud-dev
+
+
+除去gateway-zuul.yml外，都有mq配置，如与视频不同，以文档为准
+
+cloud-service\config-center\src\main\resources\configs\dev\file-center.yml
+cloud-service\config-center\src\main\resources\configs\dev\gateway-zuul.yml
+cloud-service\config-center\src\main\resources\configs\dev\log-center.yml
+cloud-service\config-center\src\main\resources\configs\dev\manage-backend.yml
+cloud-service\config-center\src\main\resources\configs\dev\notification-center.yml
+cloud-service\config-center\src\main\resources\configs\dev\oauth-center.yml
+cloud-service\config-center\src\main\resources\configs\dev\user-center.yml
+
+```
+rabbitmq:
+  host: local.rabbitmq.com
+  port: 5672
+  username: cloud-dev
+  password: cloud-dev
+  virtual-host: /
+```
+
+将配置按实际情况修改即可
+
+
+### 5. 用户认证url修改
+
+
+### 6. 文件中心配置修改
+
+
+
+### 7. 后台管理界面配置接口地址
+
+
+
+### 8. 邮件配置
+
+
+
+### 9. 阿里云短信配置
+
+
+### 10. 日志中心elasticsearch
+
+
+
+### 11. 微信授权相关
 
 
 
