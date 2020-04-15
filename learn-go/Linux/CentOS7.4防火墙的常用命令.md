@@ -1,4 +1,4 @@
-# <p align="ceneter">CentOS7.4防火墙的常用命令</>
+# <p align="center">CentOS7.4防火墙的常用命令</p>
 
 ## 前言
 ### 1 防火墙的管理工具
