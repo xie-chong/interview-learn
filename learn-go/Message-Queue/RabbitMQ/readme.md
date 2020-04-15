@@ -121,7 +121,7 @@ cd /etc/rabbitmq/
 vi rabbitmq.conf
 ```
 
-编辑内容见说明文档中的[Rabbitmq.config.example](https://github.com/rabbitmq/rabbitmq-server/blob/v3.7.x/docs/rabbitmq.config.example)
+编辑内容见说明文档中的[Rabbitmq.config.example](https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example)
 
 
 9. 安装插件（启动web管理界面）
@@ -131,6 +131,15 @@ cd /usr/lib/rabbitmq/lib/rabbitmq_server-3.8.3/sbin
 ./rabbitmq-plugins enable rabbitmq-management
 ```
 
+之后配置文件的目录结构中多出一个文件
+```
+[xiecentos@xiecentos rabbitmq]$ pwd
+/etc/rabbitmq
+[xiecentos@xiecentos rabbitmq]$ ls
+enabled_plugins  rabbitmq.conf
+```
+
+
 10. 完成配置后停止、重启
 ```
 /bin/systemctl stop rabbitmq-server.service
@@ -138,5 +147,14 @@ cd /usr/lib/rabbitmq/lib/rabbitmq_server-3.8.3/sbin
 /bin/systemctl start rabbitmq-server.service
 ```
 
+11. 开放5672端口
+```
+firewall-cmd --zone=public --add-port=5672/tcp --permanent
 
+firewall-cmd --zone=public --add-port=15672/tcp --permanent
+
+firewall-cmd --reload
+
+netstat -tunlp |grep 5672
+```
 
