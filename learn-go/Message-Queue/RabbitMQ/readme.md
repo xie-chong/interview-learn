@@ -172,4 +172,8 @@ netstat -tunlp |grep 5672
 ./rabbitmqctl set_permissions -p "/" admin ".*" ".*" ".*" 
 ```
 
+### RabbitMQ 生产环境配置详解
+
+参考文档：https://www.linuxidc.com/Linux/2019-03/157354.htm
+
 
