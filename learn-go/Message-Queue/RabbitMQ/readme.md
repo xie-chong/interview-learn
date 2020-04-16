@@ -123,6 +123,29 @@ vi rabbitmq.conf
 
 编辑内容见说明文档中的[Rabbitmq.config.example](https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example)
 
+简单使用，仅需修改如下几个地方即可   
+```
+# listeners.tcp.default = 5672
+
+# reverse_dns_lookups = false
+
+# loopback_users.guest = false
+
+## Logging settings.
+
+# log.dir = /var/log/rabbitmq
+
+## Logging to file. Can be false or a filename.
+## Default:
+# log.file = rabbit.log
+
+# log.file.level = info
+
+# log.console = false
+# log.exchange = false
+
+```
+
 
 9. 安装插件（启动web管理界面）
 ```
@@ -145,6 +168,34 @@ enabled_plugins  rabbitmq.conf
 /bin/systemctl stop rabbitmq-server.service
 
 /bin/systemctl start rabbitmq-server.service
+```
+
+```
+[root@xiecentos rabbitmq]# /bin/systemctl status rabbitmq-server.service
+● rabbitmq-server.service - RabbitMQ broker
+   Loaded: loaded (/usr/lib/systemd/system/rabbitmq-server.service; disabled; vendor preset: disabled)
+   Active: active (running) since Thu 2020-04-16 22:22:23 CST; 38s ago
+ Main PID: 29830 (beam.smp)
+   Status: "Initialized"
+    Tasks: 163
+   CGroup: /system.slice/rabbitmq-server.service
+           ├─29830 /usr/lib64/erlang/erts-10.7.1/bin/beam.smp -W w -A 128 -MBas ageffcbf -MHas ageffcbf -MBlmbcs 512 -MHlmbcs 512 -MMmcs 30 -P 1048576 -t 5000000 -stbt db ...
+           ├─30061 /usr/lib64/erlang/erts-10.7.1/bin/epmd -daemon
+           ├─30305 erl_child_setup 32768
+           ├─30363 inet_gethost 4
+           └─30407 inet_gethost 4
+
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: Doc guides: https://rabbitmq.com/documentation.html
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: Support:    https://rabbitmq.com/contact.html
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: Tutorials:  https://rabbitmq.com/getstarted.html
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: Monitoring: https://rabbitmq.com/monitoring.html
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: Logs: /var/log/rabbitmq/rabbit.log
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: /var/log/rabbitmq/rabbit@xiecentos_upgrade.log
+Apr 16 22:21:43 xiecentos.com rabbitmq-server[29830]: Config file(s): /etc/rabbitmq/rabbitmq.conf
+Apr 16 22:22:23 xiecentos.com rabbitmq-server[29830]: Starting broker...systemd unit for activation check: "rabbitmq-server.service"
+Apr 16 22:22:23 xiecentos.com systemd[1]: Started RabbitMQ broker.
+Apr 16 22:22:24 xiecentos.com rabbitmq-server[29830]: completed with 3 plugins.
+
 ```
 
 11. 开放5672端口
