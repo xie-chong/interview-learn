@@ -1,11 +1,21 @@
 
 
-[01丨环境要求](#01)   
-[02丨数据库初始化](#02)   
-[03丨配置hosts](#03)   
-[04丨修改配置](#04)   
-  - [1. 注册中心地址]()
-[05丨启动](#05)   
+- [01丨环境要求](#01)   
+- [02丨数据库初始化](#02)   
+- [03丨配置hosts](#03)   
+- [04丨修改配置](#04)   
+  - [1. 注册中心地址](#04-1)   
+  - [2. 数据库配置](#04-2)   
+  - [3. Redis配置](#04-3)   
+  - [4. Rabbitmq配置](#04-4)   
+  - [5. 用户认证url修改](#04-5)   
+  - [6. 文件中心配置修改](#04-6)   
+  - [7. 后台管理界面配置接口地址](#04-7)   
+  - [8. 邮件配置](#04-8)   
+  - [9. 阿里云短信配置](#04-9)   
+  - [10. 日志中心elasticsearch](#04-10)   
+  - [11. 微信授权相关](#04-11)   
+- [05丨启动](#05)   
 
 
 ---
@@ -96,13 +106,13 @@ C:\Windows\System32\drivers\etc
 | 9	| user-center	| 用户中心 |
 | 10	| notification-center	| 通知中心 |
 
-### 1. 注册中心地址
+<h3 id="04-1">1. 注册中心地址</h3>
 
 上表列出的工程里的bootstrap.yml中，若配置了host，则不需要改动；若使用ip，则把local.register.com改为您的注册中心的ip
 
 
 
-### 2. 数据库配置
+<h3 id="04-2">2. 数据库配置</h3>
 
 项目目录cloud-service\config-center\src\main\resources\configs\dev\下，除去gateway-zuul.yml外，都有数据库配置
 * file-center.yml
@@ -124,7 +134,7 @@ spring:
 
 若配置了host，库名也按照上一章节的创建，只需修改端口号，用户名和密码，否则也要将域名改成ip
 
-### 3. Redis配置
+<h3 id="04-3">3. Redis配置</h3>
 
 项目目录cloud-service\config-center\src\main\resources\configs\dev\下，有3个模块用到redis
 * notification-center.yml
@@ -142,7 +152,7 @@ spring:
 将配置按实际情况修改即可，**如有密码，跟host同层加password即可，别忘了冒号后有个空格**，如果不是本地的redis，请检查是否允许远程访问
 
 
-### 4. Rabbitmq配置
+<h3 id="04-4">4. Rabbitmq配置</h3>
 
 1. 先在RabbitMQ控制台添加用户（administrator）,访问http://localhost:15672/
 
@@ -170,7 +180,7 @@ rabbitmq:
 ```
 
 
-### 5. 用户认证url修改
+<h3 id="04-5">5. 用户认证url修改</h3>
 
 项目目录cloud-service\config-center\src\main\resources\configs\dev\下，除去gateway-zuul.yml和oauth-center.yml外，都有获取用户认证信息的url
 * file-center.yml
@@ -191,7 +201,7 @@ security:
 
 url域名和端口是网关中心的ip和端口，**这里demo是单个网关服务，正式生产或者多个网关服务的话，这里配置的是nginx的地址，注意该地址是各服务间在内网的调用，请配置内网的地址**
 
-### 6. 文件中心配置修改
+<h3 id="04-6">6. 文件中心配置修改</h3>
 
 项目目录cloud-service\config-center\src\main\resources\configs\dev\下
 * file-center.yml
@@ -223,7 +233,7 @@ file:
 这里需要配置你的阿里云对象存储OSS相关信息，详细根据视频目录看下视频（目前我暂时弃用该功能）
 
 
-### 7. 后台管理界面配置接口地址
+<h3 id="04-7">7. 后台管理界面配置接口地址</h3>
 
 cloud-service\manage-backend\src\main\resources\static\js\constant.js
 
@@ -244,7 +254,7 @@ var loginPage = "/api-b/login.html";
 
 
 
-### 8. 邮件配置
+<h3 id="04-8">8. 邮件配置</h3>
 
 cloud-service\config-center\src\main\resources\configs\dev\manage-backend.yml
 
@@ -266,7 +276,7 @@ http://help.163.com/10/0312/13/61J0LI3200752CLQ.html
 
 
 
-### 9. 阿里云短信配置
+<h3 id="04-9">9. 阿里云短信配置</h3>
 
 cloud-service\config-center\src\main\resources\configs\dev\notification-center.yml
 
@@ -284,7 +294,7 @@ aliyun:
 
 
 
-### 10. 日志中心elasticsearch
+<h3 id="04-10">10. 日志中心elasticsearch</h3>
 
 cloud-service\log-center\src\main\java\com\cloud\log\service\impl\
 * EsLogServiceImpl.java
@@ -317,7 +327,7 @@ elasticsearch:
 
 
 
-### 11. 微信授权相关
+<h3 id="04-11">11. 微信授权相关</h3>
 
 这章节，不用微信授权的可忽略，详细可看下视频
 在用户中心D:\Workspace-IntelliJ\cloud-service\config-center\src\main\resources\configs\dev\user-center.yml
