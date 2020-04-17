@@ -82,14 +82,63 @@ C:\Windows\System32\drivers\etc
 
 ---
 
+|  | 工程名 |  |
+| :-----: | :----- | :----- |
+| 1	| config-center	| 配置中心 |
+| 2	| file-center	| 文件中心 |
+| 3	| gateway-zuul	| 网关 |
+| 4	| log-center	| 日志中心 |
+| 5	| manage-backend	| 管理后台 |
+| 6	| monitor-center	| 监控中心 |
+| 7	| oauth-center	| 认证中心 |
+| 8	| register-center	| 注册中心 |
+| 9	| user-center	| 用户中心 |
+| 10	| notification-center	| 通知中心 |
+
 ### 1. 注册中心地址
+
+上表列出的工程里的bootstrap.yml中，若配置了host，则不需要改动；若使用ip，则把local.register.com改为您的注册中心的ip
 
 
 
 ### 2. 数据库配置
 
+项目目录cloud-service\config-center\src\main\resources\configs\dev\下，除去gateway-zuul.yml外，都有数据库配置
+* file-center.yml
+* gateway-zuul.yml
+* log-center.yml
+* manage-backend.yml
+* notification-center.yml
+* oauth-center.yml
+* user-center.yml
+
+```
+spring:
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://local.mysql.com:3306/cloud_file?useUnicode=true&characterEncoding=utf8&autoReconnect=true&allowMultiQueries=true&useSSL=false&serverTimezone=UTC
+    username: root
+    password: xxx
+```
+
+若配置了host，库名也按照上一章节的创建，只需修改端口号，用户名和密码，否则也要将域名改成ip
 
 ### 3. Redis配置
+
+项目目录cloud-service\config-center\src\main\resources\configs\dev\下，有3个模块用到redis
+* notification-center.yml
+* oauth-center.yml
+* user-center.yml
+
+```
+spring:
+  redis:
+    host: local.redis.com
+    port: 6379
+    password:
+```
+
+将配置按实际情况修改即可，**如有密码，跟host同层加password即可，别忘了冒号后有个空格**，如果不是本地的redis，请检查是否允许远程访问
 
 
 ### 4. Rabbitmq配置
@@ -120,31 +169,178 @@ rabbitmq:
 ```
 
 
-
 ### 5. 用户认证url修改
 
+项目目录cloud-service\config-center\src\main\resources\configs\dev\下，除去gateway-zuul.yml和oauth-center.yml外，都有获取用户认证信息的url
+* file-center.yml
+* gateway-zuul.yml
+* log-center.yml
+* manage-backend.yml
+* notification-center.yml
+* oauth-center.yml
+* user-center.yml
+
+```
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://local.gateway.com:8080/api-o/user-me
+      prefer-token-info: false
+```
+
+url域名和端口是网关中心的ip和端口，**这里demo是单个网关服务，正式生产或者多个网关服务的话，这里配置的是nginx的地址，注意该地址是各服务间在内网的调用，请配置内网的地址**
 
 ### 6. 文件中心配置修改
 
+项目目录cloud-service\config-center\src\main\resources\configs\dev\下
+* file-center.yml
+
+```
+file:
+  local:
+    path: D:/localFile
+    prefix: /statics
+    urlPrefix: http://api.gateway.com:8080/api-f${file.local.prefix}
+```
+path是存储文件的路径，上面是windows的目录，mac或者linux根据情况设置绝对目录   
+urlPrefix前缀也是网关对外的域名和端口
+
+**阿里云存储**
+```
+file:
+  local:
+    path: D:/localFile
+    prefix: /statics
+    urlPrefix: http://api.gateway.com:8080/api-f${file.local.prefix}
+  aliyun:
+    endpoint: xxx
+    accessKeyId: xxx
+    accessKeySecret: xxx
+    bucketName: xxx
+    domain: https://xxx
+```
+这里需要配置你的阿里云对象存储OSS相关信息，详细根据视频目录看下视频（目前我暂时弃用该功能）
 
 
 ### 7. 后台管理界面配置接口地址
+
+cloud-service\manage-backend\src\main\resources\static\js\constant.js
+
+```
+var domainName = "http://api.gateway.com:8080";
+```
+
+这里定义的常量**domainName**是后端接口地址，在这里，我们的demo是直接访问网关的，所以配置的是后端java服务网关层的域名和端口，如没配置host的话，用ip加端口。**该地址如果配置错误的话，我们的前端将访问不到后端接口**。
+
+注意：**正式生产为了保证网关的高可用性，肯定是部署了多个网关服务，然后用nginx反向代理的，那么多个网关或者生产环境的话，我们这里配置的是nginx的地址**
+
+**loginPage**是登陆页地址，主要是为了未登录或过期时进行跳转，默认不需要修改
+ 
+```
+var loginPage = "/api-b/login.html";
+```
+如果是前端单独部署的话，这里请写全路径，如http://xx.xx.xx/login.html
 
 
 
 ### 8. 邮件配置
 
+cloud-service\config-center\src\main\resources\configs\dev\manage-backend.yml
+
+```
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    username:
+    password:
+    protocol: smtp
+    test-connection: false
+#    properties:
+#      mail.smtp.auth: true
+```
+
+* 如果不使用发邮件功能，不用修改配置，也不用修改代码，别发邮件就行。
+* 如果要用发邮件功能的话，需要配置您的邮箱信息，并将最后两行的注释打开。需要您开通smtp协议，如163邮箱：
+http://help.163.com/10/0312/13/61J0LI3200752CLQ.html
+
 
 
 ### 9. 阿里云短信配置
 
+cloud-service\config-center\src\main\resources\configs\dev\notification-center.yml
+
+如要发短信，请配置您的阿里云信息   
+```
+aliyun:
+  accessKeyId: xxx
+  accessKeySecret: xxx
+  sign:
+    name1: xxx
+  template:
+    code1: xxx
+```
+
+
+
 
 ### 10. 日志中心elasticsearch
+
+cloud-service\log-center\src\main\java\com\cloud\log\service\impl\
+* EsLogServiceImpl.java
+* LogServiceImpl.java
+
+默认使用实现类LogServiceImpl，日志是存储到mysql里的。
+
+如想存储到elasticsearch,有两个方案   
+1. 注释掉LogServiceImpl上的@Primary和@Service
+```
+// @Primary
+// @Service
+public class LogServiceImpl implements LogService {
+```
+2. 将@Primary移到EsLogServiceImpl上面，并配置上你自己的Elasticsearch环境信息
+
+```
+// @Primary
+@Service
+public class LogServiceImpl implements LogService {
+```
+
+cloud-service\config-center\src\main\resources\configs\dev\log-center.yml
+```
+elasticsearch:
+  clusterName: elasticsearch
+  clusterNodes: 127.0.0.1:9300
+```
+
 
 
 
 ### 11. 微信授权相关
 
+这章节，不用微信授权的可忽略，详细可看下视频
+在用户中心D:\Workspace-IntelliJ\cloud-service\config-center\src\main\resources\configs\dev\user-center.yml
+```
+wechat:
+  domain: http://api.gateway.com:8080/api-u
+  infos:
+    app1:
+      appid: xxx
+      secret: xxx
+    app2:
+      appid: xxx
+      secret: xxx
+```
+ 
+这里配置了服务端域名和用户中心转发规则（域名要跟微信网页授权域名一致），appid和secret根据实际情况配置即可，这里的例子配置了多个，只是为了说明咱们系统是可以支持多个的，其中app1、app2可随意定，不要重复即可。   
+在cloud-service\manage-backend\src\main\resources\static\pages\wechat\index.html里的跳去授权，用到我们定义的app1
+```
+        var openid = getUrlParam("openid");
+        var toUrl = domainName + "/api-b/pages/wechat/index.html";
+        if (openid == null || openid == "") {// 跳去微信授权
+            window.location.href = domainName + "/api-u/wechat/app1?toUrl=" + encodeURIComponent(toUrl);
+        } else {
+```
 
 
 
