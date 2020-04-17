@@ -361,22 +361,22 @@ wechat:
 
 3. 第三步
 等待配置中心启动成功一会儿之后，再启动别的服务，否则微服务将拉取不到配置中心的配置，启动将报错。
-* 用户中心
-* 通知中心
-* 授权中心
-* 文件服务
-* 日志中心
-* 后台管理
-* 监控
-* 最后启动zuul网关
+* 用户中心  UserCenterApplication.java
+* 通知中心  NotificationCenterApplication.java
+* 授权中心  OAuthCenterApplication.java
+* 文件服务  FileCenterApplication.java
+* 日志中心  LogCenterApplication.java
+* 后台管理  ManageBackendApplication.java
+* 监控  MonitorApplication.java
+* 最后启动zuul网关  GatewayApplication.java
 
 4. 535错误
 在idea中启动manage-backend服务时，邮箱配置错误的话，会报535的错误，不影响系统启动，只是邮件发不出去而已。
 > javax.mail.AuthenticationFailedException: 535 Error: authentication failed
 
-5. 都启动成功之后，可以访问后台管理界面  http://localhost:8080/api-b/login.html
-用户名admin 密码admin
-用户名superadmin 密码superadmin
+5. 都启动成功之后，可以访问后台管理界面  http://localhost:8080/api-b/login.html   
+用户名admin 密码admin   
+用户名superadmin 密码superadmin   
 
 
 
