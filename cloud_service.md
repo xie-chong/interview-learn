@@ -289,9 +289,9 @@ cloud-service\log-center\src\main\java\com\cloud\log\service\impl\
 * EsLogServiceImpl.java
 * LogServiceImpl.java
 
-默认使用实现类LogServiceImpl，日志是存储到mysql里的。
+**默认使用实现类LogServiceImpl，日志是存储到mysql里的**。
 
-如想存储到elasticsearch,有两个方案   
+**如想存储到elasticsearch,有两个方案**
 1. 注释掉LogServiceImpl上的@Primary和@Service
 ```
 // @Primary
@@ -332,7 +332,8 @@ wechat:
       secret: xxx
 ```
  
-这里配置了服务端域名和用户中心转发规则（域名要跟微信网页授权域名一致），appid和secret根据实际情况配置即可，这里的例子配置了多个，只是为了说明咱们系统是可以支持多个的，其中app1、app2可随意定，不要重复即可。   
+这里配置了服务端域名和用户中心转发规则（域名要跟微信网页授权域名一致），appid和secret根据实际情况配置即可，这里的例子配置了多个，只是为了说明咱们系统是可以支持多个的，其中app1、app2可随意定，不要重复即可。
+
 在cloud-service\manage-backend\src\main\resources\static\pages\wechat\index.html里的跳去授权，用到我们定义的app1
 ```
         var openid = getUrlParam("openid");
@@ -349,6 +350,33 @@ wechat:
 <h2 id="05">05 | 启动</h2>
 
 ---
+
+在**redis、mysql、rabbitmq都启动的前提下**，对着spring boot项目的根目录的类，启动main方法
+
+**注意**：由于redis、mysql、rabbitmq可能不在同一台机器，记得检查hosts文件中的ip映射
+
+1. 第一步启动注册中心  RegisterCenterApplication.java
+
+2. 第二步启动配置中心  ConfigCenterApplication.java
+
+3. 第三步
+等待配置中心启动成功一会儿之后，再启动别的服务，否则微服务将拉取不到配置中心的配置，启动将报错。
+* 用户中心
+* 通知中心
+* 授权中心
+* 文件服务
+* 日志中心
+* 后台管理
+* 监控
+* 最后启动zuul网关
+
+4. 535错误
+在idea中启动manage-backend服务时，邮箱配置错误的话，会报535的错误，不影响系统启动，只是邮件发不出去而已。
+> javax.mail.AuthenticationFailedException: 535 Error: authentication failed
+
+5. 都启动成功之后，可以访问后台管理界面  http://localhost:8080/api-b/login.html
+用户名admin 密码admin
+用户名superadmin 密码superadmin
 
 
 
