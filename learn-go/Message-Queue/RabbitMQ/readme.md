@@ -1,6 +1,7 @@
 ## <p align="center">RabbitMQ</p>
 
 
+[00丨官方文档](#00)   
 [01丨RabbitMQ 安装](#01)   
 [02丨xxx](#02)   
 
@@ -12,13 +13,19 @@
 ---
 ---
 ---
-<h1 id = "01">RabbitMQ 安装</h1>
+<h1 id = "00">00丨官方文档</h1>
 
 ---
 
-### 文档
-
 https://www.rabbitmq.com/documentation.html
+
+
+
+
+---
+<h1 id = "01">RabbitMQ 安装</h1>
+
+---
 
 ### [Install RabbitMQ Server](https://www.rabbitmq.com/install-rpm.html#install-rabbitmq)
 
@@ -123,7 +130,7 @@ vi rabbitmq.conf
 
 编辑内容见说明文档中的[Rabbitmq.config.example](https://github.com/rabbitmq/rabbitmq-server/blob/master/docs/rabbitmq.conf.example)
 
-简单使用，仅需修改如下几个地方即可   
+简单使用，仅需修改如下几个地方即可(具体细节说明请参考配置文件中的相关网页)   
 ```
 # listeners.tcp.default = 5672
 
