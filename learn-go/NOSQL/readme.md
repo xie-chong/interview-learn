@@ -2,13 +2,13 @@
 
 <!-- MarkdownTOC -->
 
-- [redis常用操作命令](#1)
-  - [String](#1.1)
-  - [List](#1.2)
-  - [Hash](#1.3)
-  - [Set](#1.4)
-  - [sorted set](#1.5)
-
+- [1. redis常用操作命令](#1)   
+  - [String](#1.1)   
+  - [List](#1.2)   
+  - [Hash](#1.3)   
+  - [Set](#1.4)   
+  - [sorted set](#1.5)   
+- [2. redis经验积累](#2)    
   
   
   
@@ -93,4 +93,23 @@
 |  |ZREVRANK key member|  |  |
 |  |ZSCORE key member|  |  |
 |  |ZSCAN key cursor [MATCH pattern] [COUNT count]|  |  |
+
+
+
+
+
+
+  
+  
+  
+ 
+
+<h1 id="2">2. redis经验积累</h1>
+
+<h2 id="2.1">2.1 场景：清除redis缓存</h2>
+
+1. JDBC表数据缓存到redis，如果手动修改了该表的数据，请注意清除redis缓存
+
+
+
 
