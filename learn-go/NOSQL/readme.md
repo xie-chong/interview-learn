@@ -18,7 +18,7 @@
   
 <!-- /MarkdownTOC -->
 
-<h1 id="1">redis常用操作命令</h1>
+<h1 id="1">1. redis常用操作命令</h1>
 
 <h2 id="1.1">String</h2>
 
