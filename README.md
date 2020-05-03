@@ -7,9 +7,18 @@
 4. [JDK 1.8 API](http://www.matools.com/api/java8)
 5. [OpenJDK](http://hg.openjdk.java.net/jdk/jdk/file/26ac622a4cab/src)   
 6. [javase-8-docs](https://docs.oracle.com/javase/8/docs/)   
-7. [idea-lanyus](http://idea.lanyus.com/)
+7. [Java文献资料](https://docs.oracle.com/javase/tutorial/tutorialLearningPaths.html)  
+8. [idea-lanyus](http://idea.lanyus.com/)
+9. [算法教程](https://www.coursera.org/learn/algorithms-part1)
+10. [维基百科英文网](https://en.wikipedia.org/wiki/Main_Page)
+11. [ProcessOn在线作图工具](https://www.processon.com/)
 
 
+
+
+## 常用操作指导
+
+[UML类图制作参考](https://github.com/xie-chong/interview-learn/issues/14)
 
 
 | 型号   | 长  |  宽   | 高   | 尺寸| 重量 | 电池 | 价格  |
