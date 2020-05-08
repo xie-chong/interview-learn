@@ -13,6 +13,9 @@ Ctrl+Alt+V
 Ctrl+斜杠 comments or uncomments the current line or selected block with single line comments (//...).   
 Ctrl+Shift+斜杠 encloses the selected block in a block comment (/*...*/).   
 Shift+F1    
+ALT + 7 （可以查看类的字段、属性、方法，是否继承等）   
+
+
 
 Ctrl+D in the editor duplicates the selected block or the current line when no block is selected.   
 
