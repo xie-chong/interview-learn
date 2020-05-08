@@ -1,13 +1,13 @@
 
 # <p align="center">IntelliJGuide</p>
 
-Alt+Insert 快速生成构造方法和setter，getter   
-Alt+F1	快速选择当前编辑的元素   
+Alt+Insert （快速生成构造方法和setter，getter）   
+Alt+F1	 （快速选择当前编辑的元素）   
 Ctrl+Alt+T (Code | Surround With) and choose try / catch.   
 Ctrl+Shift+空格	The SmartType code completion may be used after the new keyword.   
 Ctrl+Alt+B	To navigate to the implementation(s) of an abstract method(查看某个抽象类或接口的实现)   
-Ctrl+Alt+箭头   追溯方法的工程中，回到上一个方法，或下一个方法   
-Ctrl+H  查看继承关系   
+Ctrl+Alt+箭头   （追溯方法的工程中，回到上一个方法，或下一个方法）   
+Ctrl+H  （查看继承关系）   
 Ctrl+W    
 Ctrl+Alt+V   
 Ctrl+斜杠 comments or uncomments the current line or selected block with single line comments (//...).   
