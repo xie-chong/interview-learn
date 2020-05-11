@@ -42,3 +42,5 @@
 　　@Inherited
 
 7.注解解析器：用来解析自定义注解。
+
+[Java自定义注解_CN](https://www.cnblogs.com/liangweiping/p/3837332.html)
