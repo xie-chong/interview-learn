@@ -37,3 +37,15 @@
 
 
 此次行动主招聘会场设在中国公共招聘网（http://job.mohrss.gov.cn）、中国国家人才网（http://newjobs.com.cn），并开设就业导引地图，链接各省招聘分会场和相关社会参与方。
+
+
+
+flowchat
+st=>start: Start
+e=>end
+op=>operation: My Operation
+cond=>condition: Yes or No?
+
+st->op->cond
+cond(yes)->e
+cond(no)->op
