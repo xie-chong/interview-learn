@@ -89,24 +89,28 @@ vm.max_map_count = 655360
 11. 退出用户重新登录，使配置生效。重启 elasticsearch
 ```
 request:
+
 http://localhost:9200/
 
 response:
-name	"node-1"
-cluster_name	"my-application"
-cluster_uuid	"HwhOb0jDQvmSyPGOcKeZlA"
-version	
-number	"7.6.2"
-build_flavor	"default"
-build_type	"tar"
-build_hash	"ef48eb35cf30adf4db14086e8aabd07ef6fb113f"
-build_date	"2020-03-26T06:34:37.794943Z"
-build_snapshot	false
-lucene_version	"8.4.0"
-minimum_wire_compatibility_version	"6.8.0"
-minimum_index_compatibility_version	"6.0.0-beta1"
-tagline	"You Know, for Search"
 
+{
+    "name": "node-1",
+    "cluster_name": "my-application",
+    "cluster_uuid": "HwhOb0jDQvmSyPGOcKeZlA",
+    "version": {
+        "number": "7.6.2",
+        "build_flavor": "default",
+        "build_type": "tar",
+        "build_hash": "ef48eb35cf30adf4db14086e8aabd07ef6fb113f",
+        "build_date": "2020-03-26T06:34:37.794943Z",
+        "build_snapshot": false,
+        "lucene_version": "8.4.0",
+        "minimum_wire_compatibility_version": "6.8.0",
+        "minimum_index_compatibility_version": "6.0.0-beta1"
+    },
+    "tagline": "You Know, for Search"
+}
 ```
 
 12. 后台启动
@@ -115,8 +119,14 @@ tagline	"You Know, for Search"
 # 查看进程
 ps -ef|grep elasticsearch
 ```
+13. 开启防火墙
+```
+firewall-cmd --zone=public --add-port=9200/tcp --permanent
 
+firewall-cmd --zone=public --add-port=9300/tcp --permanent
 
+firewall-cmd --reload
+```
 
 
 ---
