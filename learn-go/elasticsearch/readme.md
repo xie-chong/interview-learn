@@ -118,6 +118,9 @@ response:
 ./elasticsearch -d
 # 查看进程
 ps -ef|grep elasticsearch
+
+# 关闭服务，杀掉进程
+kill - 9 进程号
 ```
 13. 开启防火墙
 ```
