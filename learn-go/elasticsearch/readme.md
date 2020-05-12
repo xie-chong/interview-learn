@@ -11,8 +11,6 @@
 
 ---
 
-[elastic](https://www.elastic.co/cn/)
-
 1. 查看JDK版本
 ```
 [root@xiecentos /]# java -version
