@@ -117,7 +117,7 @@ var bar = new foo(2);
 console.log(bar.a);
 ```
 
-　　## js中的构造函数
+## js中的构造函数
 
 　　　　1. 只是使用new操作符调用的普通函数。
 
