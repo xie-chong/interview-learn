@@ -1,4 +1,4 @@
-# NoSQL常用操作命令
+# <p align="center">NoSQL常用操作命令</p>
 
 <!-- MarkdownTOC -->
 
@@ -9,7 +9,7 @@
   - [Set](#1.4)   
   - [sorted set](#1.5)   
 - [2. redis经验积累](#2)    
-  
+- [3. 学习网址](#3)    
   
   
   
@@ -112,4 +112,18 @@
 
 2. redis中查看数据库的个数 ```config get databases```
 
+
+
+
+
+
+
+
+
+
+
+
+<h1 id="3">3. 学习网址</h1>
+
+1. [Redis 命令参考](http://redisdoc.com/topic/index.html)   
 
