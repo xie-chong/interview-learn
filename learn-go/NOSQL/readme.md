@@ -110,6 +110,6 @@
 
 1. JDBC表数据缓存到redis，如果手动修改了该表的数据，请注意清除redis缓存
 
-
+2. redis中查看数据库的个数 ```config get databases```
 
 
