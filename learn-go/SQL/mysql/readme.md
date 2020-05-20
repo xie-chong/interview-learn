@@ -32,3 +32,17 @@ str_to_date(date,'%Y-%m-%d') -------------->oracle中的to_date();
   alter table stock
     add input_date_time VARCHAR(20) default date_format(sysdate(),'%Y-%m-%d %H:%i:%s') comment '录入时间';
   ```
+
+## 查询mysql数据库中某个表存储数据的大小
+
+```
+select concat(round(sum(data_length/1024/1024),2),'MB') as data_length_MB,
+       concat(round(sum(index_length/1024/1024),2),'MB') as index_length_MB,
+       concat(round(sum((data_length + index_length)/1024/1024),2),'MB') as all_MB
+from information_schema.tables
+where table_schema='数据库名称' AND table_name='表名称';
+```
+
+
+
+
