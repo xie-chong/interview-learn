@@ -14,6 +14,7 @@ Ctrl+斜杠 comments or uncomments the current line or selected block with singl
 Ctrl+Shift+斜杠 encloses the selected block in a block comment (/*...*/).   
 Shift+F1    
 ALT + 7 （可以查看类的字段、属性、方法，是否继承等）   
+Ctrl+r  （替换内容）
 
 
 
