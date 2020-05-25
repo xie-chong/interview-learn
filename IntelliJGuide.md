@@ -1,6 +1,19 @@
 
 # <p align="center">IntelliJGuide</p>
 
+- [1 | 快捷键](#1)   
+- [2 | 常用操作](#2)   
+  - [2.1 intellij idea 如何将一个普通项目转换为maven项目](#2.1)   
+
+
+
+---
+---
+---
+<h1 id="1">1 | 快捷键</h1>
+
+---
+
 Alt+Insert （快速生成构造方法和setter，getter）   
 Alt+F1	 （快速选择当前编辑的元素）   
 Ctrl+Alt+T (Code | Surround With) and choose try / catch.   
@@ -63,3 +76,50 @@ To easily evaluate the value of any expression while debugging the program, sele
 Use Ctrl+Shift+Enter to complete a current statement such as if, do-while, try-catch, return (or a method call) into a syntactically correct construct (e.g. add curly braces).
 
 By pressing Alt+Shift+F10 you can access the Run/Debug dropdown on the main toolbar, without the need to use your mouse.
+
+
+
+
+
+
+
+
+
+---
+<h1 id="2">2 | 常用操作</h1>
+
+---
+
+
+---
+<h2 id="2.1">2.1 intellij idea 如何将一个普通项目转换为maven项目</h1>
+
+---
+
+1. 工程文件下新建文件pom.xml，并填写好内容。
+
+2. 在pom.xml 文件上右键 Add as Maven Project。
+
+**pom.xml**    
+```
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.xiechong</groupId>
+	<artifactId>test</artifactId>
+	<version>2.0</version>
+	<packaging>pom</packaging>
+
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.0.4.RELEASE</version>
+	</parent>
+
+
+</project>
+```
+
+
+
