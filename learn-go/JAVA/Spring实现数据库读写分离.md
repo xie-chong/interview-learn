@@ -324,7 +324,7 @@ public abstract class AbstractRoutingDataSource extends AbstractDataSource imple
 
 
 
-使用反射获取AbstractRoutingDataSource.class里的"resolvedDataSources"（该map是通过配置文件初始化的），以便统计slave，让后采用轮询的方式区获取slave数据库连接(更多内容可以参考该连接https://www.cnblogs.com/ngy0217/p/8987508.html)
+使用反射获取AbstractRoutingDataSource.class里的"resolvedDataSources"（该map是通过配置文件初始化的），以便统计slave，然后采用轮询的方式去获取slave数据库连接(更多内容可以参考该连接https://www.cnblogs.com/ngy0217/p/8987508.html)
 
 ```
 import java.lang.reflect.Field;
