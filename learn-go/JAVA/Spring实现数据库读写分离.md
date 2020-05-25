@@ -1,3 +1,25 @@
+# <palign="center">Spring实现数据库读写分离</p>
+
+- [1 | Spring](#1)   
+- [2 | SpringBoot](#2)   
+
+
+
+---
+---
+---
+<h1 id="1">1 | Spring</h1>
+
+---
+
+
+**重点**
+
+* 类 ```AbstractRoutingDataSource.class```， 方法 ```determineTargetDataSource()```，map ```private Map<Object, DataSource> resolvedDataSources;```
+* ThreadLocal保证线程安全
+* Spring AOP
+
+
 现在大型的电子商务系统，在数据库层面大都采用读写分离技术，就是一个Master数据库，多个Slave数据库。Master库负责数据更新和实时数据查询，Slave库当然负责非实时数据查询。因为在实际的应用中，数据库都是读多写少（读取数据的频率高，更新数据的频率相对较少），而读取数据通常耗时比较长，占用数据库服务器的CPU较多，从而影响用户体验。我们通常的做法就是把查询从主库中抽取出来，采用多个从库，使用负载均衡，减轻每个从库的查询压力。
 
 采用读写分离技术的目标：有效减轻Master库的压力，又可以把用户查询数据的请求分发到不同的Slave库，从而保证系统的健壮性。我们看下采用读写分离的背景。
@@ -398,3 +420,11 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 
 
 
+
+
+
+
+---
+<h1 id="2">2 | SpringBoot</h1>
+
+---
