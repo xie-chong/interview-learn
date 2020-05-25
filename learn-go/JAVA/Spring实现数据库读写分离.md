@@ -1,4 +1,4 @@
-# <palign="center">Spring实现数据库读写分离</p>
+# <p align="center">Spring实现数据库读写分离</p>
 
 - [1 | Spring](#1)   
 - [2 | SpringBoot](#2)   
@@ -428,3 +428,5 @@ public class DynamicDataSource extends AbstractRoutingDataSource {
 <h1 id="2">2 | SpringBoot</h1>
 
 ---
+
+[参考_CN](https://www.cnblogs.com/wuyoucao/p/10965903.html)
