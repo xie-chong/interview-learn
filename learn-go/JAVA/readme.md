@@ -5,3 +5,4 @@
 - [Ngrok 实现内网穿透教程](Ngrok实现内网穿透教程.md)   
 - [Spring 实现数据库读写分离](Spring实现数据库读写分离.md)   
 - [加密入门](加密入门.md)   
+- [instanceof 和 isInstance 的区别](instanceof和isInstance的区别.md)
