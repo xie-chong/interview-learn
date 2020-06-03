@@ -1,4 +1,4 @@
-<p align="center">instanceof 和 isInstance 的区别</p>
+# <p align="center">instanceof 和 isInstance 的区别</p>
 
 在Think in Java第十四章遇到这个问题，一些博客模糊提到了isInstance是instanceof的动态实现，查阅文档参考SOF上的一些回答如下：
 
