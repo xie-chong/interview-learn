@@ -70,3 +70,36 @@ https://stackoverflow.com/questions/8692214/when-to-use-class-isinstance-when-to
 https://stackoverflow.com/questions/15757014/isinstance-instanceof-why-theres-no-generic-way
 
 http://blog.csdn.net/u010002184/article/details/79306195
+
+
+## 4. isAssignableFrom
+
+jdk1.8.0_231\jre\lib\rt.jar!\java\lang\Class.class
+
+```
+   /**
+     * Determines if the class or interface represented by this
+     * {@code Class} object is either the same as, or is a superclass or
+     * superinterface of, the class or interface represented by the specified
+     * {@code Class} parameter. It returns {@code true} if so;
+     * otherwise it returns {@code false}. If this {@code Class}
+     * object represents a primitive type, this method returns
+     * {@code true} if the specified {@code Class} parameter is
+     * exactly this {@code Class} object; otherwise it returns
+     * {@code false}.
+     *
+     * <p> Specifically, this method tests whether the type represented by the
+     * specified {@code Class} parameter can be converted to the type
+     * represented by this {@code Class} object via an identity conversion
+     * or via a widening reference conversion. See <em>The Java Language
+     * Specification</em>, sections 5.1.1 and 5.1.4 , for details.
+     *
+     * @param cls the {@code Class} object to be checked
+     * @return the {@code boolean} value indicating whether objects of the
+     * type {@code cls} can be assigned to objects of this class
+     * @exception NullPointerException if the specified Class parameter is
+     *            null.
+     * @since JDK1.1
+     */
+    public native boolean isAssignableFrom(Class<?> cls);
+```
