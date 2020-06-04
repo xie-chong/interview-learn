@@ -11,7 +11,8 @@ Random rand=new Random()；
 int i=rand.nextInt(20);
 ```
 
-代码示例，无论执行多少次，**10个随机数数值、顺序相同**
+1. 代码示例，无论执行多少次，**10个随机数数值、顺序相同**
+
 ```
 public class RegisteredFactories {
     public static void main(String[] args) {
@@ -28,7 +29,8 @@ public class RegisteredFactories {
 *///:~
 ```
 
-代码示例，无论执行多少次，**10个随机数是一个固定值**
+2. 代码示例，无论执行多少次，**10个随机数是一个固定值**
+
 ```
 public class RegisteredFactories {
     public static void main(String[] args) {
@@ -45,7 +47,8 @@ public class RegisteredFactories {
 *///:~
 ```
 
-代码示例，无论执行多少次，**10个随机数每一次都不同**
+3. 代码示例，无论执行多少次，**10个随机数每一次都不同**
+
 ```
 public class RegisteredFactories {
     public static void main(String[] args) {
@@ -65,7 +68,7 @@ public class RegisteredFactories {
 
 **所以可以这么理解理解这个“47”：Random的含参构造器里的参数是一种随机数生成规则，此后Random对象都依照这个规则生成随机数，故当然这个每次运行的结果都一致。当然这个“47”是可以改变数值的。**
 
-源码（部分）：
+4. 源码（部分）：
 
 jdk1.8.0_231\jre\lib\rt.jar!\java\util\Random.class
 ```
