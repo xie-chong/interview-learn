@@ -7,4 +7,5 @@
 - [加密入门](加密入门.md)   
 - [instanceof 和 isInstance 的区别](instanceof和isInstance的区别.md)   
 - [Java生成随机数 Random](Java生成随机数Random.md)   
-- [Java 的快速失败和安全失败](Java的快速失败和安全失败.md)
+- [Java 的快速失败和安全失败](Java的快速失败和安全失败.md)   
+- [设计模式-单例模式](设计模式-单例模式.md)
