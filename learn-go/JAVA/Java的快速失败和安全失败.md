@@ -1,4 +1,4 @@
-# <p center="align">Java 的快速失败和安全失败</p>
+# <p align="center">Java 的快速失败和安全失败</p>
 
 
 ## 一、快速失败（fail—fast）
