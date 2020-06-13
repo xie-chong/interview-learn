@@ -150,7 +150,7 @@ Found 1 deadlock.
 
 ```
 
-### 3. 死锁程序
+### 3. 死锁程序 demo
 
 ```
 public class DeadLockSample extends Thread {
