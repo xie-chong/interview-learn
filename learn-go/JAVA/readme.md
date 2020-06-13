@@ -10,3 +10,4 @@
 - [Java 的快速失败和安全失败](Java的快速失败和安全失败.md)   
 - [设计模式-单例模式](设计模式-单例模式.md)   
 - [设计模式-代理模式](设计模式-代理模式.md)   
+- [jstack-DeadLockSample](jstack-DeadLockSample.md)   
