@@ -1,4 +1,4 @@
-# <p align="center'>jstack-DeadLockSample （JAVA 死锁诊断）</p>
+# <p align="center">jstack-DeadLockSample （JAVA 死锁诊断）</p>
 
 
 ## 在windows下使用jstack诊断
