@@ -4,7 +4,7 @@
 - [1 | 快捷键](#1)   
 - [2 | 常用操作](#2)   
   - [2.1 intellij idea 如何将一个普通项目转换为maven项目](#2.1)   
-
+  - [2.2 如何将多个maven合并到一个工程中管理](#2.2)   
 
 
 ---
@@ -121,6 +121,76 @@ By pressing Alt+Shift+F10 you can access the Run/Debug dropdown on the main tool
 
 </project>
 ```
+
+
+
+
+
+
+
+
+---
+<h2 id="2.2">2.2 如何将多个maven合并到一个工程中管理</h1>
+
+---
+
+1. 新建一个父工程，删除src文件，配置pom.xml
+
+```
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.crazyit.boot</groupId>
+    <artifactId>cloud_fk</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>env-test</module>
+    </modules>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.0.4.RELEASE</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>1.5.4.RELEASE</version>
+        </dependency>
+    </dependencies>
+
+</project>
+```
+
+2. 把子工程copy到父工程文件目录里，修改pom.xml
+
+```
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.crazyit.cloud</groupId>
+    <artifactId>env-test</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.crazyit.boot</groupId>
+        <artifactId>cloud_fk</artifactId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+
+
+</project>
+```
+
+
 
 
 
