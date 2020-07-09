@@ -4,7 +4,7 @@
 - [1 | 快捷键](#1)   
 - [2 | 常用操作](#2)   
   - [2.1 intellij idea 如何将一个普通项目转换为maven项目](#2.1)   
-  - [2.2 如何将多个maven合并到一个工程中管理](#2.2)   
+  - [2.2 如何将多个maven工程合并到一个工程中管理](#2.2)   
 
 
 ---
@@ -130,7 +130,7 @@ By pressing Alt+Shift+F10 you can access the Run/Debug dropdown on the main tool
 
 
 ---
-<h2 id="2.2">2.2 如何将多个maven合并到一个工程中管理</h1>
+<h2 id="2.2">2.2 如何将多个maven工程合并到一个工程中管理</h1>
 
 ---
 
