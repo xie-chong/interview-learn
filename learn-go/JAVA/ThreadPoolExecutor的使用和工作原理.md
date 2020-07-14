@@ -1,27 +1,28 @@
 # <p align="center">ThreadPoolExecutor的使用和工作原理</p>
 
 ## 前言
-    在我们进行开发时，为了加快程序的运行效率，可能会使用到线程池去加快程序效率，但是线程池也不是随便使用的，如果一旦使用错误，还可能会造成生产事故。在JDK1.5后提供了Executor框架来供开发者使用，无需关心任务如何被执行，如果不清楚线程池原理的话，使用Executor框架也可能会造成生产事故，下面主要来分析一下Executor框架和线程池ThreadPoolExecutor底层的原理。
+
+在我们进行开发时，为了加快程序的运行效率，可能会使用到线程池去加快程序效率，但是线程池也不是随便使用的，如果一旦使用错误，还可能会造成生产事故。在JDK1.5后提供了Executor框架来供开发者使用，无需关心任务如何被执行，如果不清楚线程池原理的话，使用Executor框架也可能会造成生产事故，下面主要来分析一下Executor框架和线程池ThreadPoolExecutor底层的原理。
 
 
 
 ## 1. Executors提供的线程池
     
-	Executors一共给我们提供了四种类型的线程池，分别是：newSingleThreadExecutor()，newFixedThreadExecutor()，newCachedThreadPool()，newScheduledThreadPool()
+Executors一共给我们提供了四种类型的线程池，分别是：newSingleThreadExecutor()，newFixedThreadExecutor()，newCachedThreadPool()，newScheduledThreadPool()
 
-(1) newSingleThreadPool()
+### (1) newSingleThreadPool()
 
 创建单一线程的线程池，也就是线程池中只有一个线程在执行
 
-(2) newFixedThreadPool()
+### (2) newFixedThreadPool()
 
 创建一个定长的线程池，也就是线程池中的线程数量是固定大小的
 
-(3) newCachedThreadPool()
+### (3) newCachedThreadPool()
 
 创建一个可缓存的线程池，如果线程池中的线程执行完后，没有Task任务进来，那么当前线程可以缓存60s，如果60s过后，线程没有被调用，则移除该线程，适用于短期异步任务的场景。
 
-(4) newScheduledThreadPool()
+### (4) newScheduledThreadPool()
 
 创建一个支持定时和周期性执行的线程池，基于DelayedWorkQueue延迟队列来实现定时执行
 
@@ -42,23 +43,23 @@
 
 先看一些ThreadPoolExecutor的构造方法：
 
-(1) corePoolSize
+### (1) corePoolSize
 
  线程池中存在的核心线程数，也就是线程池中不会被释放的线程数量，有网友可能会有疑问，如果线程不会被释放，那不会一直被占着资源？不会，存活的线程不会跟其它线程抢占资源，相当于处于一个假死状态，有任务过来就会唤醒存活的线程执行任务
 
- (2) maximumPoolSize
+###  (2) maximumPoolSize
 
 线程池中允许的最大线程数，也就是任务数 > corePoolSize并且阻塞队列也已经放满了任务，这是最大线程数就会起作用，则创建新的线程执行任务，前提是任务数 < maximumPoolSize
 
-(3) keepAliveTime
+### (3) keepAliveTime
 
 线程空闲时的存活时间，大于corePoolSize数量被创建的线程在没有任务执行的情况下的存活时间，一旦达到存活时间线程则会被回收释放
 
-(4) unit
+### (4) unit
 
 keepAliveTime存活时间的单位
 
-(5) workQueue
+### (5) workQueue
 
 当任务数 > corePoolSize核心线程数时，workQueue就会起作用，用来保存等待被执行的任务的阻塞队列，JDK提供了多种阻塞队列：
 
@@ -76,11 +77,11 @@ keepAliveTime存活时间的单位
 
 7. LinkedBlockingDeque: 由一个链表结构组成的双向阻塞队列，可以从队列的两端插入和移出元素
 
-(6) threadFactory
+### (6) threadFactory
 
 创建线程的工厂，默认实现DefaultThreadFactory
 
-(7) handler
+### (7) handler
 
 线程池的淘汰策略，当过来的任务数 > corePoolSize, 阻塞队列已满，> maximumPoolSize, 这时handler就会起作用，会采用一种策略来处理过来的任务数，JDK也提供了4中淘汰策略：
 
@@ -113,15 +114,15 @@ keepAliveTime存活时间的单位
 
 我们可以看到一共定义了6个枚举值，其实代表的是5种类型的线程状态, 5种线程状态：
 
-1.NEW(新建)
+### 1.NEW(新建)
 
-2.RUNNABLE(运行状态)
+### 2.RUNNABLE(运行状态)
 
-3.BLOCKED(阻塞状态)
+### 3.BLOCKED(阻塞状态)
 
-4.WAITING(等待状态，WAITING和TIMED_WAITING可以归为一类，都属于等待状态，只是后者可以设置等待时间，即等待多久)
+### 4.WAITING(等待状态，WAITING和TIMED_WAITING可以归为一类，都属于等待状态，只是后者可以设置等待时间，即等待多久)
 
-5.TERMINATED(终止状态)
+### 5.TERMINATED(终止状态)
 
 线程关系转换图：
 
