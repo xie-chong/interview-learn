@@ -29,13 +29,13 @@ Executors一共给我们提供了四种类型的线程池，分别是：newSingl
 
 ## 2. 四种线程池底层实现原理
 
-我们将代码跟入深一点，就会发现四种线程池最终调用的还是new ThreadPoolExecutor()，只不过传入参数不同而已。在《阿里巴巴开发手册》中明确指出不建议我们直接Executors创建现成线程池，我们可以看到上面的四种线程池它们有一个参数也就是要传入的阻塞队列。
+我们将代码跟入深一点，就会发现四种线程池最终调用的还是 new ThreadPoolExecutor()，只不过传入参数不同而已。在《阿里巴巴开发手册》中明确指出不建议我们直接Executors创建现成线程池，我们可以看到上面的四种线程池它们有一个参数也就是要传入的阻塞队列。
 
-**newSingleThreadPool()**传入的阻塞队列**LinkedBlockingQueue()**基于链表实现的阻塞队列，队列最大长度为Integer.MAX_VALUE，也就是这个队列可以承载2^31大小的线程，这时候服务器肯定会承受不住这么多的线程，会造成服务器崩溃的场景。
+**newSingleThreadPool()** 传入的阻塞队列 **LinkedBlockingQueue()** 基于链表实现的阻塞队列，队列最大长度为Integer.MAX_VALUE，也就是这个队列可以承载2^31大小的线程，这时候服务器肯定会承受不住这么多的线程，会造成服务器崩溃的场景。
 
-**newFixedThreadPool()**跟**newSingleThreadPool()**一样，传入的都是相当于无界的一个队列。
+**newFixedThreadPool()** 跟 **newSingleThreadPool()** 一样，传入的都是相当于无界的一个队列。
 
-**newCachedThreadPool()**和**newScheduledThreadPool()**可以看到传入的一个最大线程数为Integer.MAX_VALUE，也就是会一直创建新的线程去执行任务，这时候服务器也是承受不住的，会造成服务器崩溃。
+**newCachedThreadPool()**和**newScheduledThreadPool()** 可以看到传入的一个最大线程数为 Integer.MAX_VALUE，也就是会一直创建新的线程去执行任务，这时候服务器也是承受不住的，会造成服务器崩溃。
 
 上述原因也就是阿里开发手册为什么不建议我们直接使用创建好的线程池使用，如果开发者稍有一不注意，就会造成服务器线程崩溃。所以我们应该使用底层的ThreadPoolExecutor()类创建线程池，这样自己能够清楚的知道自己设置线程池和队列大小。
 
