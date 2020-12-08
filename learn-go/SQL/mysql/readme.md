@@ -44,5 +44,30 @@ where table_schema='数据库名称' AND table_name='表名称';
 ```
 
 
+https://blog.csdn.net/sumengnan/article/details/106564480
 
+```
+show VARIABLES like 'max_connections'
+
+set GLOBAL max_connections=3600;
+
+show VARIABLES like 'wait_timeout'
+
+// 修改数据库连接超时时间sql语句：
+//设置交互式连接超时时间，例如mysql客户端
+set session interactive_timeout=28800;
+set GLOBAL interactive_timeout=28800;
+ 
+//设置非交互式连接超时时间，例如jdbc
+set session wait_timeout=28800;
+set GLOBAL wait_timeout=28800;
+ 
+永久修改:mysql配置文件
+
+[mysqld]
+wait_timeout    = 28800
+interactive_timeout    =  28800
+#增加以上两列即可，因为官方文档要求修改此参数必须同时修改interactive_timeout
+
+```
 
