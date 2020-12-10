@@ -71,3 +71,6 @@ interactive_timeout    =  28800
 
 ```
 
+Method method = o.getClass().getMethod("getStatus", new Class[] {});    
+            Object value = method.invoke(o, new Object[] {});  
+String statusValue = String.of(value );
