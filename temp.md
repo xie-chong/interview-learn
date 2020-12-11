@@ -59,3 +59,10 @@ logon info:
     password: NOT SET*/
 
 ```
+
+```
+T data = JsonUtil.fromJson(JsonUtil.toJson(rspData), objectType);
+Method method = data.getClass().getMethod("getStatus", new Class[]{});
+Object value = method.invoke(data, new Object[]{});
+String statusValue = String.valueOf(value);
+```
