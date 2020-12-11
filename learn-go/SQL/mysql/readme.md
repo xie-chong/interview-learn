@@ -70,7 +70,3 @@ interactive_timeout    =  28800
 #增加以上两列即可，因为官方文档要求修改此参数必须同时修改interactive_timeout
 
 ```
-
-Method method = o.getClass().getMethod("getStatus", new Class[] {});    
-            Object value = method.invoke(o, new Object[] {});  
-String statusValue = String.of(value );
