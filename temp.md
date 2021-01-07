@@ -66,3 +66,6 @@ Method method = data.getClass().getMethod("getStatus", new Class[]{});
 Object value = method.invoke(data, new Object[]{});
 String statusValue = String.valueOf(value);
 ```
+
+
+https://www.jiweichengzhu.com/article/2940ed65c94f4671ae3f3aa72e168673
