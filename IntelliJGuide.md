@@ -5,6 +5,8 @@
 - [2 | 常用操作](#2)   
   - [2.1 intellij idea 如何将一个普通项目转换为maven项目](#2.1)   
   - [2.2 如何将多个maven工程合并到一个工程中管理](#2.2)   
+- [3 | 项目JDK版本配置](#3)   
+
 
 
 ---
@@ -194,3 +196,63 @@ By pressing Alt+Shift+F10 you can access the Run/Debug dropdown on the main tool
 
 
 
+
+
+---
+<h1 id="3">3 | 项目JDK版本配置</h1>
+
+---
+
+
+- 1. "ctrl+shift+alt+s" , 打开project settings,确定项目的jdk和sdk是是否配置正确:
+    - 1.1 project 下的project SDK,是否为项目需要的jdk:
+    - 1.2 确定SDK是否选中:
+    - 1.3 language level不能比项目的jdk版本高:
+    - 1.4 确定modules下dependencies配置的jdk是否正确:
+
+- 2. "run/dug configurations"  >>>需要运行的项目名称 >>>>>>runner  >>>>JRE配置是否正确:
+
+- 3.按下 "ctrl + alt + s "  打开settings确定Java  compiler 的 Target bytecode version 是否选中项目需要的jdk版本:
+
+- 4. 确定D:\apache-maven-3.2.5\conf下的settings的jdk版本配置正确:
+```
+<profile>  
+    <id>jdk-1.8</id>  
+  
+    <activation>  
+      <activeByDefault>true</activeByDefault>  
+      <jdk>1.8</jdk>  
+    </activation>  
+    <properties>  
+      <maven.compiler.source>1.8</maven.compiler.source>  
+      <maven.compiler.target>1.8</maven.compiler.target>  
+      <maven.compiler.compilerVersion>1.8</maven.compiler.compilerVersion>  
+    </properties>  
+  
+    <repositories>  
+      <repository>  
+        <id>jdk17</id>  
+        <name>Repository for JDK 1.8 builds</name>  
+        <url>http://www.myhost.com/maven/jdk18</url>  
+        <layout>default</layout>  
+        <snapshotPolicy>always</snapshotPolicy>  
+      </repository>  
+    </repositories>  
+  </profile>  
+```
+
+- 5 确定pom.xml配置是否正确:
+```
+<plugin>  
+   <groupId>org.apache.maven.plugins</groupId>  
+   <artifactId>maven-compiler-plugin</artifactId>  
+   <version>2.3.2</version>  
+   <configuration>  
+      <source>1.8</source>  
+      <target>1.8</target>  
+      <encoding>UTF-8</encoding>  
+   </configuration>  
+</plugin>  
+```
+
+[参考链接](https://www.cnblogs.com/hkgov/p/8074085.html)
