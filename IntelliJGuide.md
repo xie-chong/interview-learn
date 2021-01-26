@@ -204,17 +204,17 @@ By pressing Alt+Shift+F10 you can access the Run/Debug dropdown on the main tool
 ---
 
 
-- 1. "ctrl+shift+alt+s" , 打开project settings,确定项目的jdk和sdk是是否配置正确:
+- 1 "ctrl+shift+alt+s" , 打开project settings,确定项目的jdk和sdk是是否配置正确:
     - 1.1 project 下的project SDK,是否为项目需要的jdk:
     - 1.2 确定SDK是否选中:
     - 1.3 language level不能比项目的jdk版本高:
     - 1.4 确定modules下dependencies配置的jdk是否正确:
 
-- 2. "run/dug configurations"  >>>需要运行的项目名称 >>>>>>runner  >>>>JRE配置是否正确:
+- 2  "run/dug configurations"  >>>需要运行的项目名称 >>>>>>runner  >>>>JRE配置是否正确:
 
-- 3.按下 "ctrl + alt + s "  打开settings确定Java  compiler 的 Target bytecode version 是否选中项目需要的jdk版本:
+- 3 按下 "ctrl + alt + s "  打开settings确定Java  compiler 的 Target bytecode version 是否选中项目需要的jdk版本:
 
-- 4. 确定D:\apache-maven-3.2.5\conf下的settings的jdk版本配置正确:
+- 4 确定D:\apache-maven-3.2.5\conf下的settings的jdk版本配置正确:
 ```
 <profile>  
     <id>jdk-1.8</id>  
