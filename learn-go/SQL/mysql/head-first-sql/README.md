@@ -294,3 +294,213 @@ A：原子性有助于确保表内容的准确性。例如，你有一个门牌�
 
 原子性数据也能使查询更有效率，因为查询会因原子性而更容易设计，而且运行所需时间也更短，因此在面对大量
 数据时有加分效果。
+
+
+**原子性数据的正式规则：**
+
+1. 具有原子性数据的列中不会有多个类型相同的的值。
+
+| food_name  | ingredients  |
+| ------------ | ------------ |
+| bread  | flour,milk,egg,yeast,oil  |
+| salad  | lettuce,tomato,cucumber  |
+
+设想在列 ingredients中如何查找番茄？
+
+2. 具有原子性数据的表中不会有多个存储同类数据的列。
+
+| teacher  | student1  | student2  | student3  |
+| ------------ | ------------ | ------------ | ------------ |
+| Ms.Martini  | Joe  | Ron  | Kelly  |
+| Mr.Howard  | Sanjaya  | Tim  | Julie  |
+
+**规范化表的优点**
+
+1. 规范化的表中没有重复的数据，可以减小数据库的大小
+2. 因为查找的数据较少，你的查询会更为快速
+
+### SHOW 命令
+
+```
+# 查看创建表的ddl语句
+SHOW CREATE TABLE table_name;
+
+# 列的细节信息
+SHOW COLUMNS FROM tablename;
+
+SHOW CREATE DATABASE databasename;
+
+SHOW INDEX FROM tablename;
+
+# 如果你从控制台收到SQL命令造成的错误信息，键入如下命令就可取得确切的警告内容。
+SHOW WARNINGS;
+```
+
+
+```
+SHOW CREATE TABLE my_contacts;
+# 显示结果
+CREATE TABLE `my_contacts` (
+  `last_name` varchar(30) DEFAULT NULL,
+  `first_name` varchar(20) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `profession` varchar(50) DEFAULT NULL,
+  `location` varchar(50) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `interests` varchar(100) DEFAULT NULL,
+  `seeking` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+```
+
+Q：SHOW CREATE TABLE中的反撇号究竟是做什么用的？我真的不需要用到反撇号吗？   
+A：反撇号的存在是因为RDBMS有时无法辨出列名。如果在列名前后加上反撇号就能以SQL保留字作为列名（尽管这不是一个
+好主意）。例如由于某些奇怪的原因，你想把某列命名为select。下列命令无法实现：```select varchar(50)```，
+但```'select' varchar(50)```可以。
+
+Q：用保留字作为列名会有什么大问题？   
+A：虽然你可以这么做，但这真的是很糟糕的主意。想象一下你的查询看起来会有多么混乱，还有每次都要键入反撇号的麻
+烦，还不如一开始就别把列名取为某个保留字。除此之外，select也不是一个好列名，他无法说明该列包含的数据。
+
+
+### AUTO_INCREAMENT
+
+若在列的声明中使用这个关键字，则每次执行INSERT命令来插入数据时，它都会自动给列赋予唯一的递增整数值。
+
+```
+ALTER TABLE my_contacts
+    ADD contact_id INT NOT NULL AUTO_INCREMENT FIRST,
+    ADD PRIMARY KEY (contact_id);
+```
+
+```
+SHOW CREATE TABLE my_contacts;
+# 加入自增主键后显示结果
+CREATE TABLE `my_contacts` (
+                               `contact_id` int(11) NOT NULL AUTO_INCREMENT,
+                               `last_name` varchar(30) DEFAULT NULL,
+                               `first_name` varchar(20) DEFAULT NULL,
+                               `email` varchar(50) DEFAULT NULL,
+                               `gender` char(1) DEFAULT NULL,
+                               `birthday` date DEFAULT NULL,
+                               `profession` varchar(50) DEFAULT NULL,
+                               `location` varchar(50) DEFAULT NULL,
+                               `status` varchar(20) DEFAULT NULL,
+                               `interests` varchar(100) DEFAULT NULL,
+                               `seeking` varchar(100) DEFAULT NULL,
+                               PRIMARY KEY (`contact_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+```
+
+当我们为表添加自增的物理主键时，表中存在的数据也会自动递增填充该字段值（自增主键必须为key```there can be only 
+one auto column and it must be defined as a key```）。
+
+
+```
+INSERT INTO `my_contacts` (`contact_id`, `last_name`, `first_name`, `email`, `gender`, `birthday`, `profession`, `location`, `status`,
+                           `interests`, `seeking`)
+VALUES (NULL, 'Hamilton', 'Jamie', 'dontbother@starbuzzcoffee.com', 'F', '1964-09-10', 'System Administrator',
+        'Princeton, NJ', 'married', 'RPG', 'nothing');
+```
+上面所示sql语句会执行成功，虽然建表时要求contact_id NOT NULL，但AUTO_INCREMENT会忽略NULL。然而，在没有
+AUTO_INCREMENT的情况下，我们就会收到错误信息。
+
+
+
+* **PRIMARY KEY** 主键。。一个或一组能识别出唯一数据行的列。
+* **FIRST NORMAL FORM (1NF)** 第一范式。每个数据行均需要包含原子性数据值，而且每个数据行均需要具有唯一的识别方法。
+
+
+
+
+
+
+
+
+---
+<h1 id="05">05 | ALTER：改写历史</h1>
+
+---
+
+
+给表增加列，利用关键字 AFTER，让新列放在first_name列后。
+```
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    AFTER first_name;
+```
+
+我们可以使用FIRST 和 AFTER your_clumon来排列字段的位置，不过还可以使用 BEFORE your_clumon 和 LAST。
+另外还有SECON、THIRD可供选用，此外也能一次类推。
+
+
+**FIRST 可把phone列安置于所有其他列的前面**   
+
+| phone | contact_id | last_name | first_name | email |   
+| ------- | ------- | ------- | ------- |------- |
+
+```
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    FIRST;
+```
+
+
+**LAST 可把phone列安置于所有其他列的后面**   
+
+| contact_id | last_name | first_name | email | phone |   
+| ------- | ------- | ------- | ------- |------- |
+
+```
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    LAST;
+	
+# 同等效果
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    FIFTH;
+	
+# 不加关键字也可以
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL;
+
+```
+
+| contact_id | phone | last_name | first_name | email |   
+| ------- | ------- | ------- | ------- |------- |
+
+```
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    SECOND;
+	
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    BEFORE last_name;
+```
+
+
+### 修改表
+
+**如果改变列的类型，可能就会有遗失数据的风险**。   
+如果你想改变的数据类型和原始类型不兼容，命令则不会执行，SQL软件也会抱怨语句有问题。   
+但真正的惨剧可能发生在类型兼容的情况下，你的数据可能被截断。例如：从varchar(10)改为char(1)。与此类似，在数字类型上，
+我们可以在各种数据类型间切换，但数据会被转换为新的类型，这是就可能丢失部分数据。
+
+
+
+
+* **CHANGE** 可同时改变现有列的名称和数据类型
+* **MODIFY** 修改现有列的数据类型或位置
+* **ADD** 在当前表中添加一列--可自选类型
+* **DROP** 从表中删除某列
+
+### 表的改名换姓
+
+```
+
+```
+
+TODO p244
