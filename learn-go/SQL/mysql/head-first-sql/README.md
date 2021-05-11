@@ -431,8 +431,8 @@ ALTER TABLE my_contacts
     AFTER first_name;
 ```
 
-我们可以使用FIRST 和 AFTER your_clumon来排列字段的位置，不过还可以使用 BEFORE your_clumon 和 LAST。
-另外还有SECON、THIRD可供选用，此外也能一次类推。
+我们可以使用FIRST 和 AFTER your_clumon来排列字段的位置，不过不可以使用 BEFORE your_clumon 和 LAST。
+另外还有SECON、THIRD也不可选用。
 
 
 **FIRST 可把phone列安置于所有其他列的前面**   
@@ -447,21 +447,12 @@ ALTER TABLE my_contacts
 ```
 
 
-**LAST 可把phone列安置于所有其他列的后面**   
+**虽然有 AFTER 语法，但其实没有 BEFORE 语法，也没有LAST**   
 
 | contact_id | last_name | first_name | email | phone |   
 | ------- | ------- | ------- | ------- |------- |
 
 ```
-ALTER TABLE my_contacts
-    ADD phone VARCHAR(10) NULL 
-    LAST;
-	
-# 同等效果
-ALTER TABLE my_contacts
-    ADD phone VARCHAR(10) NULL 
-    FIFTH;
-	
 # 不加关键字也可以
 ALTER TABLE my_contacts
     ADD phone VARCHAR(10) NULL;
@@ -471,15 +462,6 @@ ALTER TABLE my_contacts
 | contact_id | phone | last_name | first_name | email |   
 | ------- | ------- | ------- | ------- |------- |
 
-```
-ALTER TABLE my_contacts
-    ADD phone VARCHAR(10) NULL 
-    SECOND;
-	
-ALTER TABLE my_contacts
-    ADD phone VARCHAR(10) NULL 
-    BEFORE last_name;
-```
 
 
 ### 修改表
@@ -500,7 +482,39 @@ ALTER TABLE my_contacts
 ### 表的改名换姓
 
 ```
+CREATE TABLE `projekts`
+(
+    `number`            int(11) NOT NULL default '0',
+    `descriptionofproj` varchar(50)      default NULL,
+    `contractoronjob`   varchar(10)      default NULL
+) ENGINE = MyISAM
+  DEFAULT CHARSET = latin1;
+```
 
 ```
+ALTER TABLE projekts RENAME TO project_list;
+```
+
+重新装备列
+
+| number | descriptionofproj | contractoronjob |
+| ------- | ------- | ------- |
+
+变更为
+
+| proj_id | proj_desc | con_name |
+| ------- | ------- | ------- |
+
+
+### ALTER 和 CHANGE
+
+```
+ALTER TABLE project_list
+    CHANGE COLUMN number proj_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY;
+```
+
+
+
+
 
 TODO p244
