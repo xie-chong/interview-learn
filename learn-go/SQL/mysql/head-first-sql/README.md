@@ -544,6 +544,14 @@ ALTER TABLE project_list
 Q：如果我想改变列的顺序呢？像```ALTER TABLE MODIFY COLUMN proj_desc AFTER con_name;```，这样做可以吗？   
 A：创建表后你就无法真正地改变列的顺序了。最多只能在指定位置添加新列，然后删除旧列，但这样会丢失旧列中的所有数据。   
 
+ 正确语法
+```
+CHANGE [COLUMN] old_col_name column_definition
+        [FIRST|AFTER col_name]
+MODIFY [COLUMN] column_definition [FIRST | AFTER col_name]
+```
+ 
+ 
 
 增加多列
 ```
@@ -565,6 +573,107 @@ ALTER TABLE project_list
 
 ### 删除列
 
+只在表中保留必要的列是一个很好的编程习惯。如果用不到某列，请把它删除（drop）。如果以后有需要，ALTER让我们可以轻松地把它添加会表中。
+
+你的列越多，RDBMS的工作就越累，数据库所占用的空间也就越大。
+
+一旦删除列，原本存储在该列中的一切内容都会跟着被删除。
+
+```
+ALTER TABLE project_list
+    DROP COLUMN start_date;
+```
+
+ 表 hooptie
+```
+CREATE TABLE `hooptie`
+(
+    `color`   varchar(20)  default NULL,
+    `year`    varchar(4)   default NULL,
+    `make`    varchar(20)  default NULL,
+    `mo`      varchar(20)  default NULL,
+    `howmuch` float(10, 3) default NULL
+) ENGINE = MyISAM
+  DEFAULT CHARSET = latin1;
+```
+
+```
+INSERT INTO `hooptie` (`color`,`year`,`make`,`mo`,`howmuch`) VALUES ('silver','1998','Porsche','Boxter','17992.539');
+INSERT INTO `hooptie` (`color`,`year`,`make`,`mo`,`howmuch`) VALUES (NULL,'2000','Jaguar','XJ','15995.000');
+INSERT INTO `hooptie` (`color`,`year`,`make`,`mo`,`howmuch`) VALUES ('red','2002','Cadillac','Escalade','40215.898');
+```
+
+| color | year | make | mo | howmuch |
+| :--- | :--- | :--- | :--- | :--- |
+| silver | 1998 | Porsche | Boxter | 17992.54 |
+| NULL | 2000 | Jaguar | XJ | 15995 |
+| red | 2002 | Cadillac | Escalade | 40215.9 |
+
+修改为 car_table
+
+| car\_id | VIN | make | model | year | color | price |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | NULL | Porsche | Boxter | 1998 | silver | 17992.54 |
+| 2 | NULL | Jaguar | XJ | 2000 | NULL | 15995.00 |
+| 3 | NULL | Cadillac | Escalade | 2002 | red | 40215.90 |
+
+
+
+ 执行语句
+```
+ALTER TABLE hooptie RENAME TO car_table,
+    ADD COLUMN car_id           Int NOT NULL AUTO_iNCREMENT PRIMARY KEY FIRST,
+    ADD COLUMN VIN              VARCHAR(16) AFTER car_id,
+    CHANGE COLUMN mo model      VARCHAR(20),
+    MODIFY COLUMN color varchar(20) AFTER model,
+    MODIFY COLUMN year varchar(4) AFTER model,
+    CHANGE COLUMN howmuch price DECIMAL(7, 2);
+```
+
+
+Q：之前你说过，MODIFY无法重新排列列的顺序。但是我的SQL软件工具却能让我重新排列它们。它是怎么办到的？
+A：其实你的软件在背后执行了非常多的命令。它把我们要移除的列的内容暂时复制到临时表中，然后去除你要移除的列，
+再用ALTER创建于旧列同名的新列，并放再我们指定的位置，而后把临时表的内容复制到新列中，最后再删除临时表。   
+
+建议再SELECT时用任何顺序排列列。
+
+Q：所以说，只有添加列时才是调整顺序的好时机吗？
+A：没错。最好在设计表时就已构思好各个列的最佳顺序。
+
+Q：如果我已经创建了主键，然后又意外地想改用另一列呢？可以只移除主键的设置而不改变其中的数据吗？
+A：可以，而且很简单。
+
+```
+ALTER TABLE your_table DROP PRIMARY KEY;
+```
+但是该列必须不能是 AUTO_INCREMENT修饰的列。因为 PRIMARY KEY 和 AUTO_INCREMENT必须一起使用。
+```
+there can be only one auto column and it must be defined as a key
+```
+
+每个表中只有一列可以加上AUTO_INCREMEN，该列必须为整数类型而且不能为NULL，必须为PRIMARY KEY。
+
+### 寻找模式
+
+```
+SELECT location FROM my_contacts;
+```
+
+| location |
+| :--- |
+| Palo Alto, CA |
+| San Francisco, CA |
+| San Diego, CA |
+
+增加列，把location字段值拆分为state、city
+```
+ALTER TABLE my_contacts
+    ADD COLUMN city  VARCHAR(50),
+    ADD COLUMN state VARCHAR(50);
+```
+
+
+### 一些便利的字符串函数
 
 
 
@@ -573,4 +682,5 @@ ALTER TABLE project_list
 
 
 
-TODO p246
+
+TODO p256
