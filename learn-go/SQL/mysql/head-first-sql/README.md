@@ -511,10 +511,66 @@ ALTER TABLE projekts RENAME TO project_list;
 ```
 ALTER TABLE project_list
     CHANGE COLUMN number proj_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY;
+	
+ALTER TABLE project_list
+    CHANGE descriptionofproj proj_desc VARCHAR(50) NULL;
+
+ALTER TABLE project_list
+    CHANGE contractoronjob con_name VARCHAR(10) NULL;
 ```
 
+结果展示
+
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| proj\_id | int\(11\) | NO | PRI | NULL | auto\_increment |
+| proj\_desc | varchar\(50\) | YES |  | NULL |  |
+| con\_name | varchar\(10\) | YES |  | NULL |  |
+
+
+如果只改变列的数据类型，列名维持原状，可以重复填入列名。
+```
+ALTER TABLE my_table
+    CHANGE COLUMN my_column my_column NEWTYPE;
+```
+ 
+当然更简单的方法是，使用关键字 **MODIFY** ，它只会修改类列型而不会干涉它的名称。
+```
+ALTER TABLE project_list
+    MODIFY COLUMN proj_desc VARCHAR(120);
+```
+
+Q：如果我想改变列的顺序呢？像```ALTER TABLE MODIFY COLUMN proj_desc AFTER con_name;```，这样做可以吗？   
+A：创建表后你就无法真正地改变列的顺序了。最多只能在指定位置添加新列，然后删除旧列，但这样会丢失旧列中的所有数据。   
+
+
+增加多列
+```
+ALTER TABLE project_list
+    ADD COLUMN con_phone  VARCHAR(11),
+    ADD COLUMN start_date DATE,
+    ADD COLUMN est_cost   DECIMAL(7, 2);
+```
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| proj\_id | int\(11\) | NO | PRI | NULL | auto\_increment |
+| proj\_desc | varchar\(120\) | YES |  | NULL |  |
+| con\_name | varchar\(10\) | YES |  | NULL |  |
+| con\_phone | varchar\(11\) | YES |  | NULL |  |
+| start\_date | date | YES |  | NULL |  |
+| est\_cost | decimal\(7,2\) | YES |  | NULL |  |
+
+
+### 删除列
 
 
 
 
-TODO p244
+
+
+
+
+
+TODO p246
