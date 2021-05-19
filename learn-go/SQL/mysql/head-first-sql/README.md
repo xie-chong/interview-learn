@@ -16,6 +16,8 @@
 
 [**example code download**](https://resources.oreilly.com/examples/9780596526849/tree/master)
 
+[MySQL 函数](https://www.runoob.com/mysql/mysql-functions.html)
+
 ---
 <h1 id="01">01 | 数据和表：保存所有东西的地方</h1>
 
@@ -672,9 +674,67 @@ ALTER TABLE my_contacts
     ADD COLUMN state VARCHAR(50);
 ```
 
+| location | city | state |
+| :--- | :--- | :--- |
+| Palo Alto, CA | Palo Alto |  CA |
+| San Francisco, CA | San Francisco |  CA |
+| San Diego, CA | San Diego |  CA |
+| Dallas, TX | Dallas |  TX |
+
+执行语句( 没有where条件，会遍历整个表，每次取一条数据套用函数并更新)
+```
+UPDATE acc_adapter.my_contacts
+SET city  = SUBSTRING_INDEX(location, ',', 1),
+    state = SUBSTRING_INDEX(location, ',', -1);
+```
+
+**MySQL中的错误语句，mssql和Oracle不会出现此问题。**
+
+```
+UPDATE acc_adapter.my_contacts
+             SET city  = (SELECT SUBSTRING_INDEX(location, ',', 1) FROM acc_adapter.my_contacts WHERE 1 = 1),
+                 state = (SELECT SUBSTRING_INDEX(location, ',', -1) FROM acc_adapter.my_contacts WHERE 1 = 1)
+             WHERE 1 = 1;
+[2021-05-19 10:45:06] [HY000][1093] You can't specify target table 'my_contacts' for update in FROM clause
+```
+意思是说，不能先select出同一表中的某些值，再update这个表(在同一语句中)。   
+可将select出的结果再通过中间表select一遍，这样就规避了错误。
+
+
 
 ### 一些便利的字符串函数
 
+字符串函数不会改变存储在表中的内容，它只是把字符串修改后的模样当成查询结果返回。
+
+**SELECT最后两个字符**
+
+RIGHT() 和 LEFT() 可从列中选出指定数量的字符串（right从右侧开始，left从左侧开始）。
+
+```
+SELECT RIGHT(location, 2) FROM my_contacts;
+```
+
+**SELECT逗号前的所有内容**
+
+SUBSTRING_INDEX()则可截取部分值，也称为子字符串。
+
+SUBSTRING_INDEX(s, delimiter, number)
+* 返回从字符串 s 的第 number 个出现的分隔符 delimiter 之后的子串。	
+* 如果 number 是正数，返回第 number 个字符左边的字符串。
+* 如果 number 是负数，返回第(number 的绝对值(从右边数))个字符右边的字符串。
+
+```
+SELECT SUBSTRING_INDEX('ab','',1) -- a	
+SELECT SUBSTRING_INDEX('ab','',-1) -- b		
+SELECT SUBSTRING_INDEX(SUBSTRING_INDEX('abcde','',3),'',-1) -- c
+```
+
+
+
+---
+<h1 id="06">06 | SELECT进阶：以新视角看你的数据</h1>
+
+---
 
 
 
@@ -683,4 +743,14 @@ ALTER TABLE my_contacts
 
 
 
-TODO p256
+
+
+
+
+
+
+
+
+
+
+TODO p267
