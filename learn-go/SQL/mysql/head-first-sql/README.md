@@ -736,6 +736,64 @@ SELECT SUBSTRING_INDEX(SUBSTRING_INDEX('abcde','',3),'',-1) -- c
 
 ---
 
+内容提示：更精确的WHERE、数据排序、归组、套用数学运算。
+
+
+### 使用 CASE 表达式来 UPDATE
+
+```
+CREATE TABLE `movie_table`
+(
+    `movie_id`  int(11)     NOT NULL auto_increment,
+    `title`     varchar(50) NOT NULL,
+    `rating`    varchar(5)  NOT NULL,
+    `category`  varchar(10) NOT NULL,
+    `purchased` date        NOT NULL,
+    PRIMARY KEY (`movie_id`)
+) ENGINE = MyISAM
+  AUTO_INCREMENT = 94
+  DEFAULT CHARSET = utf8;
+```
+
+```
+UPDATE movie_table
+SET category =
+        CASE
+            WHEN drama = 'T' THEN 'drama'
+            WHEN comedy = 'T' THEN 'comedy'
+            WHEN action = 'T' THEN 'action'
+            WHEN gore = 'T' THEN 'horror'
+            WHEN scifi = 'T' THEN 'scifi'
+            WHEN for_kids = 'T' THEN 'family'
+            WHEN cartoon = 'T' THEN 'family'
+            ELSE 'misc'
+        END;
+```
+
+
+一个条件表达式可以包含许多部分：在 WHERE 子句中加上 AND ，检查影片是否即为 cartoon 又为'G'级。如果两项都
+符合就归为'family'类。
+```
+UPDATE movie_table
+SET category =
+        CASE
+            WHEN drama = 'T' THEN 'drama'
+            WHEN comedy = 'T' THEN 'comedy'
+            WHEN action = 'T' THEN 'action'
+            WHEN gore = 'T' THEN 'horror'
+            WHEN scifi = 'T' THEN 'scifi'
+            WHEN for_kids = 'T' THEN 'family'
+            WHEN cartoon = 'T' AND rating = 'G' THEN 'family'
+            ELSE 'misc'
+        END;
+```
+
+Q：如果我只想对部分列套用 CASE 表达式，应该怎么做呢？例如，只想对部分符合 categroy = 'misc'的套用 CASE，
+可以加上 WHERE 吗？   
+A：是的，可以在关键字 END 后加上 WHERE 子句。这样，CASE 就只会套用在符合 WHERE 条件的列上。
+
+Q：CASE 表达式可以搭配 UPDATE 以外的语句吗？   
+A：可以。CASE 表达式可以搭配 SELECT、INSERT、DELETE、UPDATE。
 
 
 
@@ -745,12 +803,4 @@ SELECT SUBSTRING_INDEX(SUBSTRING_INDEX('abcde','',3),'',-1) -- c
 
 
 
-
-
-
-
-
-
-
-
-TODO p267
+TODO p279
