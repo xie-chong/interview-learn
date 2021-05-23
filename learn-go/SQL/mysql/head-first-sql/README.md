@@ -798,9 +798,212 @@ A：可以。CASE 表达式可以搭配 SELECT、INSERT、DELETE、UPDATE。
 
 
 
+### 先分组，然后组内排序
+
+我们需要根据分类选出影片，并按字母顺序排列分类中的影片。
+
+**SQL的排序规则 ORDER BY （可能会因为RDBMS软件不同而有差异）**
+* 非字母字符出现在数字的前面或后面
+* 数字出现在字母的前面
+* NULL 出现在数字的前面
+* NULL 出现在字母的前面
+* 大写字母出现在小写字母的前面
+* "A 1" 出现在"A1"的前面
+
+**按多列排序**
+查询结果的排序依据不局限于使用一列或两列。我们可以利用所有需要的列来排序所有结果。
+
+```
+SELECT *
+FROM movie_table
+ORDER BY category, purchased, title;
+```
+
+默认情况下，SQL根据ORDER BY 指定的列中的升序ASC（ASCENDING）排列查询结果（A-Z，1到99,999，时间从早到晚）。
+
+我们也可以针对不同的字段使用不同的排序方式
+```
+SELECT *
+FROM movie_table
+ORDER BY category ASC, purchased DESC;
+```
+
+显示结果
+
+| movie\_id | title | rating | category | purchased |
+| :--- | :--- | :--- | :--- | :--- |
+| 86 | Head First Rules | R | action | 2003-04-19 |
+| 84 | Greg: The Untold Story | PG | action | 2001-02-05 |
+| 90 | Take it Back | R | comedy | 2001-02-05 |
+| 89 | Shiny Things, The | PG | drama | 2002-03-06 |
+| 87 | A Rat named Darcy | G | family | 2003-04-19 |
+| 83 | Big Advenure | G | family | 2002-03-06 |
+
+Q：我记得DESC是“表说明”（DESCRIPTION）的意思。你确定它能用在ORDER字句中？   
+A：我，确定。一切都跟上下文有关。当DESC用在表名前，例如DESC movie_table；查询结果就是表的说明，此时DESC是DESCRIBE的缩写。
+但DESC出现在ORDER BY子句时，它则代表DESCENDING（降序），是一种排序方式。
+
+Q：我可以使用完整的DESCRIBE或DESCENDING，以免混淆吗？   
+A：可以使用DESCRIBE，但没有DESCENDING这个关键词。   
+
+**利用 GROUP BY 完成分组加总**
+
+统计每个女孩的销售总量，找出冠军
+```
+CREATE TABLE cookie_sales
+(
+    ID         int(11)       NOT NULL auto_increment,
+    first_name varchar(20)   NOT NULL,
+    sales      decimal(4, 2) NOT NULL,
+    sale_date  date          NOT NULL,
+    PRIMARY KEY (ID)
+);
+```
+
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales);
+```
+
+| first\_name | SUM\(sales\) |
+| :--- | :--- |
+| Lindsey | 81.08 |
+| Ashley | 96.03 |
+| Nicole | 98.23 |
+| Britney | 107.91 |
+
+
+**AVG 搭配 GROUP BY**
+
+```
+SELECT first_name, AVG(sales)
+FROM cookie_sales
+GROUP BY first_name;
+```
+
+| first\_name | AVG\(sales\) |
+| :--- | :--- |
+| Lindsey | 11.582857 |
+| Nicole | 14.032857 |
+| Britney | 15.415714 |
+| Ashley | 13.718571 |
+
+
+MAX 和 MIN
+
+```
+SELECT first_name, MAX(sales), MIN(sales)
+FROM cookie_sales
+GROUP BY first_name;
+```
+
+| first\_name | MAX\(sales\) | MIN\(sales\) |
+| :--- | :--- | :--- |
+| Lindsey | 32.02 | 0.00 |
+| Nicole | 31.99 | 0.00 |
+| Britney | 43.21 | 2.58 |
+| Ashley | 26.82 | 0.00 |
+
+
+**COUNT**
+
+COUNT 返回 sales_date 列中的行数。如果数据只是NULL，则不纳入计算。
+
+```
+SELECT first_name, COUNT(sales)
+FROM cookie_sales;
+```
+
+找出卖出饼干的天数最多的女孩
+```
+SELECT first_name, COUNT(DISTINCT sale_date)
+FROM cookie_sales
+WHERE sales <> 0
+GROUP BY first_name;
+```
+
+| first\_name | COUNT\(DISTINCT sale\_date\) |
+| :--- | :--- |
+| Ashley | 6 |
+| Britney | 7 |
+| Lindsey | 6 |
+| Nicole | 6 |
+
+**NULL 代表此处无值，而不是此值为0**
+
+### LIMIT 查询结果的数量
+
+LIMIT 指定呈现的结果为2行
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales)
+LIMIT 2;
+```
+
+LIMIT ，只限第二名出现
+
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales) DESC
+LIMIT 1,1;
+```
+
+| first\_name | SUM\(sales\) |
+| :--- | :--- |
+| Nicole | 98.23 |
+
+
+
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales) DESC
+LIMIT 0,4;
+```
+
+**0，代表查询结果的起始处（SQL从0开始计算）；4代表返回查询结果的数量。**
+
+| first\_name | SUM\(sales\) |
+| :--- | :--- |
+| Britney | 107.91 |
+| Nicole | 98.23 |
+| Ashley | 96.03 |
+| Lindsey | 81.08 |
 
 
 
 
 
-TODO p279
+
+---
+<h1 id="07">07 | 多张表的数据库设计；拓展你的表</h1>
+
+---
+
+
+
+
+TODO p313
+
+
+
+
+
+
+
+---
+<h1 id="08">08 | 联接与多张表的操作：不能单独存在吗？</h1>
+
+---
+
+
+
+
+
