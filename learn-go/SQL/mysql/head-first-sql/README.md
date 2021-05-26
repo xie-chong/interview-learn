@@ -719,7 +719,7 @@ SELECT RIGHT(location, 2) FROM my_contacts;
 SUBSTRING_INDEX()则可截取部分值，也称为子字符串。
 
 SUBSTRING_INDEX(s, delimiter, number)
-* 返回从字符串 s 的第 number 个出现的分隔符 delimiter 之后的子串。	
+* 返回从字符串 s 的第 number 个出现的分隔符 delimiter 之后的子串（如果s中没有分隔符，则返回整个字符串s）。	
 * 如果 number 是正数，返回第 number 个字符左边的字符串。
 * 如果 number 是负数，返回第(number 的绝对值(从右边数))个字符右边的字符串。
 
@@ -987,10 +987,106 @@ LIMIT 0,4;
 
 ---
 
+到了某个时候，只有一张表就不够了。数据变得越来越复杂，你所使用的唯一一张表实在装不下了。表里充满了
+多余的数据，既浪费存储空间，又会拖慢查询的速度。
+
+**将兴趣文本字符串拆分为多个兴趣列。**
+
+使用ALTER和SUBSTRING_INDEX函数把表修改成具有如下列。
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| status | varchar\(50\) | YES |  | NULL |  |
+| seeking | varchar\(100\) | YES |  | NULL |  |
+| city | varchar\(50\) | YES |  | NULL |  |
+| state | varchar\(50\) | YES |  | NULL |  |
+| interests1 | varchar\(50\) | YES |  | NULL |  |
+| interests2 | varchar\(50\) | YES |  | NULL |  |
+| interests3 | varchar\(50\) | YES |  | NULL |  |
+| interests4 | varchar\(50\) | YES |  | NULL |  |
+
+具体步骤：
+```
+# 首先创建新的列：
+ALTER TABLE my_contacts
+    ADD COLUMN interests1 varchar(50) null,
+    ADD COLUMN interests2 varchar(50) null,
+    ADD COLUMN interests3 varchar(50) null,
+    ADD COLUMN interests4 varchar(50) null;
+
+# 然后把第一项兴趣移至新的interests1列。
+UPDATE acc_adapter.my_contacts
+SET interests1 = SUBSTRING_INDEX(interests, ',', 1);
+
+# 接下来从原始interests字段中移除第一项兴趣
+UPDATE acc_adapter.my_contacts
+SET interests = TRIM(RIGHT(interests, (LENGTH(interests) - LENGTH(interests1) - 1)));
+
+# 对interests列的剩余部分兴趣重复上述步骤
+UPDATE acc_adapter.my_contacts
+SET interests2 = SUBSTRING_INDEX(interests, ',', 1);
+
+UPDATE acc_adapter.my_contacts
+SET interests = TRIM(RIGHT(interests, (LENGTH(interests) - LENGTH(interests2) - 1)));
+
+UPDATE acc_adapter.my_contacts
+SET interests3 = SUBSTRING_INDEX(interests, ',', 1);
+
+UPDATE acc_adapter.my_contacts
+SET interests = TRIM(RIGHT(interests, (LENGTH(interests) - LENGTH(interests3) - 1)));
+
+# 在最后一列中，我们只会得到单一值
+UPDATE acc_adapter.my_contacts
+SET interests4 = interests;
+
+# 现在终于可以完全删除interests列了，我们也可以将它重新命名为interests4，不需要多加一次ADD COLUMN(假设只有四项兴趣)
+ALTER TABLE my_contacts
+    DROP COLUMN interests;
+```
 
 
 
-TODO p313
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODO p323
 
 
 
