@@ -1243,47 +1243,47 @@ TODO
 
 ### SQL工具包
 
-#### Schema 
+- Schema 
 
-数据库模式。描述数据库中的数据、其他相关对象，以及这些对象相互连接的方式。
+  - 数据库模式。描述数据库中的数据、其他相关对象，以及这些对象相互连接的方式。
 
-#### One-to-One relationship
+- One-to-One relationship
 
-一对一关系。父表中的一行记录只与子表中的一行记录相关联。
+  - 一对一关系。父表中的一行记录只与子表中的一行记录相关联。
 
-#### One-to-Many relationship
+- One-to-Many relationship
 
-一对多关系。一张表中的一行记录可能与另一张表中的多行记录相关联，但后一张表中的任一行记
+  - 一对多关系。一张表中的一行记录可能与另一张表中的多行记录相关联，但后一张表中的任一行记
 录只会与前一张表中的一行记录相关联。
 
-#### Many-to-Many relationship
+- Many-to-Many relationship
 
-多对多关系。两个通过 junction table 连接的表。让一张表中的多行记录能与另一张表中的多
+  - 多对多关系。两个通过 junction table 连接的表。让一张表中的多行记录能与另一张表中的多
 行记录相关联，反之亦然。
 
-#### First normal form (1NF)
+- First normal form (1NF)
 
-第一范式。列中只包含原子性数据，而且列没有重复的数据组。
+  - 第一范式。列中只包含原子性数据，而且列没有重复的数据组。
 
-#### Transitive functional dependency
+- Transitive functional dependency
 
-传递函数依赖。指任何非键列依赖于另一个非键。
+  - 传递函数依赖。指任何非键列依赖于另一个非键。
 
-#### Second normal form (2NF)
+- Second normal form (2NF)
 
-第二范式。表必须先符合1NF，同时不能包含部分函数依赖，才算满足2NF。
+  - 第二范式。表必须先符合1NF，同时不能包含部分函数依赖，才算满足2NF。
 
-#### Third normal form (3NF)
+- Third normal form (3NF)
 
-第三范式。表必须先符合2NF，同时不可包含可传递函数依赖。
+  - 第三范式。表必须先符合2NF，同时不可包含可传递函数依赖。
 
-#### Foreign key
+- Foreign key
 
-外键。引用其他表的主键列。
+  - 外键。引用其他表的主键列。
 
-#### Composite key
+- Composite key
 
-组合键。由多个列构成的主键，这些列需形成唯一的键值。
+  - 组合键。由多个列构成的主键，这些列需形成唯一的键值。
 
 
 
