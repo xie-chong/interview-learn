@@ -1294,7 +1294,102 @@ TODO
 
 ---
 
-TODO p375
+### 利用 SELECT 语句把内容直接填入新表的三种方式
+
+1. CREATE TABLE，然后利用 SELECT 进行 INSERT。同时（几乎同时啦）CREATE、SELECT、INSERT
+```
+CREATE TABLE profession
+(
+    id         INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    profession varchar(20)
+);
+INSERT INTO profession (profession)
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+```
+
+2. 利用 SELECT 进行 CREATE TABLE，然后 ALTER 以添加主键。同一时间CREATE、SELECT、INSERT。
+
+```
+CREATE TABLE profession AS
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+
+ALTER TABLE profession
+    ADD COLUMN id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+```
+
+出现错误提示：
+```
+Statement violates GTID consistency: CREATE TABLE ... SELECT.
+```
+
+```
+1、情况描述
+在执行sql：create table 表A  as select * from 表B时，发现sql执行后，并未生成新的表，
+而是提示Statement violates GTID consistency: CREATE TABLE ... SELECT.
+
+2、问题分析
+MySQL5.6及以上的版本，开启了 enforce_gtid_consistency=true 功能导致的，MySQL官方解释
+说当启用 enforce_gtid_consistency 功能的时候，MySQL只允许能够保障事务安全，并且能够被
+日志记录的SQL语句被执行，像create table … select 和 create temporarytable语句，以及
+同时更新事务表和非事务表的SQL语句或事务都不允许执行。
+
+3、解决方法  
+
+方法一（推荐）：
+修改 ：SET @@GLOBAL.ENFORCE_GTID_CONSISTENCY = off;
+
+配置文件中 ：ENFORCE_GTID_CONSISTENCY = off;
+
+方法二：
+create table 表A as select 表B 的方式会拆分成两部分。
+
+create table 表A like 表B ;
+insert into 表A select *from 表B ;
+
+```
+
+3. CREATE TABLE 的同时设置主键并利用 SELECT 填入数据
+
+创建profession表的同时设置主键列以及另一个VARCHAR类型的列来存储职业，同时还要填入SELECT 的查询结果。
+SQL具有 AUTO_INCREMENT 功能，所以RDBMS知道ID列需要自动填入，因此只剩一列，也就是SELECT的数据应该填入的地方。
+
+```
+CREATE TABLE profession
+(
+    id         INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    profession varchar(20)
+) AS
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+```
+
+出现错误提示：
+```
+Statement violates GTID consistency: CREATE TABLE ... SELECT.
+```
+
+
+
+
+
+
+
+
+
+
+
+
+### AS 到底是怎么一回事？
+
+TODO p386
 
 
 
