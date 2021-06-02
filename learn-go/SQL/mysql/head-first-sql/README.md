@@ -1328,6 +1328,29 @@ ALTER TABLE profession
 Statement violates GTID consistency: CREATE TABLE ... SELECT.
 ```
 
+3. CREATE TABLE 的同时设置主键并利用 SELECT 填入数据
+
+创建profession表的同时设置主键列以及另一个VARCHAR类型的列来存储职业，同时还要填入SELECT 的查询结果。
+SQL具有 AUTO_INCREMENT 功能，所以RDBMS知道ID列需要自动填入，因此只剩一列，也就是SELECT的数据应该填入的地方。
+
+```
+CREATE TABLE profession
+(
+    id         INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    profession varchar(20)
+) AS
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+```
+
+出现错误提示：
+```
+Statement violates GTID consistency: CREATE TABLE ... SELECT.
+```
+
+错误说明：
 ```
 1、情况描述
 在执行sql：create table 表A  as select * from 表B时，发现sql执行后，并未生成新的表，
@@ -1354,30 +1377,6 @@ insert into 表A select *from 表B ;
 
 ```
 
-3. CREATE TABLE 的同时设置主键并利用 SELECT 填入数据
-
-创建profession表的同时设置主键列以及另一个VARCHAR类型的列来存储职业，同时还要填入SELECT 的查询结果。
-SQL具有 AUTO_INCREMENT 功能，所以RDBMS知道ID列需要自动填入，因此只剩一列，也就是SELECT的数据应该填入的地方。
-
-```
-CREATE TABLE profession
-(
-    id         INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    profession varchar(20)
-) AS
-SELECT profession
-FROM my_contacts
-GROUP BY profession
-ORDER BY profession;
-```
-
-出现错误提示：
-```
-Statement violates GTID consistency: CREATE TABLE ... SELECT.
-```
-
-
-
 
 
 
@@ -1389,7 +1388,138 @@ Statement violates GTID consistency: CREATE TABLE ... SELECT.
 
 ### AS 到底是怎么一回事？
 
-TODO p386
+AS 能把SELECT的查询结果填入新表中。我们在上文第二和第三个范例中使用AS时，其实是要求软件把来自my_contacts表的内容当成
+SELECT的查询结果，并把结果值存入新建的profession表中。
+
+如果不指定新表具有带有新名称的两列，AS只会创建一列，且该列的名称及数据类型与SELECT的查询结果相同。
+
+
+### 列的别名
+
+```
+CREATE TABLE profession
+(
+    id      INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    mc_prof varchar(20)
+) AS
+SELECT profession AS mc_prof
+FROM my_contacts
+GROUP BY mc_prof
+ORDER BY mc_prof;
+```
+
+这个查询与原先的查询效果完全一样，但因为有别名，所以它更容易理解。
+
+虽然这两个查询有一点小小的不同。但所有的查询都以表的行是返回。别名改变了查询结果中的列名，但并未改变来源列的名称。别名
+只是临时的。
+
+但因为指定了新表有两列-- 主键和职业列相当于覆盖了原始查询结果，所以新表还是会有名为profession的列，而非mc_prof。
+
+### 表的别名，谁会需要？
+
+联接（join）领域。
+
+表的别名又称 correlation name （相关名称）。
+
+对于表和列的别名，我们可以省略关键字AS。
+
+
+
+###  交叉联接
+
+本书称之为交叉联接（cross join）,它也有别的名字，例如笛卡儿积、交叉积......还有最奇怪的“没有联接”（no join）。
+
+假设有一个存储男孩姓名的表，一个存储玩具的表。
+
+boys
+
+| boy\_id | boy |
+| :--- | :--- |
+| 1 | Davey |
+| 2 | Bobby |
+| 3 | Beaver |
+| 4 | Richie |
+
+
+toys
+
+| toy\_id | toy |
+| :--- | :--- |
+| 1 | hula hoop |
+| 2 | balsa glider |
+| 3 | toy soldiers |
+| 4 | harmonica |
+| 5 | baseball cards |
+
+
+下列同时查询玩具表的toy列与男孩表的boy列，这个方法的查询结果会是交叉联接。
+
+
+```
+SELECT t.toy, b.boy
+FROM toys t
+         CROSS JOIN boys b;
+```
+
+CROSS JOIN 返回两张表的每一行相乘结果。即交叉联接把每一张表的每一个值都与第二张表的每一个值配成对。
+
+| toy | boy |
+| :--- | :--- |
+| hula hoop | Davey |
+| hula hoop | Bobby |
+| hula hoop | Beaver |
+| hula hoop | Richie |
+| hula hoop | Johnny |
+| hula hoop | Billy |
+| balsa glider | Davey |
+| balsa glider | Bobby |
+| balsa glider | Beaver |
+| balsa glider | Richie |
+| ...... | ...... |
+
+本例联接出20条记录。5个玩具乘以4个男孩的结果呈现了所有可能的组合。
+
+因为 toys.toy 的查询结果比较多，所以结果呈现如上表所示的组。如果男孩有5个，玩具只有4中，则会以男孩姓名为划分组的依据（如下表）。
+
+```
+SELECT t.toy, b.boy
+FROM toys t
+         CROSS JOIN boys b;
+```
+
+| toy | boy |
+| :--- | :--- |
+| hula hoop | Davey |
+| balsa glider | Davey |
+| toy soldiers | Davey |
+| hula hoop | Bobby |
+| balsa glider | Bobby |
+| toy soldiers | Bobby |
+| hula hoop | Beaver |
+| balsa glider | Beaver |
+| toy soldiers | Beaver |
+
+Q：我为什么需要交叉联接？
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+TODO p391
 
 
 
