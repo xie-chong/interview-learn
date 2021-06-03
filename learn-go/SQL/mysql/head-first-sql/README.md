@@ -1499,27 +1499,78 @@ FROM toys t
 | balsa glider | Beaver |
 | toy soldiers | Beaver |
 
-Q：我为什么需要交叉联接？
+Q：我为什么需要交叉联接？   
+A：知道这一点很重要，因为当我们乱玩联接时可能意外造成交叉联接。知道交叉联接的存在有益于找出修正联接的方式。这种事情有时真的
+会发生。还有，交叉联接有时可用于检测 RDBMS 软件及其配置的运行速度。运行交叉联接所需的时间可以轻易地检测与比较速度慢的查询。
+
+Q：如下所示。假设改用 SELECT * 写查询，会有什么不同？   
+```SELECT * FROM toys CROSS JOIN boys;```   
+A：你可以动手试试看。不过还是会得出20行。只不过会包含4个数据列。   
+
+| toy\_id | toy | boy\_id | boy |
+| :--- | :--- | :--- | :--- |
+| 1 | hula hoop | 1 | Davey |
+| 2 | balsa glider | 1 | Davey |
+| 3 | toy soldiers | 1 | Davey |
+| 1 | hula hoop | 2 | Bobby |
+| 2 | balsa glider | 2 | Bobby |
+| 3 | toy soldiers | 2 | Bobby |
+| 1 | hula hoop | 3 | Beaver |
+| ...... | ...... | ...... |...... |
+
+Q：如果对两个很大的表做了交叉联接，会发生什么事？   
+A：查询结果将会非常的庞大。最好别对数据量大的表进行交叉联接，否则会因为返回的数据过多而让机器冒着停滞不动的风险。
+
+Q：这个查询还有其他同义语法吗？   
+A：当然有！ **CROSS JOIN 可以省略不写**，只用逗代替，就像这样：   
+```
+SELECT t.toy, b.boy FROM toys t, boys b;
+```
+
+Q：**我听说过“内联接”与“外联接”这两个词，交叉联接是相同的东西吗**？   
+A：交叉联接是内联接的一种。内联接基本上就是通过查询中的条件移除了某些结果数据行后的交叉联接。
+
+
+
+###  内联接：相等联接（equijoin）
+
+**内联接就是通过查询中的条件移除了某些结果数据行后的交叉联接**
+
+```
+SELECT b.boy, b.boy FROM boys t, boys b;
+```
+结果展示（相当于两个表，表1（n 行）的每一行与表2（m 行）的每一行组合（Cn1*Cm1））：
+
+| boy | boy |
+| :--- | :--- |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Bobby | Bobby |
+| Bobby | Bobby |
+| Bobby | Bobby |
+| Bobby | Bobby |
+| Bobby | Bobby |
+
+
+```
+SELECT mc.last_name, mc.first_name, p.profession
+FROM my_contacts AS mc
+         INNER JOIN profession AS p ON mc.prof_id = p.id;
+```
+
+**INNER JOIN** 利用条件判断中的比较运算符结合两张表的记录。只有联接记录符合条件时才会返回列。
+
+其中关键字 ON 可以改为 WHERE ，条件式里可采用任何一个比较运算符。
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-TODO p391
+TODO p396
 
 
 
