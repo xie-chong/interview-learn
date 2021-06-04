@@ -1431,6 +1431,24 @@ ORDER BY mc_prof;
 
 假设有一个存储男孩姓名的表，一个存储玩具的表。
 
+```
+CREATE TABLE `boys` (
+                        `boy_id` int(11) default NULL,
+                        `boy` varchar(20) default NULL,
+                        `toy_id` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
+```
+CREATE TABLE `toys` (
+                        `toy_id` int(11) default NULL,
+                        `toy` varchar(20) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
+
+
+
 boys
 
 | boy\_id | boy |
@@ -1560,6 +1578,10 @@ SELECT b.boy, b.boy FROM boys t, boys b;
 SELECT mc.last_name, mc.first_name, p.profession
 FROM my_contacts AS mc
          INNER JOIN profession AS p ON mc.prof_id = p.id;
+		 
+SELECT boys.boy, toys.toy
+FROM boys
+         INNER JOIN toys ON boys.toy_id = toys.toy_id;
 ```
 
 **INNER JOIN** 利用条件判断中的比较运算符结合两张表的记录。只有联接记录符合条件时才会返回列。
@@ -1567,10 +1589,127 @@ FROM my_contacts AS mc
 其中关键字 ON 可以改为 WHERE ，条件式里可采用任何一个比较运算符。
 
 
+###  内联接：不等联接（non-equijoin）
+
+每个男孩没有的玩具(或许生日的时候会有用)
+
+```
+SELECT boys.boy, toys.toy
+FROM boys
+         INNER JOIN toys ON boys.toy_id <> toys.toy_id
+ORDER BY boys.boy;
+```
+
+
+| boy | toy |
+| :--- | :--- |
+| Beaver | toy soldiers |
+| Beaver | tinker toys |
+| Beaver | harmonica |
+| Billy | baseball cards |
+| Billy | harmonica |
+
+前3行为Beaver没有的玩具。
+
+
+###  内联接：自然联接（naturaljoin）
+
+**自然联接**只有在联接的列在两张表中的名称都相同时才会有用。
+
+**NATURAL JOIN 利用相同列名的内联接**
+
+我们想知道每个男孩拥有什么玩具。自然联接会识别出每个表里的相同名称（toy_id）并返回相符的记录。
+
+```
+SELECT boys.boy, toys.toy
+FROM boys
+         NATURAL JOIN toys;
+```
+
+
+练习
+
+| table my_contacts Field | table profession Field | table zip_code Field | table status Field |
+| :--- |:--- |:--- |:--- |
+| last\_name |prof_id |zip_code |status_id |
+| first\_name | profession |city |status |
+| email ||state ||
+| gender |
+| ...... |
+| prof\_id |
+| zip_code |
+| status_id |
+
+
+返回my_contacts表中每个人的电子邮件地址与职业的查询
+```
+SELECT mc.email, p.profession
+FROM my_contacts mc
+         NATURAL JOIN profession p;
+```
+
+返回my_contacts表中每个人的姓、名与他们没有的状态的查询
+```
+SELECT mc.last_name, mc.first_name, s.status
+FROM my_contacts mc
+         INNER JOIN satatus s ON mc.status_id <> s.status_id;
+```
+
+返回my_contacts表中每个人的姓、名与所在位置（州名）的查询
+```
+SELECT mc.last_name, mc.first_name, z.state
+FROM my_contacts mc
+         NATURAL JOIN zip_code z;
+```
+
+简单说明：
+
+- 返回两张表里联接列内容不符合条件的所有记录
+  - 不等联接（non-equijoin）
+  - 内联接（inner join）
+- 联接表的顺序对我来说很重要
+  - 外联接（outer join）
+- 返回两张表里联接列内容符合条件的所有记录，而且使用关键字ON
+  - 相等联接（equijoin）
+  - 内联接（inner join）
+- 能结合两个共享相同列名的表
+  - 自然联接（natural join）
+- 可以返回等于两张表的数据行的乘积记录
+  - 交叉联接（cross join）
+  - 笛卡尔联接（cartesian join）
+  - 叉积（cross product）
+- 返回所有可能的行，而且没有任何条件
+  - 笛卡尔联接（cartesian join）
+  - 叉积（cross product）
+- 利用条件结合两张表
+  - 相等联接（equijoin）
+  - 不等联接（non-equijoin）
+  - 内联接（inner join）
 
 
 
-TODO p396
+
+
+
+
+
+
+
+
+
+
+
+TODO p405
+
+
+
+
+
+
+
+
+
+
 
 
 
