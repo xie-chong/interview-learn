@@ -1854,25 +1854,60 @@ FROM my_contacts AS mc
 WHERE jc.contact_id = (SELECT jc.contact_id FROM job_current jc ORDER BY jc.salary DESC LIMIT 1);
 ```
 
+### 子查询作为 SELECT 语句中选取的列之一
+
+**如果子查询放在 SELECT 语句中，用于表示某个欲选取的列，则一次只能从一列返回一个值**。
+
+```
+create table zip_code
+(
+    zip_code varchar(16) null,
+    city     varchar(16) null,
+    state    varchar(16) null
+);
+```
+
+```
+SELECT mc.first_name, mc.last_name, (SELECT state FROM zip_code WHERE mc.zip_code = zip_code) AS state
+FROM my_contacts mc;
+```
+
+
+### 范例：子查询搭配自然联接
+
+Andy最近在吹嘘他的待遇有多么好，找出薪资比Andy高的人。
+
+```
+SELECT mc.first_name, mc.last_name, jc.salary
+FROM my_contacts mc
+         NATURAL JOIN job_current jc
+WHERE jc.salary > (SELECT salary FROM job_current WHERE email = 'andy@weatherorama.com');
+```
+
+### 非关联子查询
+
+**如果子查询可以独立运行且不会引用外层查询的任何结果，即称为非关联子查询**。
+
+```
+SELECT mc.first_name, mc.last_name, jc.salary
+FROM my_contacts mc
+         NATURAL JOIN job_current jc
+WHERE jc.salary > (SELECT salary FROM job_current WHERE email = 'andy@weatherorama.com');
+```
+
+**非关联子查询**。软件先处理内层查询，查询结果再用于外层查询的 WHERE 子句（外层查询较晚处理）。但是内层查询完全不需要依赖
+外层查询的值，它本身就是一个可以完全独立运行的查询。
+
+### SQL 真情指数
+
+**交叉联接是件非常浪费时间的事；关联子查询也会拖慢速度；联接比子查询更有效率。**
 
 
 
 
 
+P433
 
-
-
-
-
-
-
-
-
-
-
-
-
-427
 
 
 
@@ -1893,5 +1928,4 @@ WHERE jc.contact_id = (SELECT jc.contact_id FROM job_current jc ORDER BY jc.sala
 <h1 id="10">10 | 外联接、自联接与联合：新策略</h1>
 
 ---
-
 
