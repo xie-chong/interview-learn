@@ -1,3 +1,1723 @@
+[01 | 数据和表：保存所有东西的地方](#01)   
+[02 | SELECT语句：取得精美包装里的数据](#02)   
+[03 | DELETE和UPDATE：改变是件好事](#03)   
+[04 | 聪明的表设计：为什么要规范化？](#04)   
+[05 | ALTER：改写历史](#05)   
+[06 | SELECT进阶：以新视角看你的数据](#06)   
+[07 | 多张表的数据库设计；拓展你的表](#07)   
+[08 | 联接与多张表的操作：不能单独存在吗？](#08)   
+[09 | 子查询：查询中的查询](#09)   
+[10 | 外联接、自联接与联合：新策略](#10)   
+[11 | 约束、视图与事务：人多手杂，数据库受不了](#11)   
+[12 | 安全性：保护你的资产](#12)  
+
+
+《SQL技术手册》--这本书列举了常用RDBMS的不同写法。
+
+[**example code download**](https://resources.oreilly.com/examples/9780596526849/tree/master)
+
+[MySQL 函数](https://www.runoob.com/mysql/mysql-functions.html)
+
+---
+<h1 id="01">01 | 数据和表：保存所有东西的地方</h1>
+
+---
+
+
+
+
+* 在创建表前先把数据分类。尤其要注意每列的数据类型。
+* 使用```CREATE DATABASE```语句来创建存储所有表的数据库。
+* 使用```USE DATABASE```语句进入数据库，然后创建表。
+* 所有表都以```CREATE TABLE```语句创建，句中包含列名及其数据类型。
+* 一些常见的数据类型有 CHAR、VARCHAR、BLOB、INT、DEC、DATE、DATETIME、TIMESTAMP。每种数据类型的存储规则都不一样。
+* 查看表结构可以使用命令```DESC my_table_name;```
+* 删除表的命令```DROP TABLE my_table_name;```，其执行后会删除表结构和表中所有数据。
+
+```
+CREATE TABLE my_contacts
+(
+    last_name  VARCHAR(30)  null,
+    first_name VARCHAR(20)  null,
+    email      VARCHAR(50)  null,
+    gender     CHAR(1)      null,
+    birthday   DATE         null,
+    profession VARCHAR(50)  null,
+    location   VARCHAR(50)  null,
+    status     VARCHAR(50)  null,
+    interests  VARCHAR(100) null,
+    seeking    VARCHAR(100) null
+);
+```
+
+### 创建 INSERT 语句
+
+**顺序很重要，数值的顺序必须和列名的顺序完全一样**
+
+```
+INSERT INTO my_contacts (last_name, first_name, email, gender, birthday, profession, location, status, interests, seeking) 
+VALUES 
+('Anderson', 'Jillian', 'jill_anderson@breakneckpizza.com', 'F', '1980-09-05', 'Technical Writer', 'Palo Alto,CA', 'Single', 'Kayaking,Reptiles', 'Relationship,Friends');
+```
+任何属于VARCHAR、CHAR、DATE、DATETIME、TIMESTAMP、BLOB列类型的值都需要加单引号；DEC、INT等数值类型不需要加上单引号。
+
+
+### 各种 INSERT 语句
+
+ 1.  **改变列顺序** 我们可以改变列名的顺序，只要记得数据值的顺序也要一起调整
+ 2.  **省略列名** 列名列表可以省略，但数值必须**全部填入**，而且必须与当初创建表时的**列顺序完全相同**
+```
+INSERT INTO my_contacts 
+VALUES 
+('Anderson', 'Jillian', 'jill_anderson@breakneckpizza.com', 'F', '1980-09-05', 'Technical Writer', 'Palo Alto,CA', 'Single', 'Kayaking,Reptiles', 'Relationship,Friends');
+```
+ 3.  **省略部分列**  也可以只填入一部分列值就好了。
+
+### NULL
+
+NULL是未定义的值，它不等于零，也不等于空值。值可以是NULL，但绝非等于NULL。事实上，两个NULL根本不能放在一起比较。
+
+没有在INSERT语句中被赋值的列默认为NULL。
+
+可以把列修改为不接受NULL值，这需要在创建表时使用关键字NOT NULL。
+
+
+
+### 用DEFAULT填补空白
+如果某些列通常有某个特定值，我们就可以把特定值指派为 DEFAULT 默认值。跟在DEFAULT关键字后的值会在每次新增记录时自动插入表中--**只要没有另外指派其他值。**默认值的类型必须
+和列的类型相同。
+
+
+
+
+
+
+
+
+---
+<h1 id="02">02 | SELECT语句：取得精美包装里的数据</h1>
+
+---
+
+### 文本中的单引号转义
+
+```
+mysql> INSERT INTO my_contacts (first_name,location,status) VALUES ('Funyon', 'Grover's MillNJ','Single');
+    -> ;
+    -> ;
+    -> ';
+1064 - You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 's MillNJ','Single');
+
+;
+
+;
+
+'' at line 1
+mysql> 
+```
+
+每次按下“Enter”都看到提示符“->”
+
+出错了，SQL程序期待收到成对的单引号，但在 Grover's Mill却把SQL搞糊涂了，它让单引号总数变成单数。SQL RDBMS还在等待能让程序结束的最后一个单引号。
+输入单引号和分号即可结束语句。此时也会看到相应的错误提示。
+
+单引号时特殊字符，当单引号作为文本的一部分，并非表示文本的结束，我们需要在单引号字符的前面加上**反斜线**就能到达效果。
+```
+INSERT INTO my_contacts (first_name,location,status) VALUES ('Funyon', 'Grover\'s MillNJ','Single');
+```
+
+
+**是否能使用双引号取代单引号？**   
+不要使用双引号，因为你的SQL语句日后会搭配其他编程语言（如PHP）。在编程语言中使用“”表示“从这里开始是SQL语句”，这样单引号才会被视为
+SQL语句的一部分，而不是其他编程语言的一部分。
+
+
+**另一种帮引号“转义’**的方式则是在它前面再加一个单引号。
+```
+INSERT INTO my_contacts (first_name,location,status) VALUES ('Funyon', 'Grover''s MillNJ','Single');
+```
+
+### SELECT 特定列以加快结果呈现
+
+只选择需要的列是一个值得遵循的编程惯例，不过它还有其他的好处。随着表的日益扩大，限定选择列还会加快检索结果的速度。
+
+
+### 对文本数据套用比较运算符
+
+比较像 CHAR 和 VARCHAR 这样的文本数据时，运作方式个数字其实很相似。
+
+比较运算符会按字母顺序地评估所有事物的大小。
+
+### 别把 AND 和 OR 搞混了
+
+需要所有条件都成立时，请用 AND，需要任何条件成立时，请用 OR。
+
+### like关键字通常结合两个通配符使用
+* %，百分号表示任意数量的未知字符的替身
+* _，下划线表示一个未知字符的替身
+
+
+
+### BETWEEN ... AND
+
+范围的起止也会包含再查找范围内。BETWEEN 等于使用 <= 加 >= 。
+
+对于字符范围查询，MySQL 包含 BETWEEN 项，不包含 AND项（不同的而数据库有不同的操作方式）。
+
+比如我们需要使用“O”之后的字母，以确保我们能获取到以字母“O”开头的饮料名称。
+```
+SELECT drink_name
+FROM drink_info
+WHERE drink_name BETWEEN 'G' AND 'P'
+ORDER BY drink_name;
+```
+
+BETWEEN ... AND  用再数值类型字段时，较小的数值必须先交给 BETWEEN，解释的结果才会如同我们所期待的。
+
+### NOT
+
+NOT 可以和 BETWEEN 或 LIKE 一起使用，重点是**NOT 一定要紧接在 WHERE 后面**
+
+```
+SELECT drink_name
+FROM drink_info
+WHERE not calories < 30 OR calories > 60
+ORDER BY drink_name;
+
+SELECT drink_name
+FROM drink_info
+WHERE not calories BETWEEN 30 AND 60
+ORDER BY drink_name;
+```
+
+当 NOT 和 AND 或 OR一起使用时，则要直接接在 AND 或 OR 的后面。
+```
+SELECT date_name
+FROM black_book
+WHERE NOT date_name LIKE 'A%'
+  AND NOT date_name LIKE 'B%';
+
+SELECT *
+FROM easy_drinks
+WHERE NOT main = 'soda'
+  AND NOT main = 'iced tea';
+```
+
+Q：刚才说 NOT必须紧接在WHERE之后，如果是使用NOT IN呢？   
+A：NOT IN 是个例外。而且即使把NOT移到WHERE后也可以运作，下面两组语句会返回相同的结果。   
+```
+SELECT *
+FROM easy_drinks
+WHERE NOT main IN ('soda', 'iced tea');
+
+SELECT *
+FROM easy_drinks
+WHERE main NOT IN ('soda', 'iced tea');
+```
+
+Q：对<>（不等）运算符而言，套用 NOT 的方式也一样吗？   
+A：是可以这么做，但不就成了双重否定了吗？此时用等号更合理。以下两组语句会返回相同结果。   
+```
+SELECT *
+FROM easy_drinks
+WHERE NOT drink_name <> 'Blackhron';
+
+SELECT *
+FROM easy_drinks
+WHERE drink_name = 'Blackhron';
+```
+
+Q：NOT 可以套用在NULL上吗？   
+A：可以。要取得某列中所有不是NULL的值，可以这样查询。   
+```
+SELECT *
+FROM easy_drinks
+WHERE NOT main IS NULL;
+
+# 这样查询也可以
+
+SELECT *
+FROM easy_drinks
+WHERE main IS NOT NULL;
+```
+
+
+
+
+
+
+
+
+
+---
+<h1 id="03">03 | DELETE和UPDATE：改变是件好事</h1>
+
+---
+
+
+除非你可以非常确定 WHERE 子句只会删除/更新你打算删除/更新的行，否则都应该用 SELECT 确认情况。
+
+UPDATE 语句能用在表的多条记录上。它可以和基础数学运算符一起使用，可以操作数值数据。文本变量也可以，例如UPPER() 
+函数、LOWER() 函数等。
+
+
+---
+<h1 id="04">04 | 聪明的表设计：为什么要规范化？</h1>
+
+---
+
+**使用数据的方式将影响设置表的方式**。
+
+
+### 创建表时，可遵循如下步骤
+
+1. 挑出事物，跳出你希望表描述的**某样事物**。
+2. 列出一份关于那样事物的**信息列表**，这些信息都是**使用表**时的表要信息。
+3. 使用信息列表，把关于那样事物的综合信息拆分成小块信息，以便用于组织表。
+
+
+### 原子性数据
+
+当数据具有**原子性（atomic）**，就表示它已经被分割至**最小块，已经不能或不应该再被分割**。
+
+### 原子性数据和你的表
+
+1. 你的表在描述什么事物？
+2. 以何种方式使用表取得描述的事物呢？
+3. 列是否包含原子性数据，可让查询既简短又直逼要害？
+
+Q：原子不是很小吗？我是不是应该把数据分割成非常非常小的片段吗？   
+A：不是。让数据具有原子性，表示把数据分割成创建有效率的表所需要的最小片段。别把数据切割得超出必要。
+如果不需要额外增加列，就别因为可以增加而增加。
+
+Q：原子性对我又什么帮助？   
+A：原子性有助于确保表内容的准确性。例如，你有一个门牌号码列，你可以确保有关名牌号码的数字只会出现在
+该列中。
+
+原子性数据也能使查询更有效率，因为查询会因原子性而更容易设计，而且运行所需时间也更短，因此在面对大量
+数据时有加分效果。
+
+
+**原子性数据的正式规则：**
+
+1. 具有原子性数据的列中不会有多个类型相同的的值。
+
+| food_name  | ingredients  |
+| ------------ | ------------ |
+| bread  | flour,milk,egg,yeast,oil  |
+| salad  | lettuce,tomato,cucumber  |
+
+设想在列 ingredients中如何查找番茄？
+
+2. 具有原子性数据的表中不会有多个存储同类数据的列。
+
+| teacher  | student1  | student2  | student3  |
+| ------------ | ------------ | ------------ | ------------ |
+| Ms.Martini  | Joe  | Ron  | Kelly  |
+| Mr.Howard  | Sanjaya  | Tim  | Julie  |
+
+**规范化表的优点**
+
+1. 规范化的表中没有重复的数据，可以减小数据库的大小
+2. 因为查找的数据较少，你的查询会更为快速
+
+### SHOW 命令
+
+```
+# 查看创建表的ddl语句
+SHOW CREATE TABLE table_name;
+
+# 列的细节信息
+SHOW COLUMNS FROM tablename;
+
+SHOW CREATE DATABASE databasename;
+
+SHOW INDEX FROM tablename;
+
+# 如果你从控制台收到SQL命令造成的错误信息，键入如下命令就可取得确切的警告内容。
+SHOW WARNINGS;
+```
+
+
+```
+SHOW CREATE TABLE my_contacts;
+# 显示结果
+CREATE TABLE `my_contacts` (
+  `last_name` varchar(30) DEFAULT NULL,
+  `first_name` varchar(20) DEFAULT NULL,
+  `email` varchar(50) DEFAULT NULL,
+  `gender` char(1) DEFAULT NULL,
+  `birthday` date DEFAULT NULL,
+  `profession` varchar(50) DEFAULT NULL,
+  `location` varchar(50) DEFAULT NULL,
+  `status` varchar(20) DEFAULT NULL,
+  `interests` varchar(100) DEFAULT NULL,
+  `seeking` varchar(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+```
+
+Q：SHOW CREATE TABLE中的反撇号究竟是做什么用的？我真的不需要用到反撇号吗？   
+A：反撇号的存在是因为RDBMS有时无法辨出列名。如果在列名前后加上反撇号就能以SQL保留字作为列名（尽管这不是一个
+好主意）。例如由于某些奇怪的原因，你想把某列命名为select。下列命令无法实现：```select varchar(50)```，
+但```'select' varchar(50)```可以。
+
+Q：用保留字作为列名会有什么大问题？   
+A：虽然你可以这么做，但这真的是很糟糕的主意。想象一下你的查询看起来会有多么混乱，还有每次都要键入反撇号的麻
+烦，还不如一开始就别把列名取为某个保留字。除此之外，select也不是一个好列名，他无法说明该列包含的数据。
+
+
+### AUTO_INCREAMENT
+
+若在列的声明中使用这个关键字，则每次执行INSERT命令来插入数据时，它都会自动给列赋予唯一的递增整数值。
+
+```
+ALTER TABLE my_contacts
+    ADD contact_id INT NOT NULL AUTO_INCREMENT FIRST,
+    ADD PRIMARY KEY (contact_id);
+```
+
+```
+SHOW CREATE TABLE my_contacts;
+# 加入自增主键后显示结果
+CREATE TABLE `my_contacts` (
+                               `contact_id` int(11) NOT NULL AUTO_INCREMENT,
+                               `last_name` varchar(30) DEFAULT NULL,
+                               `first_name` varchar(20) DEFAULT NULL,
+                               `email` varchar(50) DEFAULT NULL,
+                               `gender` char(1) DEFAULT NULL,
+                               `birthday` date DEFAULT NULL,
+                               `profession` varchar(50) DEFAULT NULL,
+                               `location` varchar(50) DEFAULT NULL,
+                               `status` varchar(20) DEFAULT NULL,
+                               `interests` varchar(100) DEFAULT NULL,
+                               `seeking` varchar(100) DEFAULT NULL,
+                               PRIMARY KEY (`contact_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
+```
+
+当我们为表添加自增的物理主键时，表中存在的数据也会自动递增填充该字段值（自增主键必须为key```there can be only 
+one auto column and it must be defined as a key```）。
+
+
+```
+INSERT INTO `my_contacts` (`contact_id`, `last_name`, `first_name`, `email`, `gender`, `birthday`, `profession`, `location`, `status`,
+                           `interests`, `seeking`)
+VALUES (NULL, 'Hamilton', 'Jamie', 'dontbother@starbuzzcoffee.com', 'F', '1964-09-10', 'System Administrator',
+        'Princeton, NJ', 'married', 'RPG', 'nothing');
+```
+上面所示sql语句会执行成功，虽然建表时要求contact_id NOT NULL，但AUTO_INCREMENT会忽略NULL。然而，在没有
+AUTO_INCREMENT的情况下，我们就会收到错误信息。
+
+
+
+* **PRIMARY KEY** 主键。。一个或一组能识别出唯一数据行的列。
+* **FIRST NORMAL FORM (1NF)** 第一范式。每个数据行均需要包含原子性数据值，而且每个数据行均需要具有唯一的识别方法。
+
+
+
+
+
+
+
+
+---
+<h1 id="05">05 | ALTER：改写历史</h1>
+
+---
+
+
+给表增加列，利用关键字 AFTER，让新列放在first_name列后。
+```
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    AFTER first_name;
+```
+
+我们可以使用FIRST 和 AFTER your_clumon来排列字段的位置，不过不可以使用 BEFORE your_clumon 和 LAST。
+另外还有SECON、THIRD也不可选用。
+
+
+**FIRST 可把phone列安置于所有其他列的前面**   
+
+| phone | contact_id | last_name | first_name | email |   
+| ------- | ------- | ------- | ------- |------- |
+
+```
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL 
+    FIRST;
+```
+
+
+**虽然有 AFTER 语法，但其实没有 BEFORE 语法，也没有LAST**   
+
+| contact_id | last_name | first_name | email | phone |   
+| ------- | ------- | ------- | ------- |------- |
+
+```
+# 不加关键字也可以
+ALTER TABLE my_contacts
+    ADD phone VARCHAR(10) NULL;
+
+```
+
+| contact_id | phone | last_name | first_name | email |   
+| ------- | ------- | ------- | ------- |------- |
+
+
+
+### 修改表
+
+**如果改变列的类型，可能就会有遗失数据的风险**。   
+如果你想改变的数据类型和原始类型不兼容，命令则不会执行，SQL软件也会抱怨语句有问题。   
+但真正的惨剧可能发生在类型兼容的情况下，你的数据可能被截断。例如：从varchar(10)改为char(1)。与此类似，在数字类型上，
+我们可以在各种数据类型间切换，但数据会被转换为新的类型，这是就可能丢失部分数据。
+
+
+
+
+* **CHANGE** 可同时改变现有列的名称和数据类型
+* **MODIFY** 修改现有列的数据类型或位置
+* **ADD** 在当前表中添加一列--可自选类型
+* **DROP** 从表中删除某列
+
+### 表的改名换姓
+
+```
+CREATE TABLE `projekts`
+(
+    `number`            int(11) NOT NULL default '0',
+    `descriptionofproj` varchar(50)      default NULL,
+    `contractoronjob`   varchar(10)      default NULL
+) ENGINE = MyISAM
+  DEFAULT CHARSET = latin1;
+```
+
+```
+ALTER TABLE projekts RENAME TO project_list;
+```
+
+重新装备列
+
+| number | descriptionofproj | contractoronjob |
+| ------- | ------- | ------- |
+
+变更为
+
+| proj_id | proj_desc | con_name |
+| ------- | ------- | ------- |
+
+
+### ALTER 和 CHANGE
+
+```
+ALTER TABLE project_list
+    CHANGE COLUMN number proj_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY;
+	
+ALTER TABLE project_list
+    CHANGE descriptionofproj proj_desc VARCHAR(50) NULL;
+
+ALTER TABLE project_list
+    CHANGE contractoronjob con_name VARCHAR(10) NULL;
+```
+
+结果展示
+
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| proj\_id | int\(11\) | NO | PRI | NULL | auto\_increment |
+| proj\_desc | varchar\(50\) | YES |  | NULL |  |
+| con\_name | varchar\(10\) | YES |  | NULL |  |
+
+
+如果只改变列的数据类型，列名维持原状，可以重复填入列名。
+```
+ALTER TABLE my_table
+    CHANGE COLUMN my_column my_column NEWTYPE;
+```
+ 
+当然更简单的方法是，使用关键字 **MODIFY** ，它只会修改类列型而不会干涉它的名称。
+```
+ALTER TABLE project_list
+    MODIFY COLUMN proj_desc VARCHAR(120);
+```
+
+Q：如果我想改变列的顺序呢？像```ALTER TABLE MODIFY COLUMN proj_desc AFTER con_name;```，这样做可以吗？   
+A：创建表后你就无法真正地改变列的顺序了。最多只能在指定位置添加新列，然后删除旧列，但这样会丢失旧列中的所有数据。   
+
+ 正确语法
+```
+CHANGE [COLUMN] old_col_name column_definition
+        [FIRST|AFTER col_name]
+MODIFY [COLUMN] column_definition [FIRST | AFTER col_name]
+```
+ 
+ 
+
+增加多列
+```
+ALTER TABLE project_list
+    ADD COLUMN con_phone  VARCHAR(11),
+    ADD COLUMN start_date DATE,
+    ADD COLUMN est_cost   DECIMAL(7, 2);
+```
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| proj\_id | int\(11\) | NO | PRI | NULL | auto\_increment |
+| proj\_desc | varchar\(120\) | YES |  | NULL |  |
+| con\_name | varchar\(10\) | YES |  | NULL |  |
+| con\_phone | varchar\(11\) | YES |  | NULL |  |
+| start\_date | date | YES |  | NULL |  |
+| est\_cost | decimal\(7,2\) | YES |  | NULL |  |
+
+
+### 删除列
+
+只在表中保留必要的列是一个很好的编程习惯。如果用不到某列，请把它删除（drop）。如果以后有需要，ALTER让我们可以轻松地把它添加会表中。
+
+你的列越多，RDBMS的工作就越累，数据库所占用的空间也就越大。
+
+一旦删除列，原本存储在该列中的一切内容都会跟着被删除。
+
+```
+ALTER TABLE project_list
+    DROP COLUMN start_date;
+```
+
+ 表 hooptie
+```
+CREATE TABLE `hooptie`
+(
+    `color`   varchar(20)  default NULL,
+    `year`    varchar(4)   default NULL,
+    `make`    varchar(20)  default NULL,
+    `mo`      varchar(20)  default NULL,
+    `howmuch` float(10, 3) default NULL
+) ENGINE = MyISAM
+  DEFAULT CHARSET = latin1;
+```
+
+```
+INSERT INTO `hooptie` (`color`,`year`,`make`,`mo`,`howmuch`) VALUES ('silver','1998','Porsche','Boxter','17992.539');
+INSERT INTO `hooptie` (`color`,`year`,`make`,`mo`,`howmuch`) VALUES (NULL,'2000','Jaguar','XJ','15995.000');
+INSERT INTO `hooptie` (`color`,`year`,`make`,`mo`,`howmuch`) VALUES ('red','2002','Cadillac','Escalade','40215.898');
+```
+
+| color | year | make | mo | howmuch |
+| :--- | :--- | :--- | :--- | :--- |
+| silver | 1998 | Porsche | Boxter | 17992.54 |
+| NULL | 2000 | Jaguar | XJ | 15995 |
+| red | 2002 | Cadillac | Escalade | 40215.9 |
+
+修改为 car_table
+
+| car\_id | VIN | make | model | year | color | price |
+| :--- | :--- | :--- | :--- | :--- | :--- | :--- |
+| 1 | NULL | Porsche | Boxter | 1998 | silver | 17992.54 |
+| 2 | NULL | Jaguar | XJ | 2000 | NULL | 15995.00 |
+| 3 | NULL | Cadillac | Escalade | 2002 | red | 40215.90 |
+
+
+
+ 执行语句
+```
+ALTER TABLE hooptie RENAME TO car_table,
+    ADD COLUMN car_id           Int NOT NULL AUTO_iNCREMENT PRIMARY KEY FIRST,
+    ADD COLUMN VIN              VARCHAR(16) AFTER car_id,
+    CHANGE COLUMN mo model      VARCHAR(20),
+    MODIFY COLUMN color varchar(20) AFTER model,
+    MODIFY COLUMN year varchar(4) AFTER model,
+    CHANGE COLUMN howmuch price DECIMAL(7, 2);
+```
+
+
+Q：之前你说过，MODIFY无法重新排列列的顺序。但是我的SQL软件工具却能让我重新排列它们。它是怎么办到的？
+A：其实你的软件在背后执行了非常多的命令。它把我们要移除的列的内容暂时复制到临时表中，然后去除你要移除的列，
+再用ALTER创建于旧列同名的新列，并放再我们指定的位置，而后把临时表的内容复制到新列中，最后再删除临时表。   
+
+建议再SELECT时用任何顺序排列列。
+
+Q：所以说，只有添加列时才是调整顺序的好时机吗？
+A：没错。最好在设计表时就已构思好各个列的最佳顺序。
+
+Q：如果我已经创建了主键，然后又意外地想改用另一列呢？可以只移除主键的设置而不改变其中的数据吗？
+A：可以，而且很简单。
+
+```
+ALTER TABLE your_table DROP PRIMARY KEY;
+```
+但是该列必须不能是 AUTO_INCREMENT修饰的列。因为 PRIMARY KEY 和 AUTO_INCREMENT必须一起使用。
+```
+there can be only one auto column and it must be defined as a key
+```
+
+每个表中只有一列可以加上AUTO_INCREMEN，该列必须为整数类型而且不能为NULL，必须为PRIMARY KEY。
+
+### 寻找模式
+
+```
+SELECT location FROM my_contacts;
+```
+
+| location |
+| :--- |
+| Palo Alto, CA |
+| San Francisco, CA |
+| San Diego, CA |
+
+增加列，把location字段值拆分为state、city
+```
+ALTER TABLE my_contacts
+    ADD COLUMN city  VARCHAR(50),
+    ADD COLUMN state VARCHAR(50);
+```
+
+| location | city | state |
+| :--- | :--- | :--- |
+| Palo Alto, CA | Palo Alto |  CA |
+| San Francisco, CA | San Francisco |  CA |
+| San Diego, CA | San Diego |  CA |
+| Dallas, TX | Dallas |  TX |
+
+执行语句( 没有where条件，会遍历整个表，每次取一条数据套用函数并更新)
+```
+UPDATE acc_adapter.my_contacts
+SET city  = SUBSTRING_INDEX(location, ',', 1),
+    state = SUBSTRING_INDEX(location, ',', -1);
+```
+
+**MySQL中的错误语句，mssql和Oracle不会出现此问题。**
+
+```
+UPDATE acc_adapter.my_contacts
+             SET city  = (SELECT SUBSTRING_INDEX(location, ',', 1) FROM acc_adapter.my_contacts WHERE 1 = 1),
+                 state = (SELECT SUBSTRING_INDEX(location, ',', -1) FROM acc_adapter.my_contacts WHERE 1 = 1)
+             WHERE 1 = 1;
+[2021-05-19 10:45:06] [HY000][1093] You can't specify target table 'my_contacts' for update in FROM clause
+```
+意思是说，不能先select出同一表中的某些值，再update这个表(在同一语句中)。   
+可将select出的结果再通过中间表select一遍，这样就规避了错误。
+
+
+
+### 一些便利的字符串函数
+
+字符串函数不会改变存储在表中的内容，它只是把字符串修改后的模样当成查询结果返回。
+
+**SELECT最后两个字符**
+
+RIGHT() 和 LEFT() 可从列中选出指定数量的字符串（right从右侧开始，left从左侧开始）。
+
+```
+SELECT RIGHT(location, 2) FROM my_contacts;
+```
+
+**SELECT逗号前的所有内容**
+
+SUBSTRING_INDEX()则可截取部分值，也称为子字符串。
+
+SUBSTRING_INDEX(s, delimiter, number)
+* 返回从字符串 s 的第 number 个出现的分隔符 delimiter 之后的子串（如果s中没有分隔符，则返回整个字符串s）。	
+* 如果 number 是正数，返回第 number 个字符左边的字符串。
+* 如果 number 是负数，返回第(number 的绝对值(从右边数))个字符右边的字符串。
+
+```
+SELECT SUBSTRING_INDEX('ab','',1) -- a	
+SELECT SUBSTRING_INDEX('ab','',-1) -- b		
+SELECT SUBSTRING_INDEX(SUBSTRING_INDEX('abcde','',3),'',-1) -- c
+```
+
+
+
+---
+<h1 id="06">06 | SELECT进阶：以新视角看你的数据</h1>
+
+---
+
+内容提示：更精确的WHERE、数据排序、归组、套用数学运算。
+
+
+### 使用 CASE 表达式来 UPDATE
+
+```
+CREATE TABLE `movie_table`
+(
+    `movie_id`  int(11)     NOT NULL auto_increment,
+    `title`     varchar(50) NOT NULL,
+    `rating`    varchar(5)  NOT NULL,
+    `category`  varchar(10) NOT NULL,
+    `purchased` date        NOT NULL,
+    PRIMARY KEY (`movie_id`)
+) ENGINE = MyISAM
+  AUTO_INCREMENT = 94
+  DEFAULT CHARSET = utf8;
+```
+
+```
+UPDATE movie_table
+SET category =
+        CASE
+            WHEN drama = 'T' THEN 'drama'
+            WHEN comedy = 'T' THEN 'comedy'
+            WHEN action = 'T' THEN 'action'
+            WHEN gore = 'T' THEN 'horror'
+            WHEN scifi = 'T' THEN 'scifi'
+            WHEN for_kids = 'T' THEN 'family'
+            WHEN cartoon = 'T' THEN 'family'
+            ELSE 'misc'
+        END;
+```
+
+
+一个条件表达式可以包含许多部分：在 WHERE 子句中加上 AND ，检查影片是否即为 cartoon 又为'G'级。如果两项都
+符合就归为'family'类。
+```
+UPDATE movie_table
+SET category =
+        CASE
+            WHEN drama = 'T' THEN 'drama'
+            WHEN comedy = 'T' THEN 'comedy'
+            WHEN action = 'T' THEN 'action'
+            WHEN gore = 'T' THEN 'horror'
+            WHEN scifi = 'T' THEN 'scifi'
+            WHEN for_kids = 'T' THEN 'family'
+            WHEN cartoon = 'T' AND rating = 'G' THEN 'family'
+            ELSE 'misc'
+        END;
+```
+
+Q：如果我只想对部分列套用 CASE 表达式，应该怎么做呢？例如，只想对部分符合 categroy = 'misc'的套用 CASE，
+可以加上 WHERE 吗？   
+A：是的，可以在关键字 END 后加上 WHERE 子句。这样，CASE 就只会套用在符合 WHERE 条件的列上。
+
+Q：CASE 表达式可以搭配 UPDATE 以外的语句吗？   
+A：可以。CASE 表达式可以搭配 SELECT、INSERT、DELETE、UPDATE。
+
+
+
+
+### 先分组，然后组内排序
+
+我们需要根据分类选出影片，并按字母顺序排列分类中的影片。
+
+**SQL的排序规则 ORDER BY （可能会因为RDBMS软件不同而有差异）**
+* 非字母字符出现在数字的前面或后面
+* 数字出现在字母的前面
+* NULL 出现在数字的前面
+* NULL 出现在字母的前面
+* 大写字母出现在小写字母的前面
+* "A 1" 出现在"A1"的前面
+
+**按多列排序**
+查询结果的排序依据不局限于使用一列或两列。我们可以利用所有需要的列来排序所有结果。
+
+```
+SELECT *
+FROM movie_table
+ORDER BY category, purchased, title;
+```
+
+默认情况下，SQL根据ORDER BY 指定的列中的升序ASC（ASCENDING）排列查询结果（A-Z，1到99,999，时间从早到晚）。
+
+我们也可以针对不同的字段使用不同的排序方式
+```
+SELECT *
+FROM movie_table
+ORDER BY category ASC, purchased DESC;
+```
+
+显示结果
+
+| movie\_id | title | rating | category | purchased |
+| :--- | :--- | :--- | :--- | :--- |
+| 86 | Head First Rules | R | action | 2003-04-19 |
+| 84 | Greg: The Untold Story | PG | action | 2001-02-05 |
+| 90 | Take it Back | R | comedy | 2001-02-05 |
+| 89 | Shiny Things, The | PG | drama | 2002-03-06 |
+| 87 | A Rat named Darcy | G | family | 2003-04-19 |
+| 83 | Big Advenure | G | family | 2002-03-06 |
+
+Q：我记得DESC是“表说明”（DESCRIPTION）的意思。你确定它能用在ORDER字句中？   
+A：我，确定。一切都跟上下文有关。当DESC用在表名前，例如DESC movie_table；查询结果就是表的说明，此时DESC是DESCRIBE的缩写。
+但DESC出现在ORDER BY子句时，它则代表DESCENDING（降序），是一种排序方式。
+
+Q：我可以使用完整的DESCRIBE或DESCENDING，以免混淆吗？   
+A：可以使用DESCRIBE，但没有DESCENDING这个关键词。   
+
+**利用 GROUP BY 完成分组加总**
+
+统计每个女孩的销售总量，找出冠军
+```
+CREATE TABLE cookie_sales
+(
+    ID         int(11)       NOT NULL auto_increment,
+    first_name varchar(20)   NOT NULL,
+    sales      decimal(4, 2) NOT NULL,
+    sale_date  date          NOT NULL,
+    PRIMARY KEY (ID)
+);
+```
+
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales);
+```
+
+| first\_name | SUM\(sales\) |
+| :--- | :--- |
+| Lindsey | 81.08 |
+| Ashley | 96.03 |
+| Nicole | 98.23 |
+| Britney | 107.91 |
+
+
+**AVG 搭配 GROUP BY**
+
+```
+SELECT first_name, AVG(sales)
+FROM cookie_sales
+GROUP BY first_name;
+```
+
+| first\_name | AVG\(sales\) |
+| :--- | :--- |
+| Lindsey | 11.582857 |
+| Nicole | 14.032857 |
+| Britney | 15.415714 |
+| Ashley | 13.718571 |
+
+
+MAX 和 MIN
+
+```
+SELECT first_name, MAX(sales), MIN(sales)
+FROM cookie_sales
+GROUP BY first_name;
+```
+
+| first\_name | MAX\(sales\) | MIN\(sales\) |
+| :--- | :--- | :--- |
+| Lindsey | 32.02 | 0.00 |
+| Nicole | 31.99 | 0.00 |
+| Britney | 43.21 | 2.58 |
+| Ashley | 26.82 | 0.00 |
+
+
+**COUNT**
+
+COUNT 返回 sales_date 列中的行数。如果数据只是NULL，则不纳入计算。
+
+```
+SELECT first_name, COUNT(sales)
+FROM cookie_sales;
+```
+
+找出卖出饼干的天数最多的女孩
+```
+SELECT first_name, COUNT(DISTINCT sale_date)
+FROM cookie_sales
+WHERE sales <> 0
+GROUP BY first_name;
+```
+
+| first\_name | COUNT\(DISTINCT sale\_date\) |
+| :--- | :--- |
+| Ashley | 6 |
+| Britney | 7 |
+| Lindsey | 6 |
+| Nicole | 6 |
+
+**NULL 代表此处无值，而不是此值为0**
+
+### LIMIT 查询结果的数量
+
+LIMIT 指定呈现的结果为2行
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales)
+LIMIT 2;
+```
+
+LIMIT ，只限第二名出现
+
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales) DESC
+LIMIT 1,1;
+```
+
+| first\_name | SUM\(sales\) |
+| :--- | :--- |
+| Nicole | 98.23 |
+
+
+
+```
+SELECT first_name, SUM(sales)
+FROM cookie_sales
+GROUP BY first_name
+ORDER BY SUM(sales) DESC
+LIMIT 0,4;
+```
+
+**0，代表查询结果的起始处（SQL从0开始计算）；4代表返回查询结果的数量。**
+
+| first\_name | SUM\(sales\) |
+| :--- | :--- |
+| Britney | 107.91 |
+| Nicole | 98.23 |
+| Ashley | 96.03 |
+| Lindsey | 81.08 |
+
+
+
+
+
+
+---
+<h1 id="07">07 | 多张表的数据库设计；拓展你的表</h1>
+
+---
+
+到了某个时候，只有一张表就不够了。数据变得越来越复杂，你所使用的唯一 一张表实在装不下了。表里充满了
+多余的数据，既浪费存储空间，又会拖慢查询的速度。
+
+**将兴趣文本字符串拆分为多个兴趣列。**
+
+使用ALTER和SUBSTRING_INDEX函数把表修改成具有如下列。
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| status | varchar\(50\) | YES |  | NULL |  |
+| seeking | varchar\(100\) | YES |  | NULL |  |
+| city | varchar\(50\) | YES |  | NULL |  |
+| state | varchar\(50\) | YES |  | NULL |  |
+| interests1 | varchar\(50\) | YES |  | NULL |  |
+| interests2 | varchar\(50\) | YES |  | NULL |  |
+| interests3 | varchar\(50\) | YES |  | NULL |  |
+| interests4 | varchar\(50\) | YES |  | NULL |  |
+
+具体步骤：
+```
+# 首先创建新的列：
+ALTER TABLE my_contacts
+    ADD COLUMN interests1 varchar(50) null,
+    ADD COLUMN interests2 varchar(50) null,
+    ADD COLUMN interests3 varchar(50) null,
+    ADD COLUMN interests4 varchar(50) null;
+
+# 然后把第一项兴趣移至新的interests1列。
+UPDATE acc_adapter.my_contacts
+SET interests1 = SUBSTRING_INDEX(interests, ',', 1);
+
+# 接下来从原始interests字段中移除第一项兴趣
+UPDATE acc_adapter.my_contacts
+SET interests = TRIM(RIGHT(interests, (LENGTH(interests) - LENGTH(interests1) - 1)));
+
+# 对interests列的剩余部分兴趣重复上述步骤
+UPDATE acc_adapter.my_contacts
+SET interests2 = SUBSTRING_INDEX(interests, ',', 1);
+
+UPDATE acc_adapter.my_contacts
+SET interests = TRIM(RIGHT(interests, (LENGTH(interests) - LENGTH(interests2) - 1)));
+
+UPDATE acc_adapter.my_contacts
+SET interests3 = SUBSTRING_INDEX(interests, ',', 1);
+
+UPDATE acc_adapter.my_contacts
+SET interests = TRIM(RIGHT(interests, (LENGTH(interests) - LENGTH(interests3) - 1)));
+
+# 在最后一列中，我们只会得到单一值
+UPDATE acc_adapter.my_contacts
+SET interests4 = interests;
+
+# 现在终于可以完全删除interests列了，我们也可以将它重新命名为interests4，不需要多加一次ADD COLUMN(假设只有四项兴趣)
+ALTER TABLE my_contacts
+    DROP COLUMN interests;
+```
+
+对数据库内的数据描述（列和表），以及任何相关对象和各种连接方式的描述就称为**SCHEMA**，模式。
+
+### 外键
+
+**外键**是表中的某一列，它引用到另一个表的主键。
+
+* 外键可能与它引用的主键名称不同。
+* 外键使用的主键也被称为父键（parent key）
+* 主键所在的表又被称为父表（parent table）
+* 外键能用于确认一张表中的行与另一张表中的行相对应。
+* 外键的值可以是NULL，即使主键值不可为NULL。
+* 外键值不需要唯一 - -事实上，外键通常都没有唯一性。
+
+Q：我们知道外键可以让我连接两张表。但是如果外键是NULL，它有什么作用吗？有办法确认外键连接至父键了吗？   
+A：**外键为NULL，表示在父表中没有相符的主键。** 但我们可以确认外键包含有意义、已存储在父表中的值，
+请通过**约束（constrant）**来实现。
+
+
+### 外键约束
+
+创建一张表并加上可以作为外键的列虽然很简单，但除非你利用CREATE或ALTER语句来指定外键，否则不算是真的外键。
+创建在结构内的键被称为**约束（constraint）**。
+
+创建外键作为表的约束提供了明确的优势。如果违反了规则，约束会阻止我们意外破坏表。
+
+插入外键列的只必须已经存在于父表的来源列中，这是**引用完整性（referntial integrity）**。
+
+你可以使用外键来引用父表中的某个唯一的值。外键不一定必须是父表的主键，但必须有唯一性。
+
+### 创建带有外键的表
+
+```
+CREATE TABLE interests
+(
+    int_id     INT         NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    interest   VARCHAR(50) NOT NULL,
+    # 创建外键就和创建索引列一样：把外键列设定为INT 与 NOT NULL。
+    contact_id INT         NOT NULL,
+    # 这部分称为CONSTRAINT，它的命名方式能告诉我们键的来源（my_contacts）、键的名称（ocntact_id），
+    # 还能说明它是一个外键（fk）。
+    # 如果以后解除约束，也还要用这个名称解除。本行为可选，但最好养成使用它的习惯。
+    CONSTRAINT my_contacts_cont_contant_id_fk
+        # 括号中的列名就代表外键。可以随意命名
+        FOREIGN KEY (contact_id)
+            # 这部分指定外键的来源，还有外键列在另一张表中的名称。
+            REFERENCES my_contacts (contact_id)
+);
+```
+
+表结构
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| int\_id | int\(11\) | NO | PRI | NULL | auto\_increment |
+| interest | varchar\(50\) | NO |  | NULL |  |
+| contact\_id | int\(11\) | NO | MUL | NULL |  |
+
+MUL 表示这一列可以存储多个相同的值，它也是追踪每个cocntact_id拥有什么兴趣的关键。
+
+约束有助于加强两张表之间的连接。因为外键约束能确保引用完整性（换句话说，如果表中的某行有外键，
+约束能确保该行通过外键与另一张表中的某一行对应）。
+
+如果数据行具有主键，而且他的主键是其它表的外键时，删除数据或修改主键值，必须先移除外键行。
+
+除了外键约束，关键字 UNIQUE 也被视为一种约束。此外还有一种MySQL不支持的约束- - CHECK（检查）约束。
+
+
+### 表间的关系
+
+一对一、一对多、多对多。
+
+找出数据所属的模式后，设计多张表的关系- - 设计**数据库模式**（schema），也就变得简单了。
+
+
+### 数据模式： 一对一
+
+一对一：父表只有一行与子表的某行相关。
+
+假设有A、B两个表，A表的某条记录在B表中最多只能有一条相对应的记录。
+
+**使用一对一表的时机**
+
+通常，把一对一的的数据留在主表更合理，但也有适合把某些列拉出来的时候：
+1. 抽出数据或许能让你写出更快速的查询。例如，如果大多数时候你只需要查询SSN，就可以查询较小的SSN表。
+2. 如果有列包含还不知道的值，可以单独存储这一列，以免主要表中出现NULL。
+3. 我们可能希望某些数据不要太常被访问。隔离这些数据即可管制访问次数。以员工表为例，它们的薪资信息最好存为另一张表。
+4. 如果有一大块数据，例如BLOB类型，这段数据或许存为另一张表会更好。
+
+### 数据模式： 一对多
+
+一对多：A表中的某一条记录可以对应到B表中多条记录，但B表中的某一条记录只能对应到A表中的某一条记录。
+
+### 数据模式： 多对多
+
+表 my_contacts
+
+| Field |
+| :--- |
+| contact_id |
+| last_name |
+| first_name |
+| phone |
+| email |
+| gender |
+| birthday |
+| profession |
+| location |
+| status |
+| seeking |
+| city |
+| state |
+
+
+表 contact_interest
+
+| Field |
+| :--- |
+| contact_id |
+| interest_id |
+
+表 interests
+
+| Field |
+| :--- |
+| interest_id |
+| interest |
+
+
+my_contacts 与 interests 表彼此间具有多对多关系。此时，在两个多对多的表之间需要一个中间桥梁来存储两个相关
+表的主键，从而把关系简化为一对多，这个中间桥梁就是所谓的 **junction table（连接表）**。
+
+Q：遇到多对多关系的时候，一定要创建中间表吗？   
+A：是的，应该如此。如果两个表具有多对多关系，结果只会造成重复组违反了第一范式。
+
+Q：把表改造成上述形式后有什么优点？我可以把所有兴趣放在一个只有contact_id与interest_name 列的表中。
+的确，数据重复，但真的会有什么问题吗？   
+A：当你使用下一章的联接（join）查询多张表时就会体验到优点了。但是根据使用数据的方式，重复数据也可能有用处，
+像遇到重点在于多对多关系的表，而不是两张表中的数据的时候。
+
+Q：如果我就是不在意数据重复呢？   
+A：Junction table 有助于保持数据的完整性。如果必须删除某个存储在my_contacts表中的联络人时、连接让我们不需
+分心注意interests表，只需管理contact_interest表。若没有分开的表，你极有可能意外移除错误的记录。这种方式比较
+安全。  还有，在更新数据时，没有重复数据能让工作更顺利。假设我们不小心拼错了某个冷门兴趣名，例如拼错了"spelunking"
+（洞穴探险）。当你修正它时，只要修给interests表中的一行记录，而不需要修改contact_interest或my_contacts表。
+
+
+### 第一范式（INF）
+
+* 规则一：数据列只包含具有原子性的值
+* 规则二：没有重复的数据组
+
+### 组合键
+
+**组合键**就是由多个数据列构成的主键，组合各列后形成具有唯一性的键。
+
+### 函数依赖（function dependency）
+
+当某列的数据必须随着另一列的数据的改变而改变时，表示第一列**函数依赖**于第二列。
+
+### 速记符号
+
+快速表示函数依赖的方式是：   
+T.x -> T.y   
+可以解释成“在关系表 T 中，y 列函数依赖于 x 列”。基本上，从右读到左就是解读依赖性的方式。
+
+### 部分函数依赖（paartial functional dependency）
+
+**部分函数依赖**是指，非主键的列依赖于组合主键的某个部分（但不是完全依赖于组合主键）。
+
+### 传递函数依赖（transitive dependency）
+
+如果改变任何非键列可能造成其他列的改变(任何非键列与另一个非键列有关联)，即为传递依赖。
+
+
+
+### 人造键或自然键（synthetic or natural key）
+
+TODO
+
+本书主要采用单一人造主键，用于维持语法的简单，让大家能学到该学的概念，又不会因为实现约束而受困。
+
+### 第二范式（2NF）
+
+在表中加入主键列有助于达成2NF。因为第二范式的重点就是**表的主键如何与其他数据产生关系**。
+
+* 规则一：先符合1NF
+* 规则二：没有部分函数依赖性。
+
+任何具有人工主键且没有组合主键的表都符合2NF。
+
+
+### 第三范式（3NF）
+
+规则一：符合2NF   
+规则二：没有传递函数依赖性
+
+
+### SQL工具包
+
+- Schema 
+
+  - 数据库模式。描述数据库中的数据、其他相关对象，以及这些对象相互连接的方式。
+
+- One-to-One relationship
+
+  - 一对一关系。父表中的一行记录只与子表中的一行记录相关联。
+
+- One-to-Many relationship
+
+  - 一对多关系。一张表中的一行记录可能与另一张表中的多行记录相关联，但后一张表中的任一行记
+录只会与前一张表中的一行记录相关联。
+
+- Many-to-Many relationship
+
+  - 多对多关系。两个通过 junction table 连接的表。让一张表中的多行记录能与另一张表中的多
+行记录相关联，反之亦然。
+
+- First normal form (1NF)
+
+  - 第一范式。列中只包含原子性数据，而且列没有重复的数据组。
+
+- Transitive functional dependency
+
+  - 传递函数依赖。指任何非键列依赖于另一个非键。
+
+- Second normal form (2NF)
+
+  - 第二范式。表必须先符合1NF，同时不能包含部分函数依赖，才算满足2NF。
+
+- Third normal form (3NF)
+
+  - 第三范式。表必须先符合2NF，同时不可包含可传递函数依赖。
+
+- Foreign key
+
+  - 外键。引用其他表的主键列。
+
+- Composite key
+
+  - 组合键。由多个列构成的主键，这些列需形成唯一的键值。
+
+
+
+
+
+---
+<h1 id="08">08 | 联接与多张表的操作：不能单独存在吗？</h1>
+
+---
+
+### 利用 SELECT 语句把内容直接填入新表的三种方式
+
+1. CREATE TABLE，然后利用 SELECT 进行 INSERT。同时（几乎同时啦）CREATE、SELECT、INSERT
+```
+CREATE TABLE profession
+(
+    id         INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    profession varchar(20)
+);
+INSERT INTO profession (profession)
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+```
+
+2. 利用 SELECT 进行 CREATE TABLE，然后 ALTER 以添加主键。同一时间CREATE、SELECT、INSERT。
+
+```
+CREATE TABLE profession AS
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+
+ALTER TABLE profession
+    ADD COLUMN id INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY FIRST;
+```
+
+出现错误提示：
+```
+Statement violates GTID consistency: CREATE TABLE ... SELECT.
+```
+
+3. CREATE TABLE 的同时设置主键并利用 SELECT 填入数据
+
+创建profession表的同时设置主键列以及另一个VARCHAR类型的列来存储职业，同时还要填入SELECT 的查询结果。
+SQL具有 AUTO_INCREMENT 功能，所以RDBMS知道ID列需要自动填入，因此只剩一列，也就是SELECT的数据应该填入的地方。
+
+```
+CREATE TABLE profession
+(
+    id         INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    profession varchar(20)
+) AS
+SELECT profession
+FROM my_contacts
+GROUP BY profession
+ORDER BY profession;
+```
+
+出现错误提示：
+```
+Statement violates GTID consistency: CREATE TABLE ... SELECT.
+```
+
+错误说明：
+```
+1、情况描述
+在执行sql：create table 表A  as select * from 表B时，发现sql执行后，并未生成新的表，
+而是提示Statement violates GTID consistency: CREATE TABLE ... SELECT.
+
+2、问题分析
+MySQL5.6及以上的版本，开启了 enforce_gtid_consistency=true 功能导致的，MySQL官方解释
+说当启用 enforce_gtid_consistency 功能的时候，MySQL只允许能够保障事务安全，并且能够被
+日志记录的SQL语句被执行，像create table … select 和 create temporarytable语句，以及
+同时更新事务表和非事务表的SQL语句或事务都不允许执行。
+
+3、解决方法  
+
+方法一（推荐）：
+修改 ：SET @@GLOBAL.ENFORCE_GTID_CONSISTENCY = off;
+
+配置文件中 ：ENFORCE_GTID_CONSISTENCY = off;
+
+方法二：
+create table 表A as select 表B 的方式会拆分成两部分。
+
+create table 表A like 表B ;
+insert into 表A select *from 表B ;
+
+```
+
+
+
+
+
+
+
+
+
+
+### AS 到底是怎么一回事？
+
+AS 能把SELECT的查询结果填入新表中。我们在上文第二和第三个范例中使用AS时，其实是要求软件把来自my_contacts表的内容当成
+SELECT的查询结果，并把结果值存入新建的profession表中。
+
+如果不指定新表具有带有新名称的两列，AS只会创建一列，且该列的名称及数据类型与SELECT的查询结果相同。
+
+
+### 列的别名
+
+```
+CREATE TABLE profession
+(
+    id      INT(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    mc_prof varchar(20)
+) AS
+SELECT profession AS mc_prof
+FROM my_contacts
+GROUP BY mc_prof
+ORDER BY mc_prof;
+```
+
+这个查询与原先的查询效果完全一样，但因为有别名，所以它更容易理解。
+
+虽然这两个查询有一点小小的不同。但所有的查询都以表的行是返回。别名改变了查询结果中的列名，但并未改变来源列的名称。别名
+只是临时的。
+
+但因为指定了新表有两列-- 主键和职业列相当于覆盖了原始查询结果，所以新表还是会有名为profession的列，而非mc_prof。
+
+### 表的别名，谁会需要？
+
+联接（join）领域。
+
+表的别名又称 correlation name （相关名称）。
+
+对于表和列的别名，我们可以省略关键字AS。
+
+
+
+###  交叉联接
+
+本书称之为交叉联接（cross join）,它也有别的名字，例如笛卡儿积、交叉积......还有最奇怪的“没有联接”（no join）。
+
+假设有一个存储男孩姓名的表，一个存储玩具的表。
+
+```
+CREATE TABLE `boys` (
+                        `boy_id` int(11) default NULL,
+                        `boy` varchar(20) default NULL,
+                        `toy_id` int(11) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
+```
+CREATE TABLE `toys` (
+                        `toy_id` int(11) default NULL,
+                        `toy` varchar(20) default NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
+
+
+
+boys
+
+| boy\_id | boy |
+| :--- | :--- |
+| 1 | Davey |
+| 2 | Bobby |
+| 3 | Beaver |
+| 4 | Richie |
+
+
+toys
+
+| toy\_id | toy |
+| :--- | :--- |
+| 1 | hula hoop |
+| 2 | balsa glider |
+| 3 | toy soldiers |
+| 4 | harmonica |
+| 5 | baseball cards |
+
+
+下列同时查询玩具表的toy列与男孩表的boy列，这个方法的查询结果会是交叉联接。
+
+
+```
+SELECT t.toy, b.boy
+FROM toys t
+         CROSS JOIN boys b;
+```
+
+CROSS JOIN 返回两张表的每一行相乘结果。即交叉联接把每一张表的每一个值都与第二张表的每一个值配成对。
+
+| toy | boy |
+| :--- | :--- |
+| hula hoop | Davey |
+| hula hoop | Bobby |
+| hula hoop | Beaver |
+| hula hoop | Richie |
+| hula hoop | Johnny |
+| hula hoop | Billy |
+| balsa glider | Davey |
+| balsa glider | Bobby |
+| balsa glider | Beaver |
+| balsa glider | Richie |
+| ...... | ...... |
+
+本例联接出20条记录。5个玩具乘以4个男孩的结果呈现了所有可能的组合。
+
+因为 toys.toy 的查询结果比较多，所以结果呈现如上表所示的组。如果男孩有5个，玩具只有4中，则会以男孩姓名为划分组的依据（如下表）。
+
+```
+SELECT t.toy, b.boy
+FROM toys t
+         CROSS JOIN boys b;
+```
+
+| toy | boy |
+| :--- | :--- |
+| hula hoop | Davey |
+| balsa glider | Davey |
+| toy soldiers | Davey |
+| hula hoop | Bobby |
+| balsa glider | Bobby |
+| toy soldiers | Bobby |
+| hula hoop | Beaver |
+| balsa glider | Beaver |
+| toy soldiers | Beaver |
+
+Q：我为什么需要交叉联接？   
+A：知道这一点很重要，因为当我们乱玩联接时可能意外造成交叉联接。知道交叉联接的存在有益于找出修正联接的方式。这种事情有时真的
+会发生。还有，交叉联接有时可用于检测 RDBMS 软件及其配置的运行速度。运行交叉联接所需的时间可以轻易地检测与比较速度慢的查询。
+
+Q：如下所示。假设改用 SELECT * 写查询，会有什么不同？   
+```SELECT * FROM toys CROSS JOIN boys;```   
+A：你可以动手试试看。不过还是会得出20行。只不过会包含4个数据列。   
+
+| toy\_id | toy | boy\_id | boy |
+| :--- | :--- | :--- | :--- |
+| 1 | hula hoop | 1 | Davey |
+| 2 | balsa glider | 1 | Davey |
+| 3 | toy soldiers | 1 | Davey |
+| 1 | hula hoop | 2 | Bobby |
+| 2 | balsa glider | 2 | Bobby |
+| 3 | toy soldiers | 2 | Bobby |
+| 1 | hula hoop | 3 | Beaver |
+| ...... | ...... | ...... |...... |
+
+Q：如果对两个很大的表做了交叉联接，会发生什么事？   
+A：查询结果将会非常的庞大。最好别对数据量大的表进行交叉联接，否则会因为返回的数据过多而让机器冒着停滞不动的风险。
+
+Q：这个查询还有其他同义语法吗？   
+A：当然有！ **CROSS JOIN 可以省略不写**，只用逗代替，就像这样：   
+```
+SELECT t.toy, b.boy FROM toys t, boys b;
+```
+
+Q：**我听说过“内联接”与“外联接”这两个词，交叉联接是相同的东西吗**？   
+A：交叉联接是内联接的一种。内联接基本上就是通过查询中的条件移除了某些结果数据行后的交叉联接。
+
+
+
+###  内联接：相等联接（equijoin）
+
+**内联接就是通过查询中的条件移除了某些结果数据行后的交叉联接**
+
+```
+SELECT b.boy, b.boy FROM boys t, boys b;
+```
+结果展示（相当于两个表，表1（n 行）的每一行与表2（m 行）的每一行组合（Cn1*Cm1））：
+
+| boy | boy |
+| :--- | :--- |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Davey | Davey |
+| Bobby | Bobby |
+| Bobby | Bobby |
+| Bobby | Bobby |
+| Bobby | Bobby |
+| Bobby | Bobby |
+
+
+```
+SELECT mc.last_name, mc.first_name, p.profession
+FROM my_contacts AS mc
+         INNER JOIN profession AS p ON mc.prof_id = p.id;
+		 
+SELECT boys.boy, toys.toy
+FROM boys
+         INNER JOIN toys ON boys.toy_id = toys.toy_id;
+```
+
+**INNER JOIN** 利用条件判断中的比较运算符结合两张表的记录。只有联接记录符合条件时才会返回列。
+
+其中关键字 ON 可以改为 WHERE ，条件式里可采用任何一个比较运算符。
+
+
+###  内联接：不等联接（non-equijoin）
+
+每个男孩没有的玩具(或许生日的时候会有用)
+
+```
+SELECT boys.boy, toys.toy
+FROM boys
+         INNER JOIN toys ON boys.toy_id <> toys.toy_id
+ORDER BY boys.boy;
+```
+
+
+| boy | toy |
+| :--- | :--- |
+| Beaver | toy soldiers |
+| Beaver | tinker toys |
+| Beaver | harmonica |
+| Billy | baseball cards |
+| Billy | harmonica |
+
+前3行为Beaver没有的玩具。
+
+
+###  内联接：自然联接（naturaljoin）
+
+**自然联接**只有在联接的列在两张表中的名称都相同时才会有用。
+
+**NATURAL JOIN 利用相同列名的内联接**
+
+我们想知道每个男孩拥有什么玩具。自然联接会识别出每个表里的相同名称（toy_id）并返回相符的记录。
+
+```
+SELECT boys.boy, toys.toy
+FROM boys
+         NATURAL JOIN toys;
+```
+
+
+练习
+
+| table my_contacts Field | table profession Field | table zip_code Field | table status Field |
+| :--- |:--- |:--- |:--- |
+| last\_name |prof_id |zip_code |status_id |
+| first\_name | profession |city |status |
+| email ||state ||
+| gender |
+| ...... |
+| prof\_id |
+| zip_code |
+| status_id |
+
+
+返回my_contacts表中每个人的电子邮件地址与职业的查询
+```
+SELECT mc.email, p.profession
+FROM my_contacts mc
+         NATURAL JOIN profession p;
+```
+
+返回my_contacts表中每个人的姓、名与他们没有的状态的查询
+```
+SELECT mc.last_name, mc.first_name, s.status
+FROM my_contacts mc
+         INNER JOIN satatus s ON mc.status_id <> s.status_id;
+```
+
+返回my_contacts表中每个人的姓、名与所在位置（州名）的查询
+```
+SELECT mc.last_name, mc.first_name, z.state
+FROM my_contacts mc
+         NATURAL JOIN zip_code z;
+```
+
+简单说明：
+
+- 返回两张表里联接列内容不符合条件的所有记录
+  - 不等联接（non-equijoin）
+  - 内联接（inner join）
+- 联接表的顺序对我来说很重要
+  - 外联接（outer join）
+- 返回两张表里联接列内容符合条件的所有记录，而且使用关键字ON
+  - 相等联接（equijoin）
+  - 内联接（inner join）
+- 能结合两个共享相同列名的表
+  - 自然联接（natural join）
+- 可以返回等于两张表的数据行的乘积记录
+  - 交叉联接（cross join）
+  - 笛卡尔联接（cartesian join）
+  - 叉积（cross product）
+- 返回所有可能的行，而且没有任何条件
+  - 笛卡尔联接（cartesian join）
+  - 叉积（cross product）
+- 利用条件结合两张表
+  - 相等联接（equijoin）
+  - 不等联接（non-equijoin）
+  - 内联接（inner join）
+
+
+练习：
+
+1. 使用不同联接方式涉及两个查询，取得my_contacts 与contact_interests里相符的记录
+```
+SELECT mc.first_name, mc.last_name, ci.interest_id
+FROM my_contacts mc
+         INNER JOIN contact_interest ci ON mc.contact_id = ci.contact_id;
+		 
+SELECT mc.first_name, mc.last_name, ci.interest_id
+FROM my_contacts mc
+         NATURAL JOIN contact_interest;
+```
+
+2. 设计一个查询，返回 contact_seeking 与 seeking 所有可能的合并结果
+```
+SELECT *
+FROM contact_seeking
+         CROSS JOIN seeking;
+		 
+SELECT * FROM contact_seeking, seeking;
+```
+3. 列出my_contacts表中每个人的职业，但职业不能重复列出，而且要按字母顺序排列
+```
+SELECT p.profession
+FROM my_contacts mc
+         INNER JOIN profession p ON mc.prof_id = p.id
+GROUP BY p.profession
+ORDER BY p.profession;
+```
+
+
 ### SQL工具包
 
 - **INNER JOIN**
@@ -10,6 +1730,9 @@
   - 交叉联接。返回一张表的每一行与另一张表的每一行所有可能的搭配结果。其他常见名称还包括笛卡尔联接（CARTESIAN JOIN）与 NO JOIN。
 - **COMMA JOIN**
   - 与 CROSS JOIN 相同。只不过以逗号取代关键字 CROSS JOIN。
+
+
+
 
 
 
@@ -170,3 +1893,5 @@ WHERE jc.contact_id = (SELECT jc.contact_id FROM job_current jc ORDER BY jc.sala
 <h1 id="10">10 | 外联接、自联接与联合：新策略</h1>
 
 ---
+
+
