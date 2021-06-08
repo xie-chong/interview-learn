@@ -1903,10 +1903,73 @@ WHERE jc.salary > (SELECT salary FROM job_current WHERE email = 'andy@weatherora
 **交叉联接是件非常浪费时间的事；关联子查询也会拖慢速度；联接比子查询更有效率。**
 
 
+### 有多个值的非关联子查询：IN、NOT IN
+
+```
+SELECT mc.first_name, mc.last_name, mc.phone, jc.title
+FROM job_current AS jc
+         NATURAL JOIN my_contacts AS mc
+WHERE jc.title IN (SELECT title FROM job_listings);
+
+SELECT mc.first_name, mc.last_name, mc.phone, jc.title
+FROM job_current AS jc
+         NATURAL JOIN my_contacts AS mc
+WHERE jc.title NOT IN (SELECT title FROM job_listings);
+```
+
+**非关联子查询使用 IN 或 NOT IN 来检查子查询返回的值是否为集合的成员之一。**
+
+### 子查询练习
+
+| my_contacts Field | profession Field | zip_code Field | status Field |
+| :--- |:--- |:--- |:--- |
+| contact_id |prof_id |zip_code |status_id |
+| last_name | profession |city |status |
+| first_name ||state ||
+| email |
+| gender |
+| ...... |
+| prof_id |
+| zip_code |
+| status_id |
+
+| job_current Field | job_desired Field | job_listings Field |
+|:--- |:--- |:--- |
+|contact_id |contact_id |job_id |
+| title |title |title |
+| salary |salary_low |salary|
+| start_date | salary_high| zip |
+| | available | description |
+| | years_exp|
+
+
+| contact_interest Field | interests Field | contact_seeking Field | seeeking Field |
+| :--- |:--- |:--- |:--- |
+| contactact_id |interest_id |contactact_id |seeking_id|
+| interest_id | interest |seeking_id |seeking|
+
+1. 列出薪资等于 job_listings 表中的最高薪资的职务名称
+
+```
+SELECT title
+FROM job_listings
+WHERE salary = (SELECT MAX(salary) FROM job_listings); 
+```
+
+2. 列出薪资高于平均薪资者的姓名
 
 
 
-P433
+
+
+
+
+
+
+
+
+
+438
 
 
 
