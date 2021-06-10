@@ -1958,6 +1958,68 @@ WHERE salary = (SELECT MAX(salary) FROM job_listings);
 
 2. 列出薪资高于平均薪资者的姓名
 
+```
+SELECT mc.first_name, mc.last_name
+FROM my_contacts mc
+         NATURAL JOIN job_current jc
+WHERE jc.salary > (SELECT AVG(salary) FROM job_current);
+```
+
+3. 请寻找网站设计员，但只列出其邮政编码与任何一个网站设计职缺的邮政编码相同的设计员
+
+```
+SELECT mc.first_name, mc.last_name, mc.phone
+FROM my_contacts mc
+         NATURAL JOIN job_current jc
+WHERE jc.title = 'web design'
+  AND mc.zip_code
+    IN (SELECT zip FROM job_listings WHERE title = 'web design');
+
+# 错误示例，只找到州，并未对应到设计人员
+SELECT mc.first_name, mc.last_name
+FROM my_contacts mc
+         NATURAL JOIN zip_code zc
+WHERE zc IN (SELECT zip FROM job_listings WHERE title = 'Web Designer');
+```
+
+4. 列出每个邮政编码涵盖的地区中当前薪资最高的人
+
+```
+# 自己答案（待验证）
+SELECT c.zip_code, MAX(c.salary) max_salary
+FROM (
+         SELECT mc.first_name, mc.last_name, mc.zip_code, jc.salary
+         FROM my_contacts mc
+                  NATURAL JOIN job_current jc) c
+GROUP BY zip_code;
+
+# 教材答案（待验证）
+SELECT last_name, first_name
+FROM my_contacts
+WHERE zip_code IN (SELECT mc.zip_code
+                   FROM my_contacts mc
+                            NATURAL JOIN job_current jc
+                   WHERE jc.salary = (SELECT MAX(salary) FROM job_current));
+```
+
+### 关联子查询
+
+**关联子查询**是指内层查询的解析需要依赖外层查询的结果。
+
+示例（计算my_contacts 里的每个人各有几项兴趣，然后返回具有三项兴趣的人）：
+
+```
+SELECT mc.first_name, mc.last_name
+FROM my_contacts mc
+WHERE 3 = (SELECT COUNT(*) FROM contact_intest WHERE contact_id = mc.contact_id);
+```
+
+子查询依赖外层查询，它需要来自外层查询的结果，contacts_id的值，然后才能解析内层查询。
+查询中使用的**别名（关联名称）** mc，是在外层查询中创建的。
+
+### 一个搭配 NOT EXISTS 的（好用）关联子查询
+
+关联子查询的常见用法，是找出所有外层查询结果里不存在于关联表里的记录。
 
 
 
@@ -1969,7 +2031,6 @@ WHERE salary = (SELECT MAX(salary) FROM job_listings);
 
 
 
-438
 
 
 
@@ -1978,6 +2039,7 @@ WHERE salary = (SELECT MAX(salary) FROM job_listings);
 
 
 
+441
 
 
 
@@ -1991,4 +2053,3 @@ WHERE salary = (SELECT MAX(salary) FROM job_listings);
 <h1 id="10">10 | 外联接、自联接与联合：新策略</h1>
 
 ---
-
