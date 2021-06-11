@@ -2081,7 +2081,7 @@ WHERE EXISTS(
   - 外层查询。包含 inner query/subquery的查询。
 - **Inner query**
   - 内层查询。在查询内的查询，也称为subquery。
-- **SUbquery**
+- **Subquery**
   - 子查询。被另一个查询包围的查询，也称为 inner query。
 
 
