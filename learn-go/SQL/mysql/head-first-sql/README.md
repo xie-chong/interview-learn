@@ -1690,6 +1690,7 @@ FROM my_contacts mc
 练习：
 
 1. 使用不同联接方式涉及两个查询，取得my_contacts 与contact_interests里相符的记录
+
 ```
 SELECT mc.first_name, mc.last_name, ci.interest_id
 FROM my_contacts mc
@@ -1701,6 +1702,7 @@ FROM my_contacts mc
 ```
 
 2. 设计一个查询，返回 contact_seeking 与 seeking 所有可能的合并结果
+
 ```
 SELECT *
 FROM contact_seeking
@@ -1709,6 +1711,7 @@ FROM contact_seeking
 SELECT * FROM contact_seeking, seeking;
 ```
 3. 列出my_contacts表中每个人的职业，但职业不能重复列出，而且要按字母顺序排列
+
 ```
 SELECT p.profession
 FROM my_contacts mc
@@ -1736,6 +1739,7 @@ ORDER BY p.profession;
 
 
 
+
 ---
 <h1 id="09">09 | 子查询：查询中的查询</h1>
 
@@ -1743,6 +1747,8 @@ ORDER BY p.profession;
 
 有时要问数据库的问题不止一个，或者需要把甲查询的结果作为乙查询的输入，这时就需要使用子查询。
 子查询有助于避免数据重复，让查询更加动态灵活。
+
+任何子查询能实现的事情都能以相同类型的联接来实现。
 
 **子查询，是被另一个查询包围的查询，也可称为内层查询。**
 
@@ -1826,21 +1832,25 @@ create table job_current
 
 1. 分解问题
 2. 找出能够回答部分问题的查询（既然我们创建的是非关联字查询（noncirrelated subquery），我们可以挑出部分问题并建立回答该部分的查询。）
+
 ```
 SELECT MAX(salary) FROM job_current;
 ```
 3. 继续分解
+
 ```
 SELECT mc.first_name, mc.last_name FROM my_contacts AS mc;
 ```
 4. 最后，找出串起两个查询的方式（我们需要知道my_contacts中的人名，还需要知道他们的薪水，才能比较出最高的薪资）
 我们需要一个自然内联接来找出每个人的薪资信息：
+
 ```
 SELECT mc.first_name, mc.last_name, jc.salary
 FROM my_contacts AS mc
          NATURAL JOIN job_current AS jc;
 ```
 5. 接下来加上WHERE子句以连接两段查询。
+
 ```
 SELECT mc.first_name, mc.last_name, jc.salary
 FROM my_contacts AS mc
@@ -1853,6 +1863,7 @@ FROM my_contacts AS mc
          NATURAL JOIN job_current AS jc
 WHERE jc.contact_id = (SELECT jc.contact_id FROM job_current jc ORDER BY jc.salary DESC LIMIT 1);
 ```
+
 
 ### 子查询作为 SELECT 语句中选取的列之一
 
@@ -1901,7 +1912,6 @@ WHERE jc.salary > (SELECT salary FROM job_current WHERE email = 'andy@weatherora
 ### SQL 真情指数
 
 **交叉联接是件非常浪费时间的事；关联子查询也会拖慢速度；联接比子查询更有效率。**
-
 
 ### 有多个值的非关联子查询：IN、NOT IN
 
@@ -2021,25 +2031,76 @@ WHERE 3 = (SELECT COUNT(*) FROM contact_intest WHERE contact_id = mc.contact_id)
 
 关联子查询的常见用法，是找出所有外层查询结果里不存在于关联表里的记录。
 
+找出my_contacts 里目前不在 job_current 表中的每个人。
+
+```
+SELECT mc.first_name, mc.last_name, mc.email
+FROM my_contacts mc
+WHERE NOT EXISTS(
+    SELECT * FROM job_current jc WHERE mc.contact_id = jc.contact_id
+    );
+```
+
+### EXISITS 与 NOT EXISITS
+
+就像 IN 与 NOT IN，子查询也能搭配 EXISTS 与 NOT EXISTS 一起使用。
+
+查询 my_contacts 表的数据，其中 contacts_id 曾出现在 contact_interest表。
+
+```
+SELECT mc.first_name, mc.last_name, mc.email
+FROM my_contacts mc
+WHERE EXISTS(
+              SELECT * FROM contact_interest ci WHERE mc.contact_id = ci.contact_id
+          );
+```
+
+练习：
+
+查询每个人的电子邮件地址，电子邮件的主人至少拥有一项兴趣，但其在 job_current表中没有相应记录。
+
+```
+SELECT mc.first_name, mc.last_name, mc.email
+FROM my_contacts mc
+WHERE EXISTS(
+        SELECT * FROM contact_interest ci WHERE mc.contact_id = ci.contact_id
+    )
+
+  AND NOT EXISTS(
+        SELECT * FROM job_current jc WHERE mc.contact_id = jc.contact_id
+    );
+```
+
+### SQL 工具包
+
+- **Noncorrelated Subquery**
+  - 非关联子查询。一个独立而且不引用outter query的任何部分。
+- **Correlated Subquery**
+  - 关联子查询。一个依赖outter query的返回结果的subquery。
+- **Outer query**
+  - 外层查询。包含 inner query/subquery的查询。
+- **Inner query**
+  - 内层查询。在查询内的查询，也称为subquery。
+- **SUbquery**
+  - 子查询。被另一个查询包围的查询，也称为 inner query。
 
 
 
 
 
+---
+<h1 id="10">10 | 外联接、自联接与联合：新策略</h1>
+
+---
+
+
+
+449
 
 
 
 
 
-
-
-
-
-
-
-
-
-441
 
 
 
@@ -2050,6 +2111,6 @@ WHERE 3 = (SELECT COUNT(*) FROM contact_intest WHERE contact_id = mc.contact_id)
 
 
 ---
-<h1 id="10">10 | 外联接、自联接与联合：新策略</h1>
+<h1 id="11">11 | 约束、视图与事务：人多手杂，数据库受不了</h1>
 
 ---
