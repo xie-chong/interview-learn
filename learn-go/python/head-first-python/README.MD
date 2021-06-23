@@ -429,6 +429,12 @@ with open(todos.txt) as tasks:
 
 with语句会管理其代码组运行的上下文，结合使用with和open时，解释器会为你完成收尾的清理工作，在需要时调用close。
 
+文本内容字符编码转换
+
+```
+with open(path,'r',encoding='utf-8') as tasks:
+```
+
 vsearch4web.py 增加日志输出到vsearch.log文件
 ```
 from flask import Flask, render_template, request
