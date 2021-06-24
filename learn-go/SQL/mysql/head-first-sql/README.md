@@ -2093,9 +2093,141 @@ WHERE EXISTS(
 
 ---
 
+**外联接**，它可以在表中没有匹配记录的情况下返回记录；**自联接**，它可以联接表本身，**联合**，它可以合并查询结果。
+
+外连接返回某张表的所有行，并带有来自另一张表的条件相符的行。使用内联接（equijoin）时，虽然要**比对来自两张表的行，
+但表的顺序并无影响。**
+
+### 一切都跟左、右有关
+
+外联接更加注重**两张表之间的关系**
+
+**LEFT OUTER JOIN（左外联接）会匹配左表中的每一行及右表中符合条件的行。**当左表与右表具有一对多关系时，
+左外联接特别有用。
+
+在 LEFT OUTER JOIN 中，出现在 FROM 后、联接前的表称为**左表**，而出现在联接后的表当然就是**右表**。
+
+girls表
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| girl\_id | int\(11\) | YES |  | NULL |  |
+| girl | varchar\(20\) | YES |  | NULL |  |
+| toy\_id | int\(11\) | YES |  | NULL |  |
+
+toys表
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| toy\_id | int\(11\) | YES |  | NULL |  |
+| toy | varchar\(20\) | YES |  | NULL |  |
 
 
-449
+equijoin的运作方式
+
+```
+SELECT g.girl, t.toy
+FROM girls g
+         INNER JOIN toys t ON g.toy_id = t.toy_id;
+```
+
+每个女孩拥有的玩具
+
+```
+SELECT g.girl, t.toy
+FROM girls g
+         LEFT OUTER JOIN toys t ON g.toy_id = t.toy_id;
+```
+查询结果：
+
+| girl | toy |
+| :--- | :--- |
+| Cindy | hula hoop |
+| Jane | toy soldiers |
+| Sally | harmonica |
+| Mandy | NULL |
+
+外联接与内联接的差别：**外联接一定会提供数据行，无论该行能否在另一个表中找出相匹配的行。**
+
+**左外联接的结果集中的 NULL 表示右表中没有找到与左表相符的记录。**
+
+出现 NULL 是告诉我们没有相匹配的行。例如女孩玩具的查询结果集中的 NULL 表示没人拥有该玩具。
+
+```
+SELECT g.girl, t.toy
+FROM toys t
+         LEFT OUTER JOIN girls g ON g.toy_id = t.toy_id;
+```
+
+查询结果：
+
+| girl | toy |
+| :--- | :--- |
+| Jane | toy soldiers |
+| Sally | harmonica |
+| Cindy | hula hoop |
+| NULL | balsa glider |
+| NULL | baseball cards |
+| NULL | tinker toys |
+| NULL | etch-a-sketch |
+| NULL | slinky |
+
+查询结果中，列的顺序就是 SELECT 指定的顺序。左联接对于结果行的排列顺序没有影响。
+
+
+### 外联接与多个相符结果
+
+虽然在另一个表中没有相符的记录，但你还是会取得数据行，在匹配出多条记录时就会取出多行。
+
+
+### 右外联接
+
+右外联接与左外联接完全一样，除了它是用右表与左表比对。
+
+**右外联接会根据左表评估右表。**
+
+以下两个查询都以girls为左表。且查询结果相同。
+
+```
+SELECT g.girl, t.toy
+FROM girls g # 左表
+         LEFT OUTER JOIN toys t ON g.toy_id = t.toy_id;
+
+SELECT g.girl, t.toy
+FROM toys t # 右表
+         RIGHT OUTER JOIN girls g ON g.toy_id = t.toy_id;
+```
+
+查询结果。
+
+| girl | toy |
+| :--- | :--- |
+| Cindy | hula hoop |
+| Jane | toy soldiers |
+| Sally | harmonica |
+| Mandy | NULL |
+
+Q：如果有左外联接与右外联接，有可以返回两种联接结果的联接吗？   
+A：有些 RDBMS 系统可以做到，称之为全外联接（FULLOUTERJOIN）。不可以做到的系统包括MySQL、SQL Server、Access。
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+460
 
 
 
