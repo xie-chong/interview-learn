@@ -2215,6 +2215,47 @@ A：有些 RDBMS 系统可以做到，称之为全外联接（FULLOUTERJOIN）�
 
 “自引用”表示它是引用同一张表内另一列的键。
 
+**自引用外键是出于其他目的而用于同一张表的主键**。
+
+```
+ALTER TABLE clown_info
+    ADD id INT PRIMARY KEY AUTO_INCREMENT FIRST;
+	
+alter table clown_info add boss_id int not null;
+```
+clown_info表
+
+| Field | Type | Null | Key | Default | Extra |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| id | int\(11\) | NO | PRI | NULL | auto\_increment |
+| name | varchar\(50\) | YES |  | NULL |  |
+| last\_seen | varchar\(50\) | YES |  | NULL |  |
+| appearance | varchar\(50\) | YES |  | NULL |  |
+| activities | varchar\(50\) | YES |  | NULL |  |
+| boss\_id | int\(11\) | NO |  | NULL |  |
+
+```
+SELECT id, name, boss_id FROM clown_info;
+```
+
+| id | name | boss\_id |
+| :--- | :--- | :--- |
+| 1 | Elsie | 3 |
+| 2 | Pickles | 5 |
+| 3 | Snuggles | 10 |
+| 4 | Mr. Hobo | 3 |
+| 5 | Clarabelle | 10 |
+| 6 | Scooter | 3 |
+| 7 | Zippo | 3 |
+| 8 | Babe | 5 |
+| 9 | Bonzo | 5 |
+| 10 | Mister Sniffles | 10 |
+
+
+新设立的boss_id列，我们直接把它加入clown_info 表。这部分存储了自引用外键。
+引用同一张表中的id字段，所以能找出谁是Elsie的头领。Mister Sniffles 的boss_id就是他自己的id。
+
+### 联接表与它自己
 
 
 
@@ -2229,7 +2270,8 @@ A：有些 RDBMS 系统可以做到，称之为全外联接（FULLOUTERJOIN）�
 
 
 
-464
+
+465
 
 
 
