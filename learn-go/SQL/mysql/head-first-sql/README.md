@@ -2257,6 +2257,67 @@ SELECT id, name, boss_id FROM clown_info;
 
 ### 联接表与它自己
 
+利用 SELECT 可以轻易地列出每个小丑的姓名及他们头领的ID。
+
+```
+SELECT name, boss_id FROM clown_info;
+```
+
+其实我们更需要小丑的姓名与他们的头领的姓名。
+
+假设有两个完全相同的表 clown_info1 与 clown_info2
+
+```
+SELECT c1.name, c2.name
+FROM clown_info1 c1
+         INNER JOIN clown_info2 C2 ON c1.boss_id = c2.id;
+```
+
+### 我们需要自联接
+
+在规范的数据库中，相同的表不会出现两次。于是，可以**改用自联接（self-join）以模拟联接两张表的效果**。
+
+```
+SELECT c1.name, c2.name
+FROM clown_info c1
+         INNER JOIN clown_info C2 ON c1.boss_id = c2.id;
+```
+
+不需要两张相同的表，而是使用 clown_info 两次。
+
+**自联接能把单一表当成两张具有完全相同的信息的表来进行查询**。
+
+
+### 另一种取得多张表内容的方式 - - 利用 UNION （联合）
+
+UNION 根据我们在 SELECT 中指定的列，把两张或更多张表的查询结果合并至一个表中，**结果集中没重复记录**。
+
+```
+SELECT title FROM job_current
+UNION
+SELECT title FROM job_desired
+UNION
+SELECT title FROM job_listings;
+```
+
+### UNION 的使用限制
+
+在每个 SELECT 语句中加入 ORDER BY 子句，使得“职务”依序排序。
+
+```
+SELECT title FROM job_current ORDER BY title
+UNION
+SELECT title FROM job_desired ORDER BY title
+UNION
+SELECT title FROM job_listings ORDER BY title;
+```
+
+上面查询无法使用，得到一个错误信息，因为数据库软件不知道如何解释多个 ORDER BY 。
+
+UNIION 只能接受一个  ORDER BY 且必须位于语句末端。这是因为 UNION 已经把多个 SELECT 语句
+的查询结果串联起来并分组了。
+
+### SQL 联合规则
 
 
 
@@ -2271,15 +2332,7 @@ SELECT id, name, boss_id FROM clown_info;
 
 
 
-465
-
-
-
-
-
-
-
-
+470
 
 
 
