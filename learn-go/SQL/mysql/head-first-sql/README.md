@@ -2363,6 +2363,8 @@ SELECT title FROM job_listings;
 
 ### INTERSECT（交集）与 EXCEPT（差集）
 
+**不幸的是，MySQL不支持INTERSECT、EXCEPT操作符**。
+
 ```
 SELECT title FROM job_current
 INTERSECT
@@ -2379,7 +2381,6 @@ INTERSECT运算符用于两个查询，应用以下规则：
 
 EXCEPT 返回只出现在第一个查询，而不在第二个查询中的列。
 
-**不幸的是，MySQL不支持INTERSECT、EXCEPT操作符**。
 
 ### [MySQL INTERSECT模拟](https://www.yiibai.com/mysql/sql-union-mysql.html)
 
