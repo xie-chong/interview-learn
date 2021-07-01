@@ -2332,12 +2332,61 @@ ORDER BY title;
 * 每个 SELECT 语句包含的表达式与统计函数也必须相同。
 * SELECT 语句的顺序不重要，不会改变结果。
 * SQL默认会清除联合的结果中的重复值。
-* 列的数据类型必须相同或者可以互相转换。
+* 列的数据类型必须相同或者可以互相转换（以联合 INTERGER 与 VARCHAR类型为例，因为 VARCHAR 无法转换成整型，
+所以查询结果会把 INTERGER 转换为 VARCHAR）。
 * 如果出于某些原因而需要看到重复数据，可以使用 UNION ALL 运算符。这个运算符返回每个相符的记
 录，而不只是没有重复记录。
 
 ### UNIOON ALL
 
+UNIOON ALL 的运作方式与 UNION 相同，只不过它会返回列的所有内容，而不是每个的复制实例。
+
+```
+SELECT title FROM job_current
+UNION ALL
+SELECT title FROM job_desired
+UNION ALL
+SELECT title FROM job_listings
+ORDER BY title;
+```
+
+### 从联合创建表
+
+```
+CREATE TABLE my_union AS
+SELECT title FROM job_current
+UNION
+SELECT title FROM job_desired
+UNION
+SELECT title FROM job_listings;
+```
+
+### INTERSECT（交集）与 EXCEPT（差集）
+
+```
+SELECT title FROM job_current
+INTERSECT
+SELECT title FROM job_desired;
+
+SELECT title FROM job_current
+EXCEPT
+SELECT title FROM job_desired;
+```
+
+INTERSECT运算符用于两个查询，应用以下规则：   
+* 列的顺序和数量必须相同。
+* 相应列的数据类型必须兼容或可转换。
+
+EXCEPT 返回只出现在第一个查询，而不在第二个查询中的列。
+
+**不幸的是，MySQL不支持INTERSECT、EXCEPT操作符**。
+
+### [MySQL INTERSECT模拟](https://www.yiibai.com/mysql/sql-union-mysql.html)
+
+
+
+
+475
 
 
 
@@ -2349,7 +2398,6 @@ ORDER BY title;
 
 
 
-470
 
 
 
