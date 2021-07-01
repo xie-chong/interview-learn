@@ -2317,9 +2317,26 @@ SELECT title FROM job_listings ORDER BY title;
 UNIION 只能接受一个  ORDER BY 且必须位于语句末端。这是因为 UNION 已经把多个 SELECT 语句
 的查询结果串联起来并分组了。
 
-### SQL 联合规则
+```
+SELECT title FROM job_current
+UNION
+SELECT title FROM job_desired
+UNION
+SELECT title FROM job_listings
+ORDER BY title;
+```
 
+### SQL UNION（联合）规则的运作
 
+* 每个 SELECT 语句中列的数量必须一致。不可以由第一条语句选取了两列，由其他语句却只选取一列。
+* 每个 SELECT 语句包含的表达式与统计函数也必须相同。
+* SELECT 语句的顺序不重要，不会改变结果。
+* SQL默认会清除联合的结果中的重复值。
+* 列的数据类型必须相同或者可以互相转换。
+* 如果出于某些原因而需要看到重复数据，可以使用 UNION ALL 运算符。这个运算符返回每个相符的记
+录，而不只是没有重复记录。
+
+### UNIOON ALL
 
 
 
@@ -2333,6 +2350,18 @@ UNIION 只能接受一个  ORDER BY 且必须位于语句末端。这是因为 U
 
 
 470
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
