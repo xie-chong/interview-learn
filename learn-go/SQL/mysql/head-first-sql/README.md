@@ -2384,42 +2384,88 @@ EXCEPT 返回只出现在第一个查询，而不在第二个查询中的列。
 
 ### [MySQL INTERSECT模拟](https://www.yiibai.com/mysql/sql-union-mysql.html)
 
+// TODO
+
+### 把子查询转换为联接
+
+几乎所有能用子查询办到的事都能用联接实现。
+
+```
+# 子查询
+SELECT mc.first_name, mc.last_name, mc.phone, jc.title
+FROM job_current AS jc
+         NATURAL JOIN my_contacts AS mc
+WHERE jc.title IN (SELECT title FROM job_listings);
+
+# 以内联接的方式重写 WHERE 子句
+SELECT mc.first_name, mc.last_name, mc.phone, jc.title
+FROM job_current AS jc NATURAL JOIN my_contacts AS mc
+INNER JOIN job_listings j1
+ON jc.title = j1.title;
+```
+
+INNER JOIN 只会呈现 jc.title = j1.title 的记录。相当于加上子查询的 WHERE 子句：WHERE jc.title IN (SELECT title FROM job_listings);
+因此取得相同的结果。
+
+列出薪资等于 job_listings 表中最高薪资的职务名称。
+
+```
+SELECT title
+FROM job_listings
+WHERE salary = (SELECT MAX(salary) FROM job_listings);
+
+SELECT title FROM job_listings
+ORDER BY salary DESC
+LIMIT 1;
+```
+
+Q：最好使用子查询吗？   
+A：不是。
+
+
+列出薪资高于平均薪资者的姓名。
+
+```
+SELECT mc.first_name, mc.last_name
+FROM my_contacts mc
+         NATURAL JOIN job_current jc
+WHERE jc.salary > (SELECT AVG(salary) FROM job_current);
+```
+
+Q：最好使用子查询吗？   
+A：是的。
+
+### 把自联接变成子查询
+
+变身前
+
+```
+SELECT c1.name, c2.name
+FROM clown_info c1
+         INNER JOIN clown_info C2 ON c1.boss_id = c2.id;
+```
+
+变身后
+
+```
+SELECT c1.name,
+       (SELECT name FROM clown_info WHERE c1.boss_id = id) AS boss
+FROM clown_info c1;
+```
+
+自联接转变为子查询时，因为子查询需依赖外层的结果才能取得正确的 boss_id，所以
+子查询将是关联子查询，而关键性可由 SELECT 选取的列揭示。
+
+### SQL工具包
 
 
 
-475
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+484
 
 ---
 <h1 id="11">11 | 约束、视图与事务：人多手杂，数据库受不了</h1>
