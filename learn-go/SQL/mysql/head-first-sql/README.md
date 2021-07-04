@@ -2458,16 +2458,41 @@ FROM clown_info c1;
 
 ### SQL工具包
 
+- SELF-REFERENCEING FOREIGN KEY
+  - 自引用外键。这种外键就是同一张表的主键，但作为其他用途。
+- LEFT OUTER JOIN
+  - 左外联接。LEFT OUTER JOIN 接受左表中的所有记录。并从右表比对出相符记录。
+- RIGHT OUTER JOIN
+  - 右外联接。RIGHT OUTER JOIN 接受右表中的所有记录，并从左表比对出相符的记录。
+- SELF-JOIN
+  - 自联接。SELF-JOIN 能用一张表做出联接两张完全相同表的效果。
+- UNION 与 UNION ALL 
+  - UNION（联合）根据 SELECT 指定的列合并两个或多个查询的结果为一张表。
+  - UNION 默认为隐藏重复的值；UNION ALL 则可以包含重复的值。
+- CREATE TABLES AS
+  - 使用本命令从任何 SELECT 语句的结果创建表。
+- INTERSECT
+  - 使用这个关键字返回同时存在于第一个与第二个查询中的值。
+- EXCEPTE
+  - 使用这个关键字返回在第一个查询中但不在第二个查询中的值。
 
 
 
 
-
-
-
-484
 
 ---
 <h1 id="11">11 | 约束、视图与事务：人多手杂，数据库受不了</h1>
 
 ---
+
+
+P487
+
+
+---
+<h1 id="12">12 | 安全性：保护你的资产</h1>
+
+---
+
+
+
