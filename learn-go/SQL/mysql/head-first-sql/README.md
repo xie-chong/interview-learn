@@ -2468,7 +2468,8 @@ FROM clown_info c1;
   - 自联接。SELF-JOIN 能用一张表做出联接两张完全相同表的效果。
 - UNION 与 UNION ALL 
   - UNION（联合）根据 SELECT 指定的列合并两个或多个查询的结果为一张表。
-  - UNION 默认为隐藏重复的值；UNION ALL 则可以包含重复的值。
+  - UNION 默认为隐藏重复的值；
+  - UNION ALL 则可以包含重复的值。
 - CREATE TABLES AS
   - 使用本命令从任何 SELECT 语句的结果创建表。
 - INTERSECT
