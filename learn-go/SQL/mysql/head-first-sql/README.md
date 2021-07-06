@@ -2497,9 +2497,79 @@ FROM clown_info c1;
 
 ---
 
+### 检查约束：加入 CHECK
 
-P487
+**约束（constraint）**限定了可以插入列的内容，而在我们创建表时就要加入约束。比如文中稍早出现国的约束：
+NOT NULL、PRIMARY KEY、FOREIGN KEY、UNIQUE。
 
+**CHECK（检查）约束限定允许插入某个列的值（比如枚举值）。它与 WHERE 子句都使用相同的条件表达式。**
+
+例如，硬币面额只可能是P（penny）、N（nickel）、D（dime）、Q（quarter），均以首字母缩写表示，创建小猪存
+钱罐时，即可用 CHECK 约束来限定插入 coin 列的值。
+
+```
+CREATE TABLE piggy_bank
+(
+    id   INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    coin CHAR(1) CHECK ( coin IN ('P', 'N', 'D', 'Q') )
+);
+```
+
+**如果插入的值无法通过 CHECK 条件，则出现错误信息。**
+
+**注意：**   
+**在MySQL里，无法以 CHECK 强化数据完整性。**   
+**在MySQL中，虽然你可在创建表时加上检查约束，但它不会有什么帮助。MySQL 只会忽略它。**
+
+### 为列设定检查约束
+
+```
+ALTER TABLE my_contacts
+    ADD CONSTRAINT CHECK gender IN ('M', 'F');
+```
+
+```
+CREATE TABLE mystery_table
+(
+    # 输入的值必须大于200
+    column_1 INT(4) CHECK ( column_1 > 200 ),
+    # 只要不是字符 x、y、z，都可以输入
+    column_2 CHAR(1) CHECK ( column_2 NOT IN ('X', 'Y', 'Z')),
+    # 字符串的第一个字符必须为A
+    column_3 VARCHAR(3) CHECK ( 'A' = SUBSTRING(column_3, 1, 1)),
+    # 字符串的第一个字符必须为A，第二个字符必须时9
+    column_4 VARCHAR(3) CHECK ( 'A' = SUBSTRING(column_4, 1, 1) AND '9' = SUBSTRING(column_4, 2, 1))
+);
+```
+
+Q：所以说，能用在 WHERE 子句中的东西都能用于 CHECK?   
+A：差不多。所有条件运算符-- AND、OR、IN、NOT、BETWENN等都能用于 CHECK 条件，甚至还能和上例一样结合体哦阿健运算。
+但是无法使用子查询。
+
+Q：如果无法在MySQL里使用检查约束，该如何代替这个功能呢？   
+A：真是个很难回答的问题。有些人改用触发机制（trigger）--在满足特定条件时才执行的查询。但是trigger不像 CHECK 这么
+简单，而且超出本书的讨论范围。   
+
+Q： 如果试着插入无法满足 CHECK 条件的值，会发生什么？   
+A：你会看到错误信息而且不会插入任何记录。   
+
+Q：这样做有什么好处吗？   
+A：检查约束可能确保输入数据的合理性。你不会在最后发现一堆神秘的值。   
+
+### 创建视图
+
+
+
+
+
+
+ 
+
+
+
+
+
+P497
 
 ---
 <h1 id="12">12 | 安全性：保护你的资产</h1>
