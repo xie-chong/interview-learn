@@ -2499,7 +2499,7 @@ FROM clown_info c1;
 
 ### 检查约束：加入 CHECK
 
-**约束（constraint）**限定了可以插入列的内容，而在我们创建表时就要加入约束。比如文中稍早出现国的约束：
+**约束**（constraint）限定了可以插入列的内容，而在我们创建表时就要加入约束。比如文中稍早出现国的约束：
 NOT NULL、PRIMARY KEY、FOREIGN KEY、UNIQUE。
 
 **CHECK（检查）约束限定允许插入某个列的值（比如枚举值）。它与 WHERE 子句都使用相同的条件表达式。**
