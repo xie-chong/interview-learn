@@ -2558,18 +2558,74 @@ A：检查约束可能确保输入数据的合理性。你不会在最后发现�
 
 ### 创建视图
 
+创建视图非常简单，只需在查询中加入 CREATE  VIEW 语句。
 
+```
+CREATE VIEW web_designers AS
+SELECT mc.first_name, mc.last_name, mc.phone, mc.email
+FROM my_contacts mc
+         NATURAL JOIN job_desired jd
+WHERE jd.title = 'Web Designer';
+```
 
+### 查看视图
 
+查看视图的内容，可以把它想成一张表。
 
+```
+SELECT * FROM web_designers;
+```
 
+### 视图的实际行动
+
+当在查询中使用视图时，它的行为方式与子查询一样。
+
+```
+SELECT * FROM web_designers;
+```
+
+把其转换为子查询
+
+```
+SELECT *
+FROM (
+         SELECT mc.first_name, mc.last_name, mc.phone, mc.email
+         FROM my_contacts mc
+                  NATURAL JOIN job_desired jd
+         WHERE jd.title = 'Web Designer') AS web_designers;
+```
  
+ 我们给子查询一个别名，以便查询把它当成一般的表。
+
+Q：为什么要有“AS web_designers”？为什么需要这个部分？   
+A：**FROM子句需要表**。当 SELECT 语句的结果是一个虚拟表时，若没有别名，SQL就无法取得其中的表。
+
+### 何为视图
+
+基本上视图是一个只有在查询中使用 VIEW 时才存在的表。它被视为**虚拟表（virtual table）**，因为其
+行为和表一样，也能执行表可用的操作。
+
+但虚拟表不会一直保存在数据库里。
+
+#### 视图对数据库的好处
+1. 视图把复杂查询简化为一个命令，带来更轻松的生活；
+2. 即使一直改变数据库结构，也不会破坏依赖表的应用程序；
+3. 创建视图可以隐藏读者无需看到的信息。
 
 
 
 
 
-P497
+
+
+
+
+
+
+
+
+P501
+
 
 ---
 <h1 id="12">12 | 安全性：保护你的资产</h1>
