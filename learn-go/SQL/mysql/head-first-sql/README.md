@@ -2613,6 +2613,69 @@ A：**FROM子句需要表**。当 SELECT 语句的结果是一个虚拟表时，
 3. 创建视图可以隐藏读者无需看到的信息。
 
 
+### 利用视图进行插入、更新与删除
+
+视图不仅能用于 SELECT，从表中选择信息，有时候，它还可以用于 UPDATE、INSERTT、DELETE数据。
+
+
+Q：所以我可以创建一个视图，用于实际修改表？   
+A：**的确可以，但不值得这么麻烦**。   
+
+如果你的**视图使用统计函数（例如 SUN、COUNT、AVG）**，则无法用视图改变数据。如果你的视图包含
+GROUP BY、DISTINCT、HAVING，我们也不可以改变任何数据。
+
+在多数情况下，用传统方式做 INSERT、UPDATE、DELETE 更容易。
+
+```
+CREATE TABLE piggy_bank
+(
+    id        INT AUTO_INCREMENT NOT NULL PRIMARY KEY,
+    coin      CHAR(1)            NOT NULL,
+    coin_year CHAR(4)
+);
+```
+
+```
+INSERT INTO acc_adapter.piggy_bank (coin, coin_year)
+VALUES ('Q', '1950'),
+       ('P', '1972'),
+       ('N', '2005'),
+       ('Q', '1999'),
+       ('Q', '1981'),
+       ('D', '1940'),
+       ('Q', '1980'),
+       ('P', '2001'),
+       ('D', '1926'),
+       ('P', '1999');
+```
+
+查询结果
+
+| id | coin | coin_year |
+| :--- | :--- | :--- |
+| 1 | Q | 1950 |
+| 2 | P | 1972 |
+| 3 | N | 2005 |
+| 4 | Q | 1999 |
+| 5 | Q | 1981 |
+| 6 | D | 1940 |
+| 7 | Q | 1980 |
+| 8 | P | 2001 |
+| 9 | D | 1926 |
+| 10 | P | 1999 |
+
+
+设计一个只会呈现 pb_quarters、pb_dimes 的视图。
+
+```
+CREATE VIEW pb_quarters AS
+SELECT * FROM piggy_bank
+WHERE coin = 'Q';
+
+CREATE VIEW pb_dimes AS
+SELECT * FROM piggy_bank
+WHERE coin = 'D' WITH CHECK OPTION;
+```
 
 
 
@@ -2624,7 +2687,9 @@ A：**FROM子句需要表**。当 SELECT 语句的结果是一个虚拟表时，
 
 
 
-P501
+
+
+P505
 
 
 ---
