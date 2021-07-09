@@ -2758,7 +2758,7 @@ UPDATE pb_quarters SET coin_year = '2222';
 | 11 | Q | 2222 |
 
 
-### 带有CHECK OPTION 的视图
+### 带有 CHECK OPTION 的视图
 
 P507
 
