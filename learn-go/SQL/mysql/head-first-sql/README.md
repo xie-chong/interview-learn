@@ -2677,19 +2677,90 @@ SELECT * FROM piggy_bank
 WHERE coin = 'D' WITH CHECK OPTION;
 ```
 
+### 练习
+
+以下操作将适当地运行。
+
+```
+INSERT INTO pb_quarters (coin, coin_year)
+VALUES ('Q', '1993');
+```
+
+以下操作将插入新的值至原始表中，因为创建视图时带有 WHERE 子句，甚至可能有人意味它不会成功。
+
+```
+INSERT INTO pb_quarters (coin, coin_year)
+VALUES ('D', '1942');
+```
+
+以下操作因为 CHECK OPTION 子句会产生错误信息。虽然它是把数据输入视图的查询，但在添加数据前
+必须先通过 WHERE 子句的验证。
+
+```
+INSERT INTO acc_adapter.pb_dimes (coin, coin_year)
+VALUES ('Q', '2005');
+
+# [2021-07-09 09:01:44] [HY000][1369] CHECK OPTION failed 'acc_adapter.pb_dimes'
+```
+
+以下操作对表没有任何影响，因为它只能找到面额是 “Q”的硬币的记录。
+
+```
+DELETE FROM pb_quarters WHERE coin = 'N' OR coin = 'P' OR coin = 'D';
+```
+
+以下操作对表没有任何影响，因为在视图 pb_quarters 里没有 coin = 'P' 的值。
+
+```
+UPDATE pb_quarters SET coin = 'Q' WHERE coin = 'P';
+```
+
+| id | coin | coin_year |
+| :--- | :--- | :--- |
+| 1 | Q | 1950 |
+| 2 | P | 1972 |
+| 3 | N | 2005 |
+| 4 | Q | 1999 |
+| 5 | Q | 1981 |
+| 6 | D | 1940 |
+| 7 | Q | 1980 |
+| 8 | P | 2001 |
+| 9 | D | 1926 |
+| 10 | P | 1999 |
+| 11 | Q | 1993 |
+| 12 | D | 1942 |
+
+```
+UPDATE pb_quarters SET coin_year = '2021' WHERE coin = 'Q';
+```
+
+更新视图后，原始表的数据将被修改。
+
+| id | coin | coin_year |
+| :--- | :--- | :--- |
+| 1 | Q | 2021 |
+| 4 | Q | 2021 |
+| 5 | Q | 2021 |
+| 7 | Q | 2021 |
+| 11 | Q | 2021 |
 
 
+```
+UPDATE pb_quarters SET coin_year = '2222';
+```
+
+| id | coin | coin_year |
+| :--- | :--- | :--- |
+| 1 | Q | 2222 |
+| 4 | Q | 2222 |
+| 5 | Q | 2222 |
+| 7 | Q | 2222 |
+| 11 | Q | 2222 |
 
 
+### 带有CHECH OPTION 的视图
 
-
-
-
-
-
-
-
-P505
+P507
 
 
 ---
