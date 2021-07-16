@@ -2760,7 +2760,46 @@ UPDATE pb_quarters SET coin_year = '2222';
 
 ### 带有 CHECK OPTION 的视图
 
-P507
+CHECK OPTION 检查每个进行 INSERT 或DELETE 的查询，它根据视图中的 WHERE 子句来判断这些查询是否可执行。
+
+Q： 如果使用MySQL，可以利用具有 CHECK OPTION 的视图创建类似于 CHECK CONSTRAINT 的机制吗？   
+A：**可以，你的视图能够精确地反映表的内容，又能强迫 INSERT 语句服从 WHERE 子句的条件**。   
+
+**使用 MySQL 时，可用 CHECK OPTION 模仿 CHECK CONSTRAINT 的功能**。
+
+比如，我们可以创建一个 my_contacts 表的视图，通过视图更新数据，每次尝试更新时，若不满足 WHERE 条件，
+就会出现错误信息。
+
+
+### 练习
+
+如何为 my_contacts 创建一个视图，用于限制只能在性别字段里填入 “M”或“F”呢？
+
+
+### 可更新视图
+
+**可更新视图（updatable view）**就是可以改变底层表的视图。
+
+**可更新视图包括引用表里所有为 NOT NULL 的列**。
+
+使用场景：
+1. 如果视图只有一列且底层表的其他列都可以指定为 NULL 或默认值，用视图来 INSERT 才会合理；
+2. 可为视图加上 WHERE 子句以约束 INSERT 的内容，在 MySQL 中用 CHECK OPTION 模仿 CHECK CONSTRAINT 的功能；
+3. 也可以只更新视图，此时的 UPDATE 查询不可包含统计类型的运算符，如 SUM、COUNT、AVG，像 BETWWEN、HAVING、IN、
+NOT IN 这类运算符均不可使用。
+
+### DROP VIEW
+
+ 不需要的视图，请利用 DROP VIEW 语句清理空间。
+ 
+ ```
+ 
+ ```
+
+
+P509
+
+
 
 
 ---
