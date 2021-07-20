@@ -2792,9 +2792,10 @@ NOT IN 这类运算符均不可使用。
 
  不需要的视图，请利用 DROP VIEW 语句清理空间。
  
- ```
- 
- ```
+```
+DROP VIEW pb_quarters;
+DROP VIEW pb_dimes;
+```
 
 
 P509
