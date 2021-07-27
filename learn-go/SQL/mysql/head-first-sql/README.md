@@ -2899,9 +2899,81 @@ ACID 帮助你判断SQL步骤是否为一个事务。
   - 回滚，回到事务开始前的状态。
 
 
+```
+START TRANSACTION;
+UPDATE piggy_bank SET coin = 'Q' WHERE coin = 'P'
+  AND coin_year < 1970;
+COMMIT;
+```
+
+```
+START TRANSACTION;
+UPDATE piggy_bank SET coin = 'Q' WHERE coin = 'P'
+  AND coin_year < 1970;
+ROLLBACK ;
+```
+
+
+
+
 ### 如何让事务在MySQL下运作
 
-P518
+在MySQL下使用事务前，需要先采用正确的**存储引擎（storage engine）**。
+
+```
+SHOW CREATE TABLE acc_adapter.ht_offline_repay;
+
+
+CREATE TABLE `ht_offline_repay` (
+  `id` bigint(20) NOT NULL,
+  `project_no` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '项目编号',
+  `batch_no` varchar(32) COLLATE utf8_bin DEFAULT NULL COMMENT '批次号',
+  `total_amt` decimal(12,2) DEFAULT NULL COMMENT '批次交易总金额',
+  `batch_date` date NOT NULL COMMENT '跑批日期',
+  `created_date` datetime(6) DEFAULT NULL,
+  `last_modified_date` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='汇通-线下还款原始数据'
+```
+
+结束括号后的文字，它说明了数据如何存储，以及使用的字符集。目前使用默认值就够了。
+
+两种支持事务的存储引擎：BDB、InnoDB 。
+
+改变存储引擎的语法：
+
+```
+ALTER TABLE your_table TYPE = InnoDB;
+```
+
+Q：事务一定要以 START TRANSACTION 开始吗？COMMIT 与 ROLLBACK 可以独立运作吗？   
+A：必须使用 START TRANSACTION 告诉 RDBMS “事务开始”，才能追踪事务开始的地方并知道恢复的程度。
+
+Q：可以使用  START TRANSACTION 来测试查询吗？   
+A：可以，而且也应该如簇，利用这个方法，可以在数据库里实现影响数据的查询，又不会在做错事时无法挽救
+对表做的改变。但记得在改变完成后输入 COMMIT 或 ROLLBACK。
+
+Q：为什么需要 COMMIT 与 ROLLBACK?   
+A：RDBMS 会记录事务过程中的每个操作，称为事务日志（trasaction log），操作越多，日志越大。事务最好
+留待正真需要恢复原功能时使用，以避免存储空间的浪费，也避免了 RDBMS 花费太多精力来追踪我们的每个操作。
+
+
+### SQL工具包
+
+- VIEWS
+  - 视图。使用视图把查询结果当成表。很适合简化复杂查询。
+- UPDATABLE VIEWS
+  - 可更新表。有些视图能用以改变它底层的实际表。这类视图必须包含底层表的所有 NOT NULL 列。
+- NON-UPDATABLE VIEWS
+  - 无法对表底层执行 INSERT 或 UPDATE 操作的视图。
+- CHECK CONSTRAINTS
+  - 检查约束。可以只让指定值插入或更新至表里。
+- CHECK OPTION
+  - 创建可更新视图时，使用这个关键字强迫所有插入与更新的数据需满足视图里的 WHERE 条件。
+- TRANSACTIONS
+  - 事务。一组必须同进退的查询。如果这些查询无法不受干扰地全部执行完毕，则不承认其中的部分查询造成的改变。
+- START TRANSACTION
+  - 这条语句告诉 RDBMS 开始事务。在 COMMIT执行前改变都不具永久性。除非出现 COMMIT 或 ROLLBACK，否则都处于事务过程中。
 
 
 
@@ -2911,5 +2983,4 @@ P518
 
 ---
 
-
-
+P525
