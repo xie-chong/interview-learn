@@ -3017,10 +3017,103 @@ A：当然是存储在表中！SQL 也以数据库存储它本身的数据，包
 
 **SQL并未指定如何管理用户**。请参考不同RDBMS的说明文档。
 
+添加新用户(用户名：elsie，密码：cl3v3rp4s5w0rd)
+
+```
+CREATE USER elsie IDENTIFIED BY 'cl3v3rp4s5w0rd';
+```
+
+
+Q：创建账号的同时，可以直接把Elsle的操作范围限定在特定表上吗？   
+A：可以，但有时在创建新账户时，我们并不知道需要授予何种权限。（一般先创建用户，然后再授予用户需要的特殊权限）
+
+
+### GRANT ... ON ... TO 语句为用户授予操作数据库的特权
+
+**使用 GRANT 语句可以控制用户对表和列可执行的操作**。
+
+**就算在表中，也可能需要权限：部分用户可看到特定列，但其他人不行**。
+
+
+把指定表（clown_info）的某项权限（SELECT）授予指定的用户（elsie）
+
+```
+GRANT SELECT ON clown_info TO elsie
+```
+
+每次授予表的权限都需要另写一段 GRANT 语句。
+
+```
+# 1. 授予Doc插入（INSERT）内容至magic_animals表的权限
+
+GRANT INSERT ON magic_animals TO doc;
+
+# 2. 授予Happy与Sleepy删除（DELETE）chores表内容的权限
+
+GRANT DELETE ON chores TO happy, sleepy;
+
+# 3. 授予Happy与Sleepy删除（DELETE）chores表内容的权限并可把这个权限授予其他人
+
+GRANT DELETE ON chores TO happy, sleepy WITH GRANT OPTION;
+
+# 4. 让Dopey只能从chores表中选择（SELECT）chore_name列
+
+GRANT SELECT (chore_name) ON chores TO dopey;
+
+# 5. 授予Sneezy选择（SELECT）与插入（INSERT）内容至talking_animals表的权限
+
+GRANT SELECT, INSERT ON talking_animals TO sneezy;
+
+# 6. 授予Bashful选择（SELECT）、更新（UPDATE）、插入（INSERT）、删除（DELETE）talking_animals表内容的权限
+
+GRANT ALL ON talking_animals TO bashful;
+
+# 7. 把操作表chores的所有权限授予所有用户
+
+GRANT ALL ON chores TO bashful, doc, dopey, happy, sleepy, sneezy;
+
+# 8. 为Doc设定 SELECT权限，权限运用范围是 woodland_cottage 数据库中的所有表
+
+GRANT SELECT ON woodland_cottage.* TO doc;
+
+```
+
+### GRANT 的各种变化
+
+**1、可用同一个 GRANT 语句为多位用户设定权限**   
+  每个提到名称的用户都会被授予相同权限   
+  
+**2、WITH GRANT OPTION 让用户能把刚刚获得的权限授予其他用户**   
+如果某人获得了 SELECT 表 chores的权限，他可以把这个权限授予其他人   
+
+**3、指定用户可于某个表中使用的列，而不是允许用户操作整张表**   
+SELECT 权限也仅能限于单一列。用户看到的输出将出自指定的列   
+
+**4、一段语句可对表指定超过一种权限**   
+列出所有要授予用户的表操作权限并以逗号分隔每种权限   
+
+**5、GRANT ALL 把 SELECT、UPDATE、INSERT、DELETE 指定表内容得权限都授予用户了**   
+这只是“允许用户对某张表执行 SELECT、UPDATE、INSERT、DELETE 操作”的缩写方式   
+
+**6、使用  database_name.* 可把权限范围运用到数据库中的每张表上**   
+与 SELECT 语句的通配符（*）相似，代表数据库中的所有表   
+
+
+### 撤销权限：REVOKE
 
 
 
 
 
 
-P530
+
+
+
+
+
+
+
+
+
+P536
+
