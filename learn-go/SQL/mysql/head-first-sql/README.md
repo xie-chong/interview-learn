@@ -3095,7 +3095,7 @@ SELECT 权限也仅能限于单一列。用户看到的输出将出自指定的�
 **5、GRANT ALL 把 SELECT、UPDATE、INSERT、DELETE 指定表内容得权限都授予用户了**   
 这只是“允许用户对某张表执行 SELECT、UPDATE、INSERT、DELETE 操作”的缩写方式   
 
-**6、使用  database_name.* 可把权限范围运用到数据库中的每张表上**   
+**6、使用  ```database_name.* ```可把权限范围运用到数据库中的每张表上**   
 与 SELECT 语句的通配符（*）相似，代表数据库中的所有表   
 
 
