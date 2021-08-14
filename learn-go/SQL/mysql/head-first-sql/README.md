@@ -3200,6 +3200,129 @@ A：这两个语句也能用于视图，但不包括不可更新的视图，此�
 库对象，用于数据库变动时依需求调整，而不逐一指定、调整每名用户的权限。
 
 
+**MySQL 8.0 新增了 role 功能**
 
-P543
+创建角色名为 data_entry 的角色。
 
+```
+CREATE ROLE data_entry;
+```
+
+为角色授予权限
+
+```
+GRANT SELECT, INSERT ON some_table TO data_entry;
+```
+
+创建角色前，GRANT 能直接把权限授予负责数据的用户（以前的方式），如下
+
+```
+GRANT SELECT, INSERT ON talking_animals TO doc;
+```
+
+现在只要把授予“哪些操作”权限的部分换成角色名称并指定给用户（如doc）。我们不需体积权限或表，因为这些
+信息都已经存储在data_entry角色中。
+
+```
+GRANT data_entry TO doc;
+```
+
+
+### 卸除角色
+
+```
+DROP ROLE data_entry;
+```
+
+撤销角色的运作方式与撤销权限的方式很像
+
+```
+REVOKE data_entry FROM doc;
+```
+
+Q：如果我想授予数据库中所有表操作权限，我需要逐一列出表吗？   
+A：不用，使用下列语法即可：
+
+```
+# 只需列出数据库名称，并使用 “*” 把权限指派给所有表。
+
+GRNAT SELECT, INSERT, DELETE ON gregs_list.* TO jim;
+```
+
+Q：如果角色已赋予用户，我们仍可以卸除角色吗？   
+A：使用中的角色一样可被卸除。但卸除角色前，请注意用户是否会因此而失去必要权限。
+
+
+Q：也就是说，曾经拥有某个角色的用户，一旦其角色被卸除了，他就会失去角色的权限？   
+A：非常正确。就好像特别授予用户某一组权限，然后再撤销同一组权限。只不过，这次
+不只影响被撤销权限的单一用户，而是影响所有指定为那个角色的用户。
+
+Q：用户可以同时身兼多角色吗？   
+A：可以，但请确认角色间的权限并不冲突，否则可能自找麻烦。**否定性的权限优先于授予性的权限**。
+
+
+### 加上 WITH ADMIN OPTION 的角色
+
+就像 GRANT 语句可附加 WITH GRANT OPTION 一样，角色也有提供类似功能的 WITH ADMIN OPTION 。这个
+选择功能让具有该角色的每名用户都能把角色授予其他人。
+
+```
+GRANT data_entry TO doc WITH ADMIN OPTION;
+```
+
+doc现在已具有管理员（admin）权限 ，它可以把角色 data_entry 授予 happy，授予方式就和他被授予权限的语法相同。
+
+```
+GRANT data_entry TO happy;
+```
+
+
+### 撤销角色时采用 CASCADE
+
+与 CASCADE 一起使用时，撤销（REVOKE）角色会造成连锁反应，包括最初被授予角色权限的用户。
+
+```
+REVOKE data_entry FROM doc CASCADE;
+```
+
+撤销doc的data_entry角色，happy也会丧失由doc授予的特权。
+
+
+### 撤销角色时采用 RESTRICT
+
+与 RESTRICT 一起使用时，若撤销 （REVOKE）角色的目标用户已经把权限授予他人，这种方式
+可返回错误信息（两方的权限都会先保留）。
+
+
+### 结合CREATE USER 与 GRANT
+
+关于Elsie 的用户账号，我们用了两条语句：
+
+```
+CREATE USER elsie IDENTIFIED BY 'cl3vrp4s5w0rd';
+
+GRANT SELECT ON clown_info TO elsie;
+```
+
+我们可以结合语句，省略 CREATE USER 的部分。因为用户elsie必须先被创建，然后他才能获得权限，
+所以 RDBMS 会先检查用户名称是否存在，如果不存在则自动创建账号。
+
+```
+GRANT SELECT ON clown_info TO elsie IDENTIFIED BY 'cl3vrp4s5w0rd';
+```
+
+
+### SQL工具包
+
+- CREATE USER
+  - 有些 RDBMS 使用这个语句创建用户并设定其密码。
+- GRANT 
+  - 根据授予用户的权限，精确控制用户对数据库的操作范围。
+- REVOKE
+  - 这个语句用于撤销用户的权限
+- WITH GRANT OPTION
+  - 让用户把自己获得的权限授予其他人。
+- Role
+  - 角色是一组权限。角色能把一组特定权限一次授予多名用户。
+- WITH ADMIN OPTION
+  - 让有角色的用户把同一个角色授予其他人。
