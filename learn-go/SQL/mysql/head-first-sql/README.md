@@ -2337,7 +2337,7 @@ ORDER BY title;
 * 如果出于某些原因而需要看到重复数据，可以使用 UNION ALL 运算符。这个运算符返回每个相符的记
 录，而不只是没有重复记录。
 
-### UNIOON ALL
+### UNION ALL
 
 UNIOON ALL 的运作方式与 UNION 相同，只不过它会返回列的所有内容，而不是每个的复制实例。
 
