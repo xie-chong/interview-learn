@@ -3101,19 +3101,105 @@ SELECT 权限也仅能限于单一列。用户看到的输出将出自指定的�
 
 ### 撤销权限：REVOKE
 
+REVOKE 语句的语法几乎与 GRANT 完全相同。只是把 “GRANT” 换成 “REVOKE”，把 “TO” 换成 “FROM” 而已。
+
+把授予Elise的 SELECT 权限收回。
+
+```
+REVOKE SELECT ON clown_info FROM elise;
+```
+
+也可以只撤销 WITH GRANT OPTION，**但不触及权限**。
+
+例中，happy 与 sleepy 还能对 chores 表执行 DELETE，但不能在把删除操作的权限授予其他人。
+
+```
+REVOKE GRANT OPTION ON
+DELETE ON chores 
+FROM happy , sleepy;
+```
+
+
+### 撤销授权许可（GRANT OPTION）
+
+root用户给了 sleepy 对 chores 表执行 DELETE 操作的权限并附有 GRANT OPTION，然后 sleepy
+又给 sneezy 对 chores 表的 DELETE 权限。
+
+如果root用户改变心意，撤销了sleepy 的权限，则 sneezy 的该项权限也会被撤销，即使根用户只是
+对 sleepy 撤销了权限。
+
+REVOKE 语句的副作用就是让 sneezy 也一起失去了权限。有两个关键字可用于控制撤销的范围。
+
+RESTRICT 与 CASCADE 。
+
+
+### 具精确度的撤销操作
+
+使用关键字 CASCADE 与 RESTRICT 来更精确的锁定目标用户，决定谁会失去特权，谁能保持特权，
+可以确保不影响目标以外的用户。
+
+**CASCADE** 表示权限的撤销具有连锁反应，包括目标在内的被授权人的权限都会被撤销。
+
+```
+REVOKE DELETE ON chores FROM sleepy CASCADE;
+```
+
+**RESTRICT** ，若是被撤销权限的目标用户已把权限授予他人，在 REVOKE 语句中加入 RESTRICT
+ 可返回错误信息（表示有人会受影响，两方的权限都会被保留）。
+
+
+撤销某些个权限时，可以指定需要撤销的权限，也可以全部撤销后重新赋值。
+
+
+习题：有人一直把错误的权限授予 Elsie，请写下核实的 REVOKE 语句，让 Elsie 回到安全的只有 
+SELECT 权限的状态。
+
+```
+GRANT INSERT(location), DELETE ON locations TO elsie;
+
+#看起来这里可能要用GRANT来确定Elsie还是能对locations表进行SELECT操作。
+#而且，我们最好确认她不会把同样的权限授予其他人。
+
+REVOKE GRANT INSERT(location), DELETE ON locations FROM elsie;
+```
+
+Q：指定列名的 GRANT 语句还是让我念念不忘。如果只对表中的某一列授予 INSERT 权限会发生什么事？   
+A：这种情况的INSERT实际上是个无用的权限。如果只能插入某列的值，就无法真正地插入一条新记录到
+表中。除非在那张表中只有GRANT指定的列必须有内容。
+
+Q：还有其他无用的权限吗？   
+A：几乎所有针对列的权限都没有用，除非是GRANT语句中与SELECT有关的权限。
+
+Q：假设我想添加一个用户，让他可以选取我所有的数据库中的所有表，有比较简单的设定方法吗？   
+A：这个问题要看每个人使用的RDBMS而定，本章的很多问题也一样。在MySQL中，可以授予全局权限：
+```
+# 第一个星号代表所有的数据库，第二个星号表示所有表。
+GRANT SELECT ON *.* TO elsie;
+```
+
+Q：如果未指定 REVOKE 的使用方式，CASCADE是默认值吗？   
+A：CASCADE通常是默认值，不过请你先参考 RDBMS 的说明文档。
+
+Q：如果我对用户根本没有的权限下了 REVOKE 命令，会发生什么事？   
+A：会出现错误信息，告诉你一开始就根本没有 GRANT !
+
+Q：在前面的例子中，根用户撤销了 sneezy 的某个权限，如果有两名其他用户授予同样权限，会发生什么事？   
+A：有些系统在 GRANT 使用 CASCADE 时不会注意谁发出了 GRANT语句，有些系统则会忽略。具体需要参考
+RDBMS 说明文档。
+
+Q：除了表和列以外，还有什么可以使用 GRANT 与 REVOKE ？   
+A：这两个语句也能用于视图，但不包括不可更新的视图，此时，就算具有 INSERT 权限，也一样无法插入新
+数据。因为视图和表几乎一样，所以能单独授予视图中的某列操作权限。
+
+
+### 使用角色
+
+我们需要授予一群人所需权限，同时又让他们每个人都有自己的账号的方式。
+
+此时需要**角色**（role）。角色是把特定权限汇集成组，再把组权限授予一群人的方式。角色成为一个数据
+库对象，用于数据库变动时依需求调整，而不逐一指定、调整每名用户的权限。
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-P536
+P543
 
