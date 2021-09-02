@@ -79,6 +79,6 @@ interactive_timeout    =  28800
 
 [官网8.2.1.3 Index Merge Optimization](https://dev.mysql.com/doc/refman/8.0/en/index-merge-optimization.html)
 
-[](https://blog.csdn.net/molashaonian/article/details/107735359)
+[参考](https://blog.csdn.net/molashaonian/article/details/107735359)
 
-[](https://www.cnblogs.com/digdeep/p/4975977.html)
+[参考](https://www.cnblogs.com/digdeep/p/4975977.html)
