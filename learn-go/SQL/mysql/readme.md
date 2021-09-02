@@ -73,3 +73,12 @@ interactive_timeout    =  28800
 #增加以上两列即可，因为官方文档要求修改此参数必须同时修改interactive_timeout
 
 ```
+
+
+## 多索引，如何选择执行索引，会同时走多个索引吗？
+
+[官网8.2.1.3 Index Merge Optimization](https://dev.mysql.com/doc/refman/8.0/en/index-merge-optimization.html)
+
+[](https://blog.csdn.net/molashaonian/article/details/107735359)
+
+[](https://www.cnblogs.com/digdeep/p/4975977.html)
