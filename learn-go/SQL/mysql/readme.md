@@ -84,3 +84,36 @@ interactive_timeout    =  28800
 [参考](https://www.cnblogs.com/digdeep/p/4975977.html)
 
 https://www.jianshu.com/p/34bd66629355
+
+
+## Mysql 相邻两行记录某列的差值方法
+
+按照借据号（due_bill_no）不同分组，然后分别求出相同due_bill_no相邻记录应还款日（term_due_date）的差值
+
+```
+select r1.due_bill_no,
+       r1.term,
+       r1.term_due_date,
+       r1.due_bill_no,
+       r2.term,
+       r2.term_due_date,
+       DateDiff(r2.term_due_date, r1.term_due_date) d_v
+from (select (@rownum := @rownum + 1) as rownum,
+             plan.due_bill_no,
+             plan.term,
+             plan.term_due_date
+      from acc_repay.repayment_plan plan,
+           (select @rownum := 0) r
+      where project_no = 'WS10043190003'
+      order by plan.due_bill_no, plan.term) r1
+         left join (select (@index := @index + 1) as rownum,
+                           plan.due_bill_no,
+                           plan.term,
+                           plan.term_due_date
+                    from acc_repay.repayment_plan plan,
+                         (select @index := 0) r
+                    where project_no = 'WS10043190003'
+                    order by plan.due_bill_no, plan.term) r2
+                   on r1.due_bill_no = r2.due_bill_no
+                       and r1.rownum = r2.rownum - 1;
+```
