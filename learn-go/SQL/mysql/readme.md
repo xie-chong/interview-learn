@@ -86,6 +86,37 @@ interactive_timeout    =  28800
 https://www.jianshu.com/p/34bd66629355
 
 
+
+## mysql 中关于获取行号@rownum：=@rownum+1
+
+mysql中没有获取行号的函数，因此需要通过一些自定义语句来进行获取。通常做法是，通过定义用户变量@rownum来保存表中的数据。通过赋值语句@rownum：=@rownum+1来累加达到递增行号。
+
+例如：select a.* ,@rownum:=@rownum+1 from a,(select @rownum:=0) r; 后半部分语句的select @rownum:=0 相当于创建了r的新表，其表的列为@rownum，数值为0.
+
+通过利用变量将@rownum的行进行重新赋值，并显示。可以应用于获取行号或名次排列。
+
+另外，在名次排列时，由于会有重复的数据，排列时仅仅按照,@rownum:=@rownum+1。排序是不对的，需要在数据相同时，名次应该相同。因此需要另一变量保存上次的数据，并进行与本行数据对比，相同 序号不变，不同序号应该等于行号。此时需要应用到case when进行判断，例如：
+
+```
+SELECT a.*,
+       CASE
+           WHEN @rownum0 = a.c_id THEN @rownum := @rownum + 1
+           WHEN @rownum0 := a.c_id THEN @rownum := 1
+           ELSE @rownum
+           END rank1,
+       CASE
+           WHEN @rownum1 = a.s_score THEN @rownum2
+           WHEN @rownum1 := a.s_score THEN @rownum2 := @rownum
+           ELSE @rownum2
+           END rank2
+FROM (SELECT *
+      FROM score
+      ORDER BY c_id, s_score DESC
+     ) AS a,
+     (SELECT @rownum := 0, @rownum0 := 0, @rownum1 := 0, @rownum2 := 0) r;
+```
+
+
 ## Mysql 相邻两行记录某列的差值方法
 
 按照借据号（due_bill_no）不同分组，然后分别求出相同due_bill_no相邻记录应还款日（term_due_date）的差值
