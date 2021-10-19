@@ -27,6 +27,9 @@ str_to_date(date,'%Y-%m-%d') -------------->oracle中的to_date();
 　　%s：代表 秒,格式为(00……59)
 　　SELECT DATE_FORMAT(20130111191640,'%Y-%m-%d %H:%i:%s')
 　　DATE_FORMAT(20130111191640,'%Y-%m-%d %H:%i:%s')
+    date类型比较相差天数：TO_DAYS(c.repay_date) - TO_DAYS(c.should_date) > 0
+    datetime转换为date：select CONVERT(sysdate(), date) as 'date' from dual;
+  
   ```
   
   ## mysql不能类似Oracle使用函数作为默认值
