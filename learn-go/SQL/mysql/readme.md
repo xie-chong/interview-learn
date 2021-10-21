@@ -28,6 +28,9 @@ str_to_date(date,'%Y-%m-%d') -------------->oracle中的to_date();
 　　SELECT DATE_FORMAT(20130111191640,'%Y-%m-%d %H:%i:%s')
 　　DATE_FORMAT(20130111191640,'%Y-%m-%d %H:%i:%s')
   
+    STR_TO_DATE(str, format) 函数是将时间格式的字符串（str），按照所提供的显示格式（format）转换为DATETIME类型的值
+    DATE_FORMAT(date, format) 函数则是把数据库的日期转换为对应的字符串格式
+  
     date类型比较相差天数：TO_DAYS(c.repay_date) - TO_DAYS(c.should_date) > 0
     datetime转换为date：select CONVERT(sysdate(), date) as 'date' from dual;
   
