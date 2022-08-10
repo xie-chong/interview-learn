@@ -69,3 +69,7 @@ String statusValue = String.valueOf(value);
 
 
 https://www.jiweichengzhu.com/article/2940ed65c94f4671ae3f3aa72e168673
+
+### 三种开窗函数详细用法，图文详解
+
+https://blog.csdn.net/baomingshu/article/details/111945681
