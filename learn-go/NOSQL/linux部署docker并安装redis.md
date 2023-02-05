@@ -37,3 +37,5 @@ exit
 https://blog.csdn.net/qq_24958783/article/details/107541425
 
 https://developer.aliyun.com/article/939721?spm=a2c6h.13813017.content3.1.507261d6MCg0vW
+
+https://hub.docker.com/_/redis
