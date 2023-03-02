@@ -6,6 +6,8 @@ docker run --name postgres -e POSTGRES_PASSWORD=password -p 5432:5432 -v E:/post
 
 ### run: 创建并运行一个容器
 
+https://github.com/docker-library/docs/blob/master/postgres/README.md
+
 * --restart=always 表示容器退出时,docker会总是自动重启这个容器；
 * –name: 指定创建的容器的名字；
 * -e POSTGRES_PASSWORD=password: 设置环境变量，指定数据库的登录口令为password；
