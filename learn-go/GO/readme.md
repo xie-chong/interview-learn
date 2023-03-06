@@ -4,6 +4,8 @@
 
 https://go.dev/
 
+https://go.dev/doc/
+
 ## Go 语言教程
 
 http://edu.jb51.net/go/go-tutorial.html
