@@ -8,3 +8,9 @@ https://go.dev/
 
 http://edu.jb51.net/go/go-tutorial.html
 
+## 命令行执行
+
+```
+go run test.go
+```
+
