@@ -1,6 +1,6 @@
 Python
 
-在windows环境创建虚拟环境报错，原因是PowerShell安全协议。
+在windows操作系统下，使用VsCode创建Python虚拟环境报错，原因是PowerShell安全协议。
 
 可以打开PowerShell，执行以下命令，修改一下参数
 ```
