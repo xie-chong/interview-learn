@@ -72,7 +72,7 @@ SELECT * FROM mytable WHERE MATCH (mycolumn) AGAINST ('"keyword1" +keyword2 -key
 
 需要注意的是，在某些情况下，停止词可能会影响文本搜索的效果和准确性，例如在搜索包含停止词的短语或专业术语时。因此，在使用全文搜索时需要综合考虑停止词的使用与否，并根据实际情况决定是否需要添加或移除停止词，以达到最佳的搜索效果。
 
-**自定义的停止词列表步骤**
+**自定义停止词列表步骤**
 
 1. 创建一个包含停止词的文本文件，每行一个词。
 
@@ -95,4 +95,4 @@ STOPWORDS = "FILE '/var/lib/mysql-files/stopwords.txt'";
 SET GLOBAL innodb_ft_server_stopword_table = my_stopwords;
 ```
 
-需要***注意**的是，停止词列表文件的编码必须与 MySQL 数据库的字符集相同，否则可能导致词汇解析错误或乱码等问题。同时，修改 innodb_ft_server_stopword_table 参数的操作只对新建的全文索引有效，已经存在的全文索引仍然使用原来的停止词列表。
+需要**注意**的是，停止词列表文件的编码必须与 MySQL 数据库的字符集相同，否则可能导致词汇解析错误或乱码等问题。同时，修改 innodb_ft_server_stopword_table 参数的操作只对新建的全文索引有效，已经存在的全文索引仍然使用原来的停止词列表。
