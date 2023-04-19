@@ -1,5 +1,6 @@
 
-# EXPLAIN 
+# [EXPLAIN ](https://dev.mysql.com/doc/refman/8.0/en/explain.html)   
+
 
 **EXPLAIN** 是 MySQL 中一个非常有用的命令，它可以分析一条 SQL 查询语句的执行计划，并输出该查询语句的详细信息，包括表的访问顺序、使用的索引、数据读取方式、连接方式等等。通过这些信息，我们可以深入地了解 MySQL 如何执行查询，并且优化查询语句，以提高查询性能。
 
