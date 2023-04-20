@@ -11,6 +11,18 @@ SELECT column1, column2,... FROM table_name ORDER BY column1 COLLATE collation_n
 ```
 其中，collation_name表示所使用的字符集和排序规则，可以指定系统提供的预定义的COLLATE，也可以自定义COLLATE。
 
+```
+CREATE TABLE `task`
+(
+    `task_id`   int(11) NOT NULL AUTO_INCREMENT COMMENT '自增主键',
+    `task_type` int(11)                             DEFAULT NULL COMMENT '任务类型id',
+    `task_rfid` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL COMMENT '关联外键1',
+    PRIMARY KEY (`task_id`)
+) ENGINE = InnoDB
+  CHARSET = utf8
+  COLLATE = utf8_unicode_ci COMMENT ='任务表';
+```
+
 MySQL中提供了多种字符集和排序规则。如果使用不同的字符集和排序规则进行比较和排序，可能会导致结果不一致。因此，在应用程序中使用COLLATE非常有必要，以确保字符串的正确比较和排序。
 
 ## 默认值
