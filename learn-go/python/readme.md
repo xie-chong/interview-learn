@@ -41,4 +41,10 @@ ExecutionPolicy: RemoteSigned
 PS C:\Windows\system32>
 ```
 
+## 在vscode创建的虚拟环境里安装第三方库函数
+终端命令进入虚拟环境所在的目录
+```
+D:\workspace_vs_code\.venv\Scripts> pip install numpy
+```
+
 
