@@ -47,4 +47,29 @@ PS C:\Windows\system32>
 D:\workspace_vs_code\.venv\Scripts> pip install numpy
 ```
 
+如果进入该目录下，安装的第三方库函数安装到了全局环境，那么可能是虚拟环境没有激活
+
+如果您想在您的虚拟环境中安装NumPy，请按照以下步骤操作：
+
+1、首先，确保您已经激活了目标虚拟环境。请在终端中执行适当的激活命令，例如：
+
+在 Windows 上：
+```
+.venv\Scripts\activate
+```
+在 macOS 和 Linux 上：
+```
+source .venv/bin/activate
+```
+这将激活您的虚拟环境，使得所有后续操作都在该环境中进行。
+
+2、确认您已经激活虚拟环境后，输入以下命令来安装NumPy：
+
+```
+pip install numpy
+```
+这将使用虚拟环境中的pip工具来安装NumPy包。
+
+3、等待安装完成。一旦安装成功，NumPy将会在您的虚拟环境中可用。
+
 
