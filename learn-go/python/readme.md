@@ -85,6 +85,10 @@ jupyter lab
 或者
 jupyter lab --no-browser &
 ```
+如果上述命令仍然无法正常工作，您可以尝试使用虚拟环境的完整路径来执行 jupyter lab 命令。例如：
+```
+.\.venv\Scripts\jupyter lab
+```
 
 在浏览器中访问 JupyterLab 用户界面。默认情况下，它应该在 http://localhost:8888/lab 上运行。如果有其他输出，请查看终端中的日志以获取正确的 URL。
 
