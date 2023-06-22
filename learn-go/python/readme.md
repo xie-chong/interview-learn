@@ -72,4 +72,21 @@ pip install numpy
 
 3、等待安装完成。一旦安装成功，NumPy将会在您的虚拟环境中可用。
 
+## 虚拟环境里如何安装jupyter lab
+在激活的虚拟环境中，使用以下命令安装 JupyterLab：
+```
+pip install jupyterlab
+```
+
+安装成功后，使用以下命令启动 JupyterLab
+```
+jupyter lab
+
+或者
+jupyter lab --no-browser &
+```
+
+在浏览器中访问 JupyterLab 用户界面。默认情况下，它应该在 http://localhost:8888/lab 上运行。如果有其他输出，请查看终端中的日志以获取正确的 URL。
+
+
 
