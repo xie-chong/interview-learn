@@ -164,3 +164,5 @@ Point() accepts 0 positional sub-patterns (2 given)
     location(points)
 TypeError: Point() accepts 0 positional sub-patterns (2 given)
 ```
+
+## python 类型别名 ?
