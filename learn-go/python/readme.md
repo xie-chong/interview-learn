@@ -95,5 +95,72 @@ jupyter lab --no-browser &
 
 在浏览器中访问 JupyterLab 用户界面。默认情况下，它应该在 http://localhost:8888/lab 上运行。如果有其他输出，请查看终端中的日志以获取正确的 URL。
 
+## python 3.10中的模式匹配
+### 具有位置参数的模式
+您可以将位置参数与一些为其属性（例如数据类）提供排序的内置类一起使用。您还可以通过在类中设置特殊属性来定义模式中属性的特定位置__match_args__。如果它设置为 (“x”, “y”)，则以下模式都是等效的（并且都将属性绑定y到var变量）：
+```
+Point(1, var)
+Point(1, y=var)
+Point(x=1, y=var)
+Point(y=var, x=1)
+```
 
+### 嵌套模式
+模式可以任意嵌套。例如，如果我们的数据是一个简短的点列表，则可以这样匹配：
 
+```
+match points:
+    case []:
+        print("No points in the list.")
+    case [Point(0, 0)]:
+        print("The origin is the only point in the list.")
+    case [Point(x, y)]:
+        print(f"A single point {x}, {y} is in the list.")
+    case [Point(0, y1), Point(0, y2)]:
+        print(f"Two points on the Y axis at {y1}, {y2} are in the list.")
+    case _:
+        print("Something else is found in the list.")
+```
+
+### demo
+```
+class Point:
+    __match_args__ = ("x", "y")
+
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+
+def location(points):
+    match points:
+        case []:
+            print("No points in the list.")
+        case [Point(0, 0)]:
+            print("The origin is the only point in the list.")
+        case [Point(x, y)]:
+            print(f"A single point {x}, {y} is in the list.")
+        case [Point(0, y1), Point(0, y2)]:
+            print(f"Two points on the Y axis at {y1}, {y2} are in the list.")
+        case _:
+            print("Something else is found in the list.")
+
+# 测试不同情况
+points = []
+# points.append(Point(0, 0))
+points.append(Point(1, 2))
+# points.append(Point(0, 3))
+
+location(points)
+```
+
+如果代码里不增加``` __match_args__ = ("x", "y")```，将会出现一下错误
+```
+Exception has occurred: TypeError
+Point() accepts 0 positional sub-patterns (2 given)
+  File "D:\workspace_vs_code\match_case_test.py", line 12, in location
+    case [Point(0, 0)]:
+          ^^^^^^^^^^^
+  File "D:\workspace_vs_code\match_case_test.py", line 27, in <module>
+    location(points)
+TypeError: Point() accepts 0 positional sub-patterns (2 given)
+```
