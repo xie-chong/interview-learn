@@ -172,3 +172,44 @@ TypeError: Point() accepts 0 positional sub-patterns (2 given)
 ```
 python manage.py runserver 127.0.0.1:8000
 ```
+
+## python 里字符串单引号、双引号、三引号之间的区别
+
+在 Python 中，字符串可以使用单引号（'），双引号（"）或三引号（''' 或 """）来表示。这些不同的引号有不同的用途和特点。
+
+1. 单引号和双引号：
+- 单引号和双引号可以互相嵌套使用。
+- 可以用于表示普通的字符串。
+- 用单引号括起的字符串中可以包含双引号，而用双引号括起的字符串中可以包含单引号。
+
+示例：
+
+```
+single_quoted = 'This is a single-quoted string.'
+double_quoted = "This is a double-quoted string."
+mixed_quoted = "He said, 'Hello world!'"
+```
+
+2. 三引号：
+- 三引号用于表示多行字符串，在三引号之间的内容可以跨越多行。
+- 三引号可以包含多行文本，并且保留字符串中的换行符和缩进。
+- 三引号字符串通常用于文档字符串（docstring）或多行注释。
+
+示例：
+
+```
+multiline_string = '''This is a
+multiline
+string.'''
+docstring = """
+This is a docstring.
+It can span multiple lines
+and is commonly used to document functions or classes.
+"""
+```
+
+**注意：**
+
+- 使用单引号、双引号或三引号来定义字符串在大多数情况下功能是相同的，可以根据个人偏好选择使用哪种引号。
+- 在编写代码时要保持一致性，选择一种引号风格，并在整个代码中保持一致，这样可以提高代码的可读性和维护性。
+
