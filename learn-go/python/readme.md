@@ -217,3 +217,11 @@ and is commonly used to document functions or classes.
 
 - list.sort(reverse=True) 列表原地排序；列表中的元素必须是同种类型
 - sorted(list) 列表排序后返回新的列表；列表中的元素必须是同种类型
+
+### sorted()函数的语法：
+```
+sorted(iterable, key=None, reverse=False)
+```
+- iterable：要排序的可迭代对象，例如列表或元组。
+- key：用于指定一个函数，根据该函数的返回值进行排序。默认为None，表示按照元素的原始顺序排序。
+- reverse：一个布尔值，用于指定是否降序排序。默认为False，表示升序排序。
