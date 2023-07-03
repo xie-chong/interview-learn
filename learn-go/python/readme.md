@@ -169,6 +169,8 @@ TypeError: Point() accepts 0 positional sub-patterns (2 given)
 
 
 ## Django项目
+https://docs.djangoproject.com/en/4.2/
+
 ```
 py -m django --version
 
