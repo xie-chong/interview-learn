@@ -168,8 +168,14 @@ TypeError: Point() accepts 0 positional sub-patterns (2 given)
 ## python 类型别名 ?
 
 
-## 启动 Django项目
+## Django项目
 ```
+py -m django --version
+
+django-admin startproject mysite
+
+py manage.py startapp polls
+
 python manage.py runserver 127.0.0.1:8000
 ```
 
