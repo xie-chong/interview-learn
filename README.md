@@ -14,7 +14,8 @@
 11. [ProcessOn在线作图工具](https://www.processon.com/)   
 12. [Mycat数据库分库分表中间件](http://www.mycat.org.cn/)   
 13. [统计学相关书籍](https://github.com/xitongsys/ML/tree/master/books)   
-14. [知乎：概率论与数理统计（从入门到期末考试）](https://zhuanlan.zhihu.com/p/486959843)   
+14. [知乎：概率论与数理统计（从入门到期末考试）](https://zhuanlan.zhihu.com/p/486959843)
+15. [400G IT书籍+15T编程学习资源](https://www.aliyundrive.com/s/uwdFFEaer6W)  
 
 
 
