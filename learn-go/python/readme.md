@@ -1,5 +1,11 @@
 Python
 
+## 使用国内镜像源进行安装。你可以使用国内的PyPI镜像源，如阿里云、清华大学、豆瓣等，来替换默认的Python包索引源。
+
+```
+pip install -i https://pypi.tuna.tsinghua.edu.cn/simple matplotlib
+```
+
 ## 在windows操作系统下，使用VsCode创建Python虚拟环境报错，原因是PowerShell安全协议。
 
 可以打开PowerShell，执行以下命令，修改一下参数
